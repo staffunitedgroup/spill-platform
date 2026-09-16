@@ -4,7 +4,7 @@ import { locations, locationStatus } from "@/lib/site-data";
 
 const experienceNavigation = [
   { label: "The SPILL Experience", href: "/#journey" },
-  { label: "Livestream", href: "/#livestream" },
+  { label: "Livestream", href: "/livestream" },
   { label: "Podcast", href: "/podcast" },
   { label: "Originals", href: "/#originals" },
   { label: "About", href: "/about" },
