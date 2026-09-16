@@ -15,7 +15,11 @@ const menuPages = [
 
 export function MenuPage({ location }: { location: Location }) {
   return <main className="menuPage"><div className="menuHeaderWrap"><LocalHeader location={location} /></div>
-    <section className="menuIntro"><div><p className="eyebrow">SPILL Saigon · Concept menu</p><h1>Eat.<br />Drink.<br /><em>SPILL.</em></h1></div><div><p>Coffee through cocktails, familiar favourites, Saigon discoveries, and signatures designed for long conversations.</p><span className="statusPill">Pre-launch menu · Items and pricing may evolve</span></div></section>
+    <section className="menuIntro">
+      <video className="menuHeroMedia" autoPlay muted loop playsInline preload="metadata" poster="/assets/spill/menu/hero-poster.jpg" aria-hidden="true"><source src="/assets/spill/menu/hero.mp4" type="video/mp4" /></video>
+      <div className="menuHeroVeil" />
+      <div className="menuHeroContent"><div><p className="eyebrow">SPILL Saigon · Concept menu</p><h1>Eat.<br />Drink.<br /><em>SPILL.</em></h1></div><div><p>Coffee through cocktails, familiar favourites, Saigon discoveries, and signatures designed for long conversations.</p><span className="statusPill">Pre-launch menu · Items and pricing may evolve</span></div></div>
+    </section>
     <nav className="menuJump" aria-label="Menu categories">{menuPages.map((page, index) => <a href={`#${page.slug}`} key={page.slug}><span>0{index + 1}</span>{page.label}</a>)}</nav>
     <section className="menuSheets" aria-label="Full SPILL Saigon menu">{menuPages.map((page) => <article id={page.slug} key={page.slug}><div><p className="eyebrow">{page.label}</p><a href="#top">Back to top ↑</a></div><Image src={page.src} alt={`SPILL Saigon ${page.label} menu`} width={940} height={1670} sizes="(max-width: 900px) 100vw, 50vw" /></article>)}</section>
   </main>;

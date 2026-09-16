@@ -23,7 +23,7 @@ const storyPath = [
 export default function HomePage() {
   return <main className="masterHome"><HomeAnimations />
     <section className="masterHero globalHero">
-      <video className="masterHeroMedia" autoPlay muted loop playsInline poster="/assets/spill/home/common-area-poster.jpg" aria-hidden="true"><source src="/assets/spill/home/common-area.mp4" type="video/mp4" /></video>
+      <video className="masterHeroMedia" autoPlay muted loop playsInline preload="metadata" poster="/assets/spill/home/hero-poster.jpg" aria-hidden="true"><source src="/assets/spill/home/hero.mp4" type="video/mp4" /></video>
       <div className="masterHeroVeil" /><GlobalHeader />
       <div className="masterHeroContent">
         <p className="eyebrow">A café bar. A social experience. A media platform.</p>

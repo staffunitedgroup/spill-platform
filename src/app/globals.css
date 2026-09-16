@@ -156,9 +156,13 @@ h1 em,h2 em { color:transparent; font-style:normal; -webkit-text-stroke:1px var(
 
 .menuPage { min-height:100svh; background:#080808; }
 .menuHeaderWrap { padding:28px clamp(22px,5vw,72px); }
-.menuIntro { min-height:72svh; padding:clamp(65px,8vw,120px) clamp(22px,7vw,110px); display:grid; grid-template-columns:1.3fr 1fr; gap:clamp(40px,9vw,140px); align-items:end; background:linear-gradient(90deg,rgba(5,5,5,.92),rgba(5,5,5,.45)),url('/assets/spill/concept-menu.webp') center/cover; }
+.menuIntro { min-height:72svh; padding:clamp(65px,8vw,120px) clamp(22px,7vw,110px); position:relative; display:flex; align-items:flex-end; overflow:hidden; background:#080808 url('/assets/spill/menu/hero-poster.jpg') center/cover; }
+.menuHeroMedia,.menuHeroVeil { width:100%; height:100%; position:absolute; inset:0; }
+.menuHeroMedia { object-fit:cover; object-position:center; filter:saturate(.92) contrast(1.04); }
+.menuHeroVeil { background:linear-gradient(90deg,rgba(5,5,5,.93) 0%,rgba(5,5,5,.67) 45%,rgba(5,5,5,.18) 82%),linear-gradient(0deg,rgba(5,5,5,.88),transparent 55%); }
+.menuHeroContent { width:100%; position:relative; z-index:2; display:grid; grid-template-columns:1.3fr 1fr; gap:clamp(40px,9vw,140px); align-items:end; }
 .menuIntro h1 { margin:20px 0 0; font-size:clamp(65px,10vw,150px); }
-.menuIntro > div:last-child > p { max-width:560px; color:#d1d1d1; font-size:clamp(17px,2vw,24px); line-height:1.6; }
+.menuHeroContent > div:last-child > p { max-width:560px; color:#f0eeee; font-size:clamp(17px,2vw,24px); line-height:1.6; text-shadow:0 2px 24px rgba(0,0,0,.65); }
 .menuJump { position:sticky; top:0; z-index:20; padding:0 clamp(22px,5vw,72px); display:flex; overflow-x:auto; background:rgba(8,8,8,.94); border-block:1px solid #2d2d2d; backdrop-filter:blur(15px); }
 .menuJump a { flex:0 0 auto; padding:19px 22px; border-right:1px solid #2d2d2d; font-size:11px; letter-spacing:.12em; text-transform:uppercase; }
 .menuJump span { margin-right:9px; color:var(--red); }
@@ -167,7 +171,7 @@ h1 em,h2 em { color:transparent; font-style:normal; -webkit-text-stroke:1px var(
 .menuSheets article > div { display:flex; justify-content:space-between; align-items:center; gap:20px; }
 .menuSheets article > div a { color:#777; font-size:9px; letter-spacing:.13em; text-transform:uppercase; }
 .menuSheets img { display:block; width:100%; height:auto; border:1px solid #242424; box-shadow:0 30px 80px rgba(0,0,0,.35); }
-@media (max-width:900px) { .menuIntro { grid-template-columns:1fr; } .menuSheets { grid-template-columns:1fr; } }
+@media (max-width:900px) { .menuHeroContent { grid-template-columns:1fr; } .menuSheets { grid-template-columns:1fr; } }
 @media (max-width:600px) { .heroConceptTag { display:none; } .localHeader { justify-content:flex-start; } .locationSwitcher { margin-left:auto; } }
 
 /* SPILL master homepage */
@@ -465,7 +469,7 @@ h1 em,h2 em { color:transparent; font-style:normal; -webkit-text-stroke:1px var(
 
 @media (prefers-reduced-motion:reduce) {
   .onAir i { animation:none; }
-  .masterHeroMedia,.podcastMedia video { display:none; }
+  .masterHeroMedia,.menuHeroMedia,.podcastMedia video { display:none; }
 }
 
 /* SPILL Podcast */
