@@ -8,7 +8,7 @@ const journey = [
   { number: "01", name: "SPILL Connections", verb: "Connect", copy: "Start better conversations with friends, dates, coworkers, new people, or someone you just met at SPILL.", cta: "Explore Connections", href: "/spill-42" },
   { number: "02", name: "SPILL Confessional", verb: "Express", copy: "Step inside. Tell your story. Keep it private, save it for yourself, or choose to let it travel further.", cta: "Explore Confessional", href: "/create" },
   { number: "03", name: "SPILL Livestream", verb: "Be seen", copy: "Share your story, talent, business, launch, performance, idea, opinion, or perspective with the SPILL audience.", cta: "Explore Livestream", href: "#livestream" },
-  { number: "04", name: "SPILL Podcast", verb: "Go deeper", copy: "Build meaningful long-form conversations with professional production and room for the idea to grow.", cta: "Explore Podcast", href: "#podcast" },
+  { number: "04", name: "SPILL Podcast", verb: "Go deeper", copy: "Build meaningful long-form conversations with professional production and room for the idea to grow.", cta: "Explore Podcast", href: "/podcast" },
   { number: "05", name: "SPILL Original", verb: "Become original", copy: "The strongest people, stories, ideas, and formats can grow into premium SPILL-developed media.", cta: "Watch Originals", href: "#originals" },
 ];
 
@@ -90,7 +90,7 @@ export default function HomePage() {
       <div className="podcastHeading" data-reveal><div className="sectionNumber">07 / SPILL Podcast</div><h2>Some stories<br />deserve <em>more time.</em></h2><p>Bring your idea. SPILL helps turn it into a great production—and gives it room to grow.</p></div>
       <div className="podcastMedia" data-reveal><video autoPlay muted loop playsInline poster="/assets/spill/home/podcast-poster.jpg"><source src="/assets/spill/home/podcast.mp4" type="video/mp4" /></video><span>Long-form conversations,<br />professionally produced.</span></div>
       <div className="podcastChoices">
-        <article data-reveal><span>01</span><h3>Create your podcast</h3><p>Bring your concept or existing show to SPILL for development, recording, editing, content creation, and ongoing support.</p><Link href="/create">Produce with SPILL →</Link></article>
+        <article data-reveal><span>01</span><h3>Create your podcast</h3><p>Bring your concept or existing show to SPILL for development, recording, editing, content creation, and ongoing support.</p><Link href="/podcast#inquiry">Produce with SPILL →</Link></article>
         <article data-reveal><span>02</span><h3>Be part of SPILL Podcast</h3><p>Exceptional people and stories discovered through the wider SPILL ecosystem can be invited back for deeper conversations.</p><a href="https://www.youtube.com/@spillsaigon" target="_blank" rel="noreferrer">Watch SPILL Podcast ↗</a></article>
       </div>
     </section>
