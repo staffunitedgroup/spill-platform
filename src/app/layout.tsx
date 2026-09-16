@@ -11,9 +11,10 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: { default: "SPILL", template: "%s | SPILL" },
-  description: "Food. Drinks. Music. Conversation. Culture.",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+  title: { default: "SPILL — Café Bar, Social Experience & Media Platform", template: "%s | SPILL" },
+  description: "A new kind of social venue. Coffee, cocktails, conversation, livestreams, podcasts, and original media—built to bring people together.",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://spill-cafe-bar.masx-world-7829.chatgpt.site"),
+  icons: { icon: "/favicon.png" },
 };
 
 export const viewport: Viewport = {

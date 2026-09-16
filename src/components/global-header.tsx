@@ -1,6 +1,14 @@
 import Link from "next/link";
 import Image from "next/image";
-import { globalNavigation, locations, locationStatus } from "@/lib/site-data";
+import { locations, locationStatus } from "@/lib/site-data";
+
+const experienceNavigation = [
+  { label: "The SPILL Experience", href: "/#journey" },
+  { label: "Livestream", href: "/#livestream" },
+  { label: "Podcast", href: "/#podcast" },
+  { label: "Originals", href: "/#originals" },
+  { label: "About", href: "/about" },
+];
 
 export function GlobalHeader() {
   return <header className="siteHeader">
@@ -8,9 +16,17 @@ export function GlobalHeader() {
     <nav className="desktopNav" aria-label="Global navigation">
       <details className="navDropdown"><summary>Locations <span>⌄</span></summary><div className="dropdownPanel">
         {locations.map((location) => <Link key={location.slug} href={`/${location.slug}`}><span>{location.name}</span><small>{locationStatus(location)}</small></Link>)}
+        <span className="dropdownSoon">More locations coming</span>
       </div></details>
-      {globalNavigation.map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}
+      {experienceNavigation.map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}
     </nav>
-    <div className="corporateNav"><Link href="/invest">Invest</Link><Link href="/franchise">Franchise</Link></div>
+    <details className="mobileMenu">
+      <summary aria-label="Open navigation"><span /><span /></summary>
+      <nav aria-label="Mobile navigation">
+        <p>Navigate SPILL</p>
+        {experienceNavigation.map((item) => <Link key={item.href} href={item.href}>{item.label}<span>↗</span></Link>)}
+        <Link href="/#locations">Choose a location<span>↘</span></Link>
+      </nav>
+    </details>
   </header>;
 }
