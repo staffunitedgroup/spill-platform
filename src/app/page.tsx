@@ -1,76 +1,33 @@
-const experiences = [
-  { label: "Ask", detail: "Thoughtful questions" },
-  { label: "Do", detail: "Playful challenges" },
-  { label: "Notice", detail: "Look around together" },
-  { label: "Dare", detail: "For the bold" },
-];
+import Link from "next/link";
+import { GlobalHeader } from "@/components/global-header";
+import { locations } from "@/lib/site-data";
+
+const ecosystem = ["Eat + Drink", "Events", "SPILL 42", "Podcast", "Livestream", "Confessional", "Creators", "Community"];
 
 export default function HomePage() {
-  return (
-    <main>
-      <section className="hero">
-        <nav className="nav" aria-label="Primary navigation">
-          <a className="brand" href="#top" aria-label="SPILL home">
-            SP<span>I</span>LL
-          </a>
-          <div className="navLinks">
-            <a href="#locations">Locations</a>
-            <a href="#spill-42">SPILL 42</a>
-            <a href="#about">About</a>
-          </div>
-        </nav>
+  return <main>
+    <section className="hero globalHero"><GlobalHeader /><div className="heroContent">
+      <p className="eyebrow">The SPILL ecosystem</p><h1>Eat. Drink.<br /><em>Meet. Create.</em><br />SPILL.</h1>
+      <p className="intro">A venue, media platform, and community built for real-world connection.</p>
+      <div className="actions"><Link className="button primary" href="#locations">Choose your SPILL</Link><Link className="button secondary" href="/whats-on">See what’s on</Link></div>
+    </div><div className="ecosystemRail">{ecosystem.map((item) => <span key={item}>{item}</span>)}</div></section>
 
-        <div className="heroContent" id="top">
-          <p className="eyebrow">People · Coffee · Stories</p>
-          <h1>Come together.<br /><em>See what happens.</em></h1>
-          <p className="intro">Food. Drinks. Music. Conversation. Culture.</p>
-          <div className="actions">
-            <a className="button primary" href="#locations">Explore SPILL</a>
-            <a className="button secondary" href="#spill-42">Discover SPILL 42</a>
-          </div>
-        </div>
-        <p className="heroNote">Saigon · Open now</p>
-      </section>
+    <section className="section locations" id="locations"><p className="eyebrow">Choose your SPILL</p>
+      <div className="sectionHeading"><h2>One network.<br />Local energy.</h2><p>Every SPILL shares one idea while reflecting the people, rhythm, and culture of its city.</p></div>
+      <div className="locationGrid">{locations.map((location, index) => <Link className={`locationCard ${location.status === "open" ? "active" : "muted"}`} href={`/${location.slug}`} key={location.slug}>
+        <p>0{index + 1}</p><div><h3>{location.city}</h3><span>{location.status === "open" ? "Open now" : "Coming soon"}</span></div><b>{location.status === "open" ? "→" : "+"}</b>
+      </Link>)}</div>
+    </section>
 
-      <section className="section locations" id="locations">
-        <p className="eyebrow">Choose your location</p>
-        <div className="sectionHeading">
-          <h2>Your city.<br />Your SPILL.</h2>
-          <p>One global idea, shaped by the people, rhythm, and culture of every city.</p>
-        </div>
-        <div className="locationGrid">
-          <article className="locationCard active">
-            <p>01</p><div><h3>Saigon</h3><span>Open now</span></div><b>→</b>
-          </article>
-          <article className="locationCard">
-            <p>02</p><div><h3>Tokyo</h3><span>Coming soon</span></div><b>+</b>
-          </article>
-          <article className="locationCard muted">
-            <p>03</p><div><h3>Your city?</h3><span>Bring SPILL to your market</span></div><b>↗</b>
-          </article>
-        </div>
-      </section>
+    <section className="splitFeature"><article><p className="eyebrow">What happens at SPILL</p><h2>More than a café.<br />More than a bar.</h2><p>Food, drinks, live experiences, creators, conversations, and content—all connected in one place.</p><Link href="/about">Discover the concept →</Link></article>
+      <article className="redPanel"><p className="eyebrow light">What’s on</p><h2>Something is always happening.</h2><p>Find tonight’s events, live sessions, SPILL 42 experiences, and what is coming next.</p><Link href="/whats-on">Explore the network →</Link></article>
+    </section>
 
-      <section className="spill42" id="spill-42">
-        <div className="sectionHeading">
-          <div><p className="eyebrow">The in-venue experience</p><h2>Why 42?</h2></div>
-          <p>Because 4 + 2 = SIX. Four ways to connect, built for two or more people sharing a table.</p>
-        </div>
-        <div className="experienceGrid">
-          {experiences.map((item, index) => (
-            <article key={item.label}>
-              <span>0{index + 1}</span><h3>{item.label}</h3><p>{item.detail}</p>
-            </article>
-          ))}
-        </div>
-        <a className="button primary" href="/spill-42">Start the experience</a>
-      </section>
+    <section className="spill42"><div className="sectionHeading"><div><p className="eyebrow">Signature experience</p><h2>SPILL 42</h2></div><p>Forty-two prompts. Four ways to connect. One table where phones stop being the most interesting thing in the room.</p></div>
+      <div className="experienceGrid">{[["Ask","Thoughtful questions"],["Do","Playful challenges"],["Notice","Look around together"],["Dare","For the bold"]].map(([label,detail], index) => <article key={label}><span>0{index + 1}</span><h3>{label}</h3><p>{detail}</p></article>)}</div>
+      <Link className="button primary" href="/spill-42">Try SPILL 42</Link>
+    </section>
 
-      <section className="manifesto" id="about">
-        <p className="eyebrow">This is SPILL</p>
-        <h2>Real connection<br /><em>starts offline.</em></h2>
-        <p>Coffee, music, stories, and a little curiosity. Stay for a drink. Leave knowing someone better.</p>
-      </section>
-    </main>
-  );
+    <section className="networkSection"><p className="eyebrow">Built to grow</p><h2>The SPILL network</h2><div className="networkLinks"><Link href="/partner">For brands <span>→</span></Link><Link href="/invest">Invest <span>→</span></Link><Link href="/franchise">Franchise <span>→</span></Link></div></section>
+  </main>;
 }
