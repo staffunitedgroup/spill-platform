@@ -6,7 +6,7 @@ import { HomeAnimations } from "@/components/home-animations";
 
 const journey = [
   { number: "01", name: "SPILL Connections", verb: "Connect", copy: "Start better conversations with friends, dates, coworkers, new people, or someone you just met at SPILL.", cta: "Explore Connections", href: "/spill-42" },
-  { number: "02", name: "SPILL Confessional", verb: "Express", copy: "Step inside. Tell your story. Keep it private, save it for yourself, or choose to let it travel further.", cta: "Explore Confessional", href: "/create" },
+  { number: "02", name: "SPILL Confessional", verb: "Express", copy: "Step inside. Tell your story. Keep it private, save it for yourself, or choose to let it travel further.", cta: "Explore Confessional", href: "/confessional" },
   { number: "03", name: "SPILL Livestream", verb: "Be seen", copy: "Share your story, talent, business, launch, performance, idea, opinion, or perspective with the SPILL audience.", cta: "Explore Livestream", href: "/livestream" },
   { number: "04", name: "SPILL Podcast", verb: "Go deeper", copy: "Build meaningful long-form conversations with professional production and room for the idea to grow.", cta: "Explore Podcast", href: "/podcast" },
   { number: "05", name: "SPILL Original", verb: "Become original", copy: "The strongest people, stories, ideas, and formats can grow into premium SPILL-developed media.", cta: "Watch Originals", href: "#originals" },
