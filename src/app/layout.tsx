@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Space_Grotesk } from "next/font/google";
 import { SmoothScroll } from "@/components/smooth-scroll";
+import { SiteFooter } from "@/components/site-footer";
 import "lenis/dist/lenis.css";
 import "./globals.css";
 
@@ -23,7 +24,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={spaceGrotesk.variable}><SmoothScroll>{children}</SmoothScroll></body>
+      <body className={spaceGrotesk.variable}><SmoothScroll>{children}<SiteFooter /></SmoothScroll></body>
     </html>
   );
 }

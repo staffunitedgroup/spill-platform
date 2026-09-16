@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { GlobalHeader } from "@/components/global-header";
 import { HomeAnimations } from "@/components/home-animations";
-import { locations } from "@/lib/site-data";
+import { locations, locationStatus } from "@/lib/site-data";
 
 const ecosystem = ["Eat + Drink", "Events", "SPILL 42", "Podcast", "Livestream", "Confessional", "Creators", "Community"];
 
@@ -15,8 +15,8 @@ export default function HomePage() {
 
     <section className="section locations" id="locations"><p className="eyebrow">Choose your SPILL</p>
       <div className="sectionHeading" data-reveal><h2>One network.<br />Local energy.</h2><p>Every SPILL shares one idea while reflecting the people, rhythm, and culture of its city.</p></div>
-      <div className="locationGrid">{locations.map((location, index) => <Link className={`locationCard ${location.status === "open" ? "active" : "muted"}`} href={`/${location.slug}`} key={location.slug}>
-        <p>0{index + 1}</p><div><h3>{location.city}</h3><span>{location.status === "open" ? "Open now" : "Coming soon"}</span></div><b>{location.status === "open" ? "→" : "+"}</b>
+      <div className="locationGrid">{locations.map((location, index) => <Link className={`locationCard ${location.status === "pre-launch" ? "active" : "muted"}`} href={`/${location.slug}`} key={location.slug}>
+        <p>0{index + 1}</p><div><h3>{location.city}</h3><span>{locationStatus(location)}</span></div><b>{location.status === "pre-launch" ? "→" : "+"}</b>
       </Link>)}</div>
     </section>
 

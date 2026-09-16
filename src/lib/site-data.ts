@@ -1,8 +1,8 @@
 export type LocationSlug = "saigon" | "hanoi" | "tokyo";
-export type Location = { slug: LocationSlug; name: string; city: string; status: "open" | "coming-soon"; strapline: string };
+export type Location = { slug: LocationSlug; name: string; city: string; status: "pre-launch" | "coming-soon"; strapline: string };
 
 export const locations: Location[] = [
-  { slug: "saigon", name: "SPILL Saigon", city: "Saigon", status: "open", strapline: "Eat. Drink. Meet. Create." },
+  { slug: "saigon", name: "SPILL Saigon", city: "Saigon", status: "pre-launch", strapline: "Eat. Drink. Meet. Create." },
   { slug: "hanoi", name: "SPILL Hanoi", city: "Hanoi", status: "coming-soon", strapline: "A new SPILL is taking shape." },
   { slug: "tokyo", name: "SPILL Tokyo", city: "Tokyo", status: "coming-soon", strapline: "A new SPILL is taking shape." },
 ];
@@ -19,3 +19,17 @@ export const localNavigation = [
 ];
 
 export function getLocation(slug: string) { return locations.find((location) => location.slug === slug); }
+
+export function locationStatus(location: Location) {
+  return location.status === "pre-launch" ? "Launching soon" : "Coming soon";
+}
+
+export const socialLinks = [
+  { label: "Instagram", href: "https://www.instagram.com/spillsaigon" },
+  { label: "TikTok", href: "https://www.tiktok.com/@spillsaigon" },
+  { label: "Threads", href: "https://www.threads.net/@spillsaigon" },
+  { label: "X", href: "https://x.com/spillsaigon" },
+  { label: "Facebook", href: "https://www.facebook.com/spillsaigon" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/company/spillsaigon" },
+  { label: "YouTube", href: "https://www.youtube.com/@spillsaigon" },
+];
