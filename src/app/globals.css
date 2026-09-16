@@ -73,6 +73,11 @@ h1 em,h2 em { color:transparent; font-style:normal; -webkit-text-stroke:1px var(
 .dropdownPanel small { color:#777; text-transform:uppercase; font-size:9px; letter-spacing:.1em; }
 .globalHero h1 { font-size:clamp(54px,7.7vw,108px); }
 .ecosystemRail { display:flex; flex-wrap:wrap; gap:8px 28px; color:#858585; font-size:11px; text-transform:uppercase; letter-spacing:.14em; position:relative; z-index:2; }
+[data-reveal],.locationCard,.experienceGrid article { will-change:transform,opacity; }
+.locationCard,.networkLinks a,.button { transition:transform .35s ease,color .35s ease,background-color .35s ease; }
+.locationCard:hover { transform:translateX(10px); }
+.networkLinks a:hover { color:var(--red); padding-left:12px; }
+.button:hover { transform:translateY(-3px); }
 .splitFeature { display:grid; grid-template-columns:1fr 1fr; }
 .splitFeature article { min-height:560px; padding:clamp(55px,7vw,100px); display:flex; flex-direction:column; justify-content:flex-end; background:#eeeae2; color:#111; }
 .splitFeature h2,.networkSection h2,.visitStrip h2 { font-size:clamp(42px,5.5vw,78px); line-height:.95; letter-spacing:-.05em; text-transform:uppercase; }
