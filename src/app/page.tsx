@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { GlobalHeader } from "@/components/global-header";
 import { HomeAnimations } from "@/components/home-animations";
 import { locations, locationStatus } from "@/lib/site-data";
@@ -7,11 +8,11 @@ const ecosystem = ["Eat + Drink", "Events", "SPILL 42", "Podcast", "Livestream",
 
 export default function HomePage() {
   return <main><HomeAnimations />
-    <section className="hero globalHero"><GlobalHeader /><div className="heroContent">
+    <section className="hero globalHero"><Image className="heroMedia" src="/assets/spill/concept-exterior-day.webp" alt="" fill priority sizes="100vw" /><div className="heroVeil" /><GlobalHeader /><div className="heroContent">
       <p className="eyebrow">The SPILL ecosystem</p><h1>Eat. Drink.<br /><em>Meet. Create.</em><br />SPILL.</h1>
       <p className="intro">A venue, media platform, and community built for real-world connection.</p>
       <div className="actions"><Link className="button primary" href="#locations">Choose your SPILL</Link><Link className="button secondary" href="/whats-on">See what’s on</Link></div>
-    </div><div className="ecosystemRail">{ecosystem.map((item) => <span key={item}>{item}</span>)}</div></section>
+    </div><p className="heroConceptTag">Concept visual · SPILL Saigon in development</p><div className="ecosystemRail">{ecosystem.map((item) => <span key={item}>{item}</span>)}</div></section>
 
     <section className="section locations" id="locations"><p className="eyebrow">Choose your SPILL</p>
       <div className="sectionHeading" data-reveal><h2>One network.<br />Local energy.</h2><p>Every SPILL shares one idea while reflecting the people, rhythm, and culture of its city.</p></div>
