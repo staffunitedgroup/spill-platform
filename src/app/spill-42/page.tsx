@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 const prompts = [
   { category: "ASK", title: "The first spill", text: "What is something you changed your mind about recently?" },
@@ -21,7 +22,7 @@ export default function Spill42Page() {
   return (
     <main className="gameShell">
       <header className="gameHeader">
-        <Link className="brand" href="/">SP<span>I</span>LL <b>42</b></Link>
+        <Link className="gameBrand" href="/" aria-label="SPILL 42 home"><Image src="/assets/spill/logo-horizontal-bright.webp" alt="SPILL" width={900} height={300} /><b>42</b></Link>
         <span>{index + 1} / 42</span>
       </header>
       <section className="promptCard" aria-live="polite">

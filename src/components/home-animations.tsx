@@ -11,6 +11,7 @@ export function HomeAnimations() {
     const media = gsap.matchMedia();
     media.add("(prefers-reduced-motion: no-preference)", () => {
       gsap.timeline({ defaults: { ease: "power3.out" } })
+        .from(".globalHero .heroMedia", { scale: 1.12, opacity: 0, duration: 1.6, ease: "power2.out" })
         .from(".globalHero .siteHeader", { y: -24, opacity: 0, duration: 0.75 })
         .from(".globalHero .heroContent > *", { y: 44, opacity: 0, duration: 0.9, stagger: 0.12 }, "-=0.35")
         .from(".ecosystemRail span", { y: 14, opacity: 0, duration: 0.55, stagger: 0.055 }, "-=0.4");
