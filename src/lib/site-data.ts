@@ -1,10 +1,11 @@
-export type LocationSlug = "saigon" | "hanoi" | "tokyo";
+export type LocationSlug = "saigon" | "hanoi" | "tokyo" | "bangkok";
 export type Location = { slug: LocationSlug; name: string; city: string; status: "pre-launch" | "coming-soon"; strapline: string };
 
 export const locations: Location[] = [
   { slug: "saigon", name: "SPILL Saigon", city: "Saigon", status: "pre-launch", strapline: "Eat. Drink. Meet. Create." },
-  { slug: "hanoi", name: "SPILL Hanoi", city: "Hanoi", status: "coming-soon", strapline: "A new SPILL is taking shape." },
   { slug: "tokyo", name: "SPILL Tokyo", city: "Tokyo", status: "coming-soon", strapline: "A new SPILL is taking shape." },
+  { slug: "hanoi", name: "SPILL Hanoi", city: "Hanoi", status: "coming-soon", strapline: "A new SPILL is taking shape." },
+  { slug: "bangkok", name: "SPILL Bangkok", city: "Bangkok", status: "coming-soon", strapline: "A new SPILL is taking shape." },
 ];
 
 export const globalNavigation = [
@@ -21,7 +22,8 @@ export const localNavigation = [
 export function getLocation(slug: string) { return locations.find((location) => location.slug === slug); }
 
 export function locationStatus(location: Location) {
-  return location.status === "pre-launch" ? "Launching soon" : "Coming soon";
+  if (location.status === "pre-launch") return "Launching soon";
+  return location.slug === "tokyo" ? "Coming next" : "Future location";
 }
 
 export const socialLinks = [
