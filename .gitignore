@@ -7,3 +7,5 @@
 *.log
 .DS_Store
 *.tsbuildinfo
+
+/src/generated/prisma

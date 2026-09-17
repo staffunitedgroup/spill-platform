@@ -1,0 +1,186 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────
+
+enum VenueStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum TableStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum SessionMode {
+  TWO_PERSON
+}
+
+enum SessionStatus {
+  WAITING
+  READY
+  ACTIVE
+  ENDING
+  ENDED
+}
+
+enum ParticipantStatus {
+  WAITING
+  ACTIVE
+  COMPLETED
+}
+
+enum ConnectionType {
+  FRIENDS_ONLY
+  FRIENDS
+  MAYBE_MORE
+  ALREADY_TOGETHER
+}
+
+enum SpillType {
+  QUESTION
+  INSTRUCTION
+  CHALLENGE
+  OBSERVATION
+  SCENARIO
+  VISION
+}
+
+enum ConnectionStatus {
+  MUTUAL
+  NONE
+}
+
+// ─────────────────────────────────────────
+// MODELS
+// ─────────────────────────────────────────
+
+model Venue {
+  id        String      @id @default(cuid())
+  name      String
+  city      String
+  status    VenueStatus @default(ACTIVE)
+  createdAt DateTime    @default(now()) @map("created_at")
+  updatedAt DateTime    @updatedAt @map("updated_at")
+
+  tables Table[]
+
+  @@map("venues")
+}
+
+model Table {
+  id          String      @id @default(cuid())
+  venueId     String      @map("venue_id")
+  tableCode   String      @map("table_code")
+  displayName String      @map("display_name")
+  status      TableStatus @default(ACTIVE)
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
+  venue    Venue     @relation(fields: [venueId], references: [id])
+  sessions Session[]
+
+  @@unique([venueId, tableCode])
+  @@map("tables")
+}
+
+model Session {
+  id          String        @id @default(cuid())
+  tableId     String        @map("table_id")
+  sessionCode String        @unique @map("session_code")
+  mode        SessionMode   @default(TWO_PERSON)
+  status      SessionStatus @default(WAITING)
+  startedAt   DateTime?     @map("started_at")
+  endedAt     DateTime?     @map("ended_at")
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+
+  table                Table                @relation(fields: [tableId], references: [id])
+  participants         Participant[]
+  connectionSelections ConnectionSelection[]
+  sessionSpills        SessionSpill[]
+  connections          Connection[]
+
+  @@map("sessions")
+}
+
+model Participant {
+  id               String            @id @default(cuid())
+  sessionId        String            @map("session_id")
+  displayName      String            @map("display_name")
+  participantToken String            @unique @map("participant_token")
+  joinedAt         DateTime          @default(now()) @map("joined_at")
+  leftAt           DateTime?         @map("left_at")
+  status           ParticipantStatus @default(WAITING)
+
+  session              Session               @relation(fields: [sessionId], references: [id])
+  connectionSelections ConnectionSelection[]
+
+  @@map("participants")
+}
+
+model ConnectionSelection {
+  id             String         @id @default(cuid())
+  sessionId      String         @map("session_id")
+  participantId  String         @map("participant_id")
+  connectionType ConnectionType @map("connection_type")
+  createdAt      DateTime       @default(now()) @map("created_at")
+
+  session     Session     @relation(fields: [sessionId], references: [id])
+  participant Participant @relation(fields: [participantId], references: [id])
+
+  @@unique([sessionId, participantId])
+  @@map("connection_selections")
+}
+
+model Spill {
+  id         String    @id @default(cuid())
+  type       SpillType
+  content    String
+  category   String?
+  difficulty Int?
+  active     Boolean   @default(true)
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+
+  sessionSpills SessionSpill[]
+
+  @@map("spills")
+}
+
+model SessionSpill {
+  id          String    @id @default(cuid())
+  sessionId   String    @map("session_id")
+  spillId     String    @map("spill_id")
+  sequence    Int
+  presentedAt DateTime? @map("presented_at")
+  completedAt DateTime? @map("completed_at")
+
+  session Session @relation(fields: [sessionId], references: [id])
+  spill   Spill   @relation(fields: [spillId], references: [id])
+
+  @@unique([sessionId, sequence])
+  @@map("session_spills")
+}
+
+model Connection {
+  id             String           @id @default(cuid())
+  sessionId      String           @map("session_id")
+  participantAId String           @map("participant_a_id")
+  participantBId String           @map("participant_b_id")
+  status         ConnectionStatus @default(NONE)
+  createdAt      DateTime         @default(now()) @map("created_at")
+
+  session Session @relation(fields: [sessionId], references: [id])
+
+  @@map("connections")
+}
