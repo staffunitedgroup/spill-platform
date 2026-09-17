@@ -1,3 +1,4 @@
+// src/app/spill/[sessionCode]/page.tsx
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
@@ -27,14 +28,6 @@ const CONNECTION_OPTIONS: { value: ConnectionType; label: string }[] = [
   { value: "ALREADY_TOGETHER", label: "Already Together" },
 ];
 
-/**
- * /spill/[sessionCode]
- *
- * LƯU Ý CHO NGƯỜI CHỈNH UI: các khối giao diện được tách theo từng
- * trạng thái (renderWaiting / renderConnectionType / renderSpill /
- * renderEnding) ở cuối file — chỉnh JSX/className trong đó, hoặc sửa
- * spill.module.css. Không cần đụng phần fetch/state phía trên.
- */
 export default function SpillSessionPage() {
   const params = useParams<{ sessionCode: string }>();
   const router = useRouter();
@@ -53,6 +46,7 @@ export default function SpillSessionPage() {
       return;
     }
     const parsed = JSON.parse(saved);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSessionId(parsed.sessionId);
     setParticipantToken(parsed.participantToken);
   }, [sessionCode, router]);
@@ -68,6 +62,7 @@ export default function SpillSessionPage() {
 
   useEffect(() => {
     if (!sessionId) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchState();
     const interval = setInterval(fetchState, 2000);
     return () => clearInterval(interval);
