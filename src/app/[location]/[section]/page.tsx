@@ -20,5 +20,5 @@ export default async function LocalSection({ params }: { params: Promise<{ locat
   const location = getLocation(slug); const sectionContent = content[section];
   if (!location || !sectionContent) notFound();
   if (section === "menu" && slug === "saigon") return <MenuPage location={location} />;
-  return <main className="interiorPage"><LocalHeader location={location} /><section className="pageIntro"><p className="eyebrow">{location.name} · {sectionContent[0]}</p><h1><BrandedText text={sectionContent[1]} /></h1><p>{sectionContent[2]}</p>{location.status === "coming-soon" && <span className="statusPill">Coming soon</span>}</section></main>;
+  return <main className="interiorPage"><LocalHeader location={location} /><section className="pageIntro"><p className="eyebrow">{location.name} · {sectionContent[0]}</p><h1><BrandedText text={sectionContent[1].replaceAll(".", "")} /></h1><p>{sectionContent[2]}</p>{location.status === "coming-soon" && <span className="statusPill">Coming soon</span>}</section></main>;
 }

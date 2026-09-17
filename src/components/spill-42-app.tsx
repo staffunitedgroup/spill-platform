@@ -225,11 +225,11 @@ export function Spill42App() {
       </div>}
 
       {setupStep === "handoff" && <div className="s42Handoff">
-        <span>Choice saved privately</span><h1>Pass the phone.</h1><p>Participant 2, tap below when the screen is yours.</p><button className="s42Primary" type="button" onClick={() => setSetupStep("connectionTwo")}>I’m Participant 2 <span>→</span></button>
+        <span>Choice saved privately</span><h1>Pass the phone</h1><p>Participant 2, tap below when the screen is yours.</p><button className="s42Primary" type="button" onClick={() => setSetupStep("connectionTwo")}>I’m Participant 2 <span>→</span></button>
       </div>}
 
       {setupStep === "table" && <div className="s42SetupPanel">
-        <div className="s42SetupHeading"><span>03 / Find your table</span><h1>Ready to connect.</h1><p>{participants === "two" ? `Your shared mode is ${connectionLabels[resolvedConnection]}. Individual choices stay private.` : `${groupSize} people. Group SPILLs are ready.`}</p></div>
+        <div className="s42SetupHeading"><span>03 / Find your table</span><h1>Ready to connect</h1><p>{participants === "two" ? `Your shared mode is ${connectionLabels[resolvedConnection]}. Individual choices stay private.` : `${groupSize} people. Group SPILLs are ready.`}</p></div>
         <label className="s42TableField"><span>Table number — optional</span><input inputMode="numeric" value={table} onChange={event => setTable(event.target.value.replace(/\D/g, "").slice(0, 3))} placeholder="e.g. 12" /></label>
         <label className="s42OpenToggle"><span><b>Open to SPILL</b><small>Let other open tables know that saying hello is welcome.</small></span><input type="checkbox" checked={openToSpill} onChange={event => setOpenToSpill(event.target.checked)} /><i /></label>
         <p className="s42Permission">Technology gives permission. People make the connection.</p>
@@ -242,7 +242,7 @@ export function Spill42App() {
         <div className="s42PlayMeta"><span>{participants === "two" ? connectionLabels[resolvedConnection] : `${groupSize} people`}{table ? ` · Table ${table}` : ""}</span><b>{index + 1} / 42</b></div>
         <article className="s42Prompt" aria-live="polite">
           <span><b>{typeMarks[prompt.type]}</b>{prompt.type}</span>
-          <h1><BrandedText text={prompt.title} /></h1>
+          <h1><BrandedText text={prompt.title.replaceAll(".", "")} /></h1>
           <p>{prompt.text}</p>
           <i>—</i>
           <strong>{prompt.follow}</strong>
@@ -254,7 +254,7 @@ export function Spill42App() {
       </div>}
 
       {activeTab === "together" && <div className="s42TabPage">
-        <span className="s42PageLabel">Open to SPILL</span><h1>Permission to<br /><em>say hello.</em></h1><p>Open to SPILL removes uncertainty without replacing the human approach. There is no invitation to send and nothing to accept on screen.</p>
+        <span className="s42PageLabel">Open to SPILL</span><h1>Permission to<br /><em>say hello</em></h1><p>Open to SPILL removes uncertainty without replacing the human approach. There is no invitation to send and nothing to accept on screen.</p>
         <label className="s42OpenToggle large"><span><b>{openToSpill ? "Your table is open" : "Your table is private"}</b><small>{openToSpill ? "Someone is welcome to walk over and ask, ‘Want to SPILL?’" : "Turn this on whenever meeting someone new feels right."}</small></span><input type="checkbox" checked={openToSpill} onChange={event => setOpenToSpill(event.target.checked)} /><i /></label>
         <label className="s42TableField"><span>Your table</span><input inputMode="numeric" value={table} onChange={event => setTable(event.target.value.replace(/\D/g, "").slice(0, 3))} placeholder="Add table number" /></label>
         <div className="s42OpenState"><i className={openToSpill ? "on" : ""} /><span>{openToSpill ? `Table ${table || "—"} is Open to SPILL` : "Not visible to other tables"}</span></div>
@@ -262,14 +262,14 @@ export function Spill42App() {
       </div>}
 
       {activeTab === "moments" && <div className="s42TabPage">
-        <span className="s42PageLabel">Remember the moment</span><h1>Your <SpillWordmark />.<br /><em>Not a recording.</em></h1><p>The conversation belongs to the people having it. SPILL remembers only the experience around it.</p>
+        <span className="s42PageLabel">Remember the moment</span><h1>Your <SpillWordmark /><br /><em>Not a recording</em></h1><p>The conversation belongs to the people having it. SPILL remembers only the experience around it.</p>
         <div className="s42MomentStats"><div><strong>{index + 1}</strong><span>SPILLs reached</span></div><div><strong>{savedIds.length}</strong><span>Saved moments</span></div><div><strong>{table || "—"}</strong><span>Table</span></div></div>
         <div className="s42SavedList">{savedIds.length ? savedIds.map(id => { const item = deck.find(entry => entry.id === id); return item ? <article key={id}><span>{item.type}</span><h3><BrandedText text={item.title} /></h3><p>{item.text}</p></article> : null; }) : <div className="s42EmptyMoment"><strong>No moments saved yet.</strong><p>Use “Remember this moment” on any SPILL worth keeping.</p></div>}</div>
         <p className="s42PrivacyLine">Remember the moment. Don’t record the conversation.</p>
       </div>}
 
       {activeTab === "more" && <div className="s42TabPage more">
-        <span className="s42PageLabel">About SPILL 42</span><h1>The phone facilitates.<br /><em>People connect.</em></h1>
+        <span className="s42PageLabel">About SPILL 42</span><h1>The phone facilitates<br /><em>People connect</em></h1>
         <details open><summary>Why 42?<span>+</span></summary><div><strong>4 + 2 = SIX</strong><p>42 is famously “the answer to life, the universe and everything.” SPILL makes the idea human: the people you meet, questions you ask, stories you share, chances you take, and connections you make.</p><p>42 is the answer. The conversation is how you get there.</p></div></details>
         <details><summary>Not another dating app<span>+</span></summary><div><p>Dating can be part of SPILL 42, but friendship, collaboration, travel, colleagues, couples, and interesting strangers all belong here. SPILL never calculates compatibility. It facilitates. Humans decide.</p><div className="s42Chips">{["New friends","Potential romance","Existing couples","Travelers","Colleagues","Dinner friends","Small groups","Events"].map(item => <span key={item}>{item}</span>)}</div></div></details>
         <details><summary>Larger groups + events<span>+</span></summary><div><p>The same simple human experience can support team building, networking, conferences, retreats, universities, hospitality groups, and introductions—without becoming a complicated corporate tool.</p></div></details>
@@ -283,7 +283,7 @@ export function Spill42App() {
     </section>}
 
     {screen === "ending" && <section className="s42Ending">
-      {endingStep === "handoff" ? <div className="s42Handoff"><span>Choice saved privately</span><h1>Pass the phone.</h1><p>Participant 2, tap below when the screen is yours.</p><button className="s42Primary" type="button" onClick={() => setEndingStep("two")}>I’m Participant 2 <span>→</span></button></div> : <div className="s42EndPanel">
+      {endingStep === "handoff" ? <div className="s42Handoff"><span>Choice saved privately</span><h1>Pass the phone</h1><p>Participant 2, tap below when the screen is yours.</p><button className="s42Primary" type="button" onClick={() => setEndingStep("two")}>I’m Participant 2 <span>→</span></button></div> : <div className="s42EndPanel">
         <div className="s42PrivateBadge">Private choice · Participant {endingStep === "one" ? "1" : "2"}</div><span>End on a positive note</span><h1>What happens next?</h1><p>SPILL confirms mutual connection. It never delivers rejection.</p>
         <div className="s42EndChoices"><button type="button" onClick={() => chooseEnding("again")}><b>SPILL Again</b><small>I’d be open to SPILLing again, but for now I need to get back.</small></button><button type="button" onClick={() => chooseEnding("connect")}><b>Stay Connected</b><small>I’d like to exchange contact information.</small></button></div>
       </div>}
@@ -292,7 +292,7 @@ export function Spill42App() {
     {screen === "result" && <section className="s42Result">
       <div className="s42ResultMark">42</div>
       <span>Thanks for SPILLing</span>
-      <h1>{participants === "two" && mutualConnection ? <>You both chose<br /><em>Stay Connected.</em></> : <>Maybe we’ll<br /><em><SpillWordmark /> again.</em></>}</h1>
+      <h1>{participants === "two" && mutualConnection ? <>You both chose<br /><em>Stay Connected</em></> : <>Maybe we’ll<br /><em><SpillWordmark /> again</em></>}</h1>
       <p>{participants === "two" && mutualConnection ? "The feeling is mutual. Exchange details directly—and keep the connection human." : "No rejection screen. No match score. Just a real conversation that happened."}</p>
       <div className="s42Summary"><div><strong>{index + 1}</strong><span>Moments reached</span></div><div><strong>{savedIds.length}</strong><span>Favorites saved</span></div><div><strong>{elapsedMinutes}</strong><span>Minutes together</span></div></div>
       <blockquote>{SPILL_PHRASES[index % SPILL_PHRASES.length]}</blockquote>

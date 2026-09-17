@@ -50,7 +50,7 @@ export default function ConfessionalPage() {
       <GlobalHeader />
       <div className="confHeroContent">
         <p className="confKicker">Private space · Professional recording · Your choice</p>
-        <h1>Step in.<br />Sit down.<br /><em><SpillWordmark /></em>.</h1>
+        <h1>Step in<br />Sit down<br /><em><SpillWordmark /></em></h1>
         <p>SPILL Confessional is a private recording booth for real stories, honest opinions, spontaneous moments, and conversations that may never happen anywhere else.</p>
         <strong>One person comfortably. Two people maximum.</strong>
         <div className="actions"><Link className="button primary" href="/create">Book a Confessional <span>↗</span></Link><a className="button secondary" href="#experience">See how it works</a></div>

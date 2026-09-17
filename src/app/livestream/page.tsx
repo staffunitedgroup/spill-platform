@@ -56,7 +56,7 @@ export default function LivestreamPage() {
         <div className="liveHeroCopy">
           <div className="liveSignal"><i /> Live from SPILL Saigon</div>
           <p className="eyebrow">People · Ideas · Culture · Brands · Discovery</p>
-          <h1>Appear.<br />Share.<br />Connect. <em>Grow.</em></h1>
+          <h1>Appear<br />Share<br />Connect <em>Grow</em></h1>
           <p>Come to SPILL with something worth sharing. We give you the platform, production, audience, and opportunity to take it further.</p>
           <strong>Professional production. Real audience. Shareable content.</strong>
           <div className="actions"><Link className="button primary" href="/create">Book your appearance <span>↗</span></Link><a className="button secondary" href="https://www.youtube.com/@spillsaigon" target="_blank" rel="noreferrer">Watch SPILL live</a></div>
