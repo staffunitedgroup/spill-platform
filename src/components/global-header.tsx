@@ -13,7 +13,7 @@ const experienceNavigation = [
 
 export function GlobalHeader() {
   return <header className="siteHeader">
-    <Link className="brand brandLogo" href="/" aria-label="SPILL home"><Image src="/assets/spill/logo-horizontal-bright.webp" alt="SPILL" width={900} height={300} priority /></Link>
+    <Link className="brand brandLogo" href="/" aria-label="SPILL home"><Image src="/assets/spill/brand/wordmark-bright.png" alt="SPILL" width={1580} height={250} priority /></Link>
     <nav className="desktopNav" aria-label="Global navigation">
       <details className="navDropdown"><summary>Locations <span>⌄</span></summary><div className="dropdownPanel">
         {locations.map((location) => <Link key={location.slug} href={`/${location.slug}`}><span>{location.name}</span><small>{locationStatus(location)}</small></Link>)}

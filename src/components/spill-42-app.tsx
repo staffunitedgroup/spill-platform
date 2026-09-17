@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { BrandedText, SpillWordmark } from "@/components/brand-text";
 
 type Screen = "intro" | "setup" | "app" | "ending" | "result";
 type SetupStep = "participants" | "group" | "connectionOne" | "handoff" | "connectionTwo" | "table";
@@ -183,7 +184,7 @@ export function Spill42App() {
 
   return <main className="s42App">
     <header className="s42Header">
-      <Link href="/" aria-label="Return to SPILL"><Image src="/assets/spill/logo-horizontal-bright.webp" alt="SPILL" width={900} height={300} /></Link>
+      <Link href="/" aria-label="Return to SPILL"><Image src="/assets/spill/brand/wordmark-bright.png" alt="SPILL" width={1580} height={250} /></Link>
       <strong>42</strong>
       <Link href="/">Exit</Link>
     </header>
@@ -193,7 +194,7 @@ export function Spill42App() {
       <div className="s42IntroVeil" />
       <div className="s42IntroContent">
         <p>Real conversation. Real connection.</p>
-        <h1>Want to<br /><em>SPILL?</em></h1>
+        <h1>Want to<br /><em><SpillWordmark /></em>?</h1>
         <span>No swiping. No endless profiles. No typing answers. The phone facilitates. People connect.</span>
         <button type="button" onClick={() => { setScreen("setup"); setSetupStep("participants"); }}>Start a SPILL <b>→</b></button>
       </div>
@@ -201,7 +202,7 @@ export function Spill42App() {
 
     {screen === "setup" && <section className="s42Setup">
       {setupStep === "participants" && <div className="s42SetupPanel">
-        <div className="s42SetupHeading"><span>01 / Select participants</span><h1>Who’s SPILLing?</h1><p>Choose the people. We’ll shape the experience.</p></div>
+        <div className="s42SetupHeading"><span>01 / Select participants</span><h1>Who’s <SpillWordmark />ing?</h1><p>Choose the people. We’ll shape the experience.</p></div>
         <div className="s42ChoiceGrid two">
           <button type="button" onClick={() => selectParticipants("two")}><b>Two people</b><small>One phone. Face to face.</small><i>→</i></button>
           <button type="button" onClick={() => selectParticipants("group")}><b>Small group</b><small>Three to six people.</small><i>→</i></button>
@@ -241,7 +242,7 @@ export function Spill42App() {
         <div className="s42PlayMeta"><span>{participants === "two" ? connectionLabels[resolvedConnection] : `${groupSize} people`}{table ? ` · Table ${table}` : ""}</span><b>{index + 1} / 42</b></div>
         <article className="s42Prompt" aria-live="polite">
           <span><b>{typeMarks[prompt.type]}</b>{prompt.type}</span>
-          <h1>{prompt.title}</h1>
+          <h1><BrandedText text={prompt.title} /></h1>
           <p>{prompt.text}</p>
           <i>—</i>
           <strong>{prompt.follow}</strong>
@@ -261,9 +262,9 @@ export function Spill42App() {
       </div>}
 
       {activeTab === "moments" && <div className="s42TabPage">
-        <span className="s42PageLabel">Remember the moment</span><h1>Your SPILL.<br /><em>Not a recording.</em></h1><p>The conversation belongs to the people having it. SPILL remembers only the experience around it.</p>
+        <span className="s42PageLabel">Remember the moment</span><h1>Your <SpillWordmark />.<br /><em>Not a recording.</em></h1><p>The conversation belongs to the people having it. SPILL remembers only the experience around it.</p>
         <div className="s42MomentStats"><div><strong>{index + 1}</strong><span>SPILLs reached</span></div><div><strong>{savedIds.length}</strong><span>Saved moments</span></div><div><strong>{table || "—"}</strong><span>Table</span></div></div>
-        <div className="s42SavedList">{savedIds.length ? savedIds.map(id => { const item = deck.find(entry => entry.id === id); return item ? <article key={id}><span>{item.type}</span><h3>{item.title}</h3><p>{item.text}</p></article> : null; }) : <div className="s42EmptyMoment"><strong>No moments saved yet.</strong><p>Use “Remember this moment” on any SPILL worth keeping.</p></div>}</div>
+        <div className="s42SavedList">{savedIds.length ? savedIds.map(id => { const item = deck.find(entry => entry.id === id); return item ? <article key={id}><span>{item.type}</span><h3><BrandedText text={item.title} /></h3><p>{item.text}</p></article> : null; }) : <div className="s42EmptyMoment"><strong>No moments saved yet.</strong><p>Use “Remember this moment” on any SPILL worth keeping.</p></div>}</div>
         <p className="s42PrivacyLine">Remember the moment. Don’t record the conversation.</p>
       </div>}
 
@@ -291,7 +292,7 @@ export function Spill42App() {
     {screen === "result" && <section className="s42Result">
       <div className="s42ResultMark">42</div>
       <span>Thanks for SPILLing</span>
-      <h1>{participants === "two" && mutualConnection ? <>You both chose<br /><em>Stay Connected.</em></> : <>Maybe we’ll<br /><em>SPILL again.</em></>}</h1>
+      <h1>{participants === "two" && mutualConnection ? <>You both chose<br /><em>Stay Connected.</em></> : <>Maybe we’ll<br /><em><SpillWordmark /> again.</em></>}</h1>
       <p>{participants === "two" && mutualConnection ? "The feeling is mutual. Exchange details directly—and keep the connection human." : "No rejection screen. No match score. Just a real conversation that happened."}</p>
       <div className="s42Summary"><div><strong>{index + 1}</strong><span>Moments reached</span></div><div><strong>{savedIds.length}</strong><span>Favorites saved</span></div><div><strong>{elapsedMinutes}</strong><span>Minutes together</span></div></div>
       <blockquote>{SPILL_PHRASES[index % SPILL_PHRASES.length]}</blockquote>

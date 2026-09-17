@@ -3,6 +3,7 @@ import Link from "next/link";
 import { EventsProgramming } from "@/components/events-programming";
 import { GlobalHeader } from "@/components/global-header";
 import { HomeAnimations } from "@/components/home-animations";
+import { BrandedText, SpillWordmark } from "@/components/brand-text";
 
 const journey = [
   { number: "01", name: "SPILL Connections", verb: "Connect", copy: "Start better conversations with friends, dates, coworkers, new people, or someone you just met at SPILL.", cta: "Explore Connections", href: "/spill-42" },
@@ -23,11 +24,11 @@ const storyPath = [
 export default function HomePage() {
   return <main className="masterHome"><HomeAnimations />
     <section className="masterHero globalHero">
-      <video className="masterHeroMedia" autoPlay muted loop playsInline preload="metadata" poster="/assets/spill/home/hero-poster.jpg" aria-hidden="true"><source src="/assets/spill/home/hero.mp4" type="video/mp4" /></video>
+      <video className="masterHeroMedia" autoPlay muted loop playsInline preload="metadata" poster="/assets/spill/home/hero-v2-poster.jpg" aria-hidden="true"><source src="/assets/spill/home/hero-v2.mp4" type="video/mp4" />Your browser does not support background video.</video>
       <div className="masterHeroVeil" /><GlobalHeader />
       <div className="masterHeroContent">
         <p className="eyebrow">A café bar. A social experience. A media platform.</p>
-        <h1>First we danced.<br />Then we sang.<br /><em>Now we spill.</em></h1>
+        <h1>First we danced.<br />Then we sang.<br /><em>Now we <SpillWordmark />.</em></h1>
         <div className="masterHeroBottom"><p>A new kind of social venue. Media built in.</p><p>SPILL brings people together to connect, talk, create, discover, and share.</p></div>
         <div className="actions"><Link className="button primary" href="#locations">Choose your SPILL <span>↘</span></Link><Link className="button secondary" href="#journey">Explore the experience</Link></div>
       </div>
@@ -49,11 +50,11 @@ export default function HomePage() {
 
     <section className="masterSection journeySection" id="journey">
       <div className="sectionTopline"><div className="sectionNumber">02 / The SPILL Journey</div><p>Private connection → public platform</p></div>
-      <div className="journeyIntro" data-reveal><h2>How far do you<br />want to <em>SPILL?</em></h2><p>Connect → Express → Be Seen → Go Deeper → Become Original</p></div>
+      <div className="journeyIntro" data-reveal><h2>How far do you<br />want to <em><SpillWordmark /></em>?</h2><p>Connect → Express → Be Seen → Go Deeper → Become Original</p></div>
       <div className="journeyGrid">
         {journey.map((step) => <article className="journeyCard" key={step.name}>
           <div className="journeyCardTop"><span>{step.number}</span><i aria-hidden="true" /></div>
-          <p>{step.verb}</p><h3>{step.name}</h3><div className="journeyDetail"><p>{step.copy}</p><Link href={step.href}>{step.cta} <span>↗</span></Link></div>
+          <p>{step.verb}</p><h3><BrandedText text={step.name} /></h3><div className="journeyDetail"><p>{step.copy}</p><Link href={step.href}>{step.cta} <span>↗</span></Link></div>
         </article>)}
       </div>
     </section>
@@ -73,7 +74,7 @@ export default function HomePage() {
     </section>
 
     <section className="dayNightSection" aria-labelledby="day-night-heading">
-      <div className="dayNightTitle" data-reveal><div className="sectionNumber">05 / Day to night</div><h2 id="day-night-heading">One SPILL.<br /><em>Different energy.</em></h2></div>
+      <div className="dayNightTitle" data-reveal><div className="sectionNumber">05 / Day to night</div><h2 id="day-night-heading">One <SpillWordmark tone="dark" />.<br /><em>Different energy.</em></h2></div>
       <div className="dayNightGrid">
         <article className="dayPanel"><Image src="/assets/spill/concept-exterior-day.webp" alt="SPILL café bar during the day" fill sizes="(max-width: 760px) 100vw, 50vw" /><div><span>07:00</span><h3>Day</h3><p>Bright. Open. Social.</p><small>Coffee, food, meetings, creator work, introductions, and easy conversation.</small></div></article>
         <article className="nightPanel"><Image src="/assets/spill/home/venue-night.jpg" alt="SPILL café bar at night" fill sizes="(max-width: 760px) 100vw, 50vw" /><div><span>19:00</span><h3>Night</h3><p>Richer. Intimate. Alive.</p><small>Cocktails, livestreams, audience moments, performances, and social discovery.</small></div></article>
@@ -91,20 +92,20 @@ export default function HomePage() {
       <div className="podcastMedia" data-reveal><video autoPlay muted loop playsInline poster="/assets/spill/home/podcast-poster.jpg"><source src="/assets/spill/home/podcast.mp4" type="video/mp4" /></video><span>Long-form conversations,<br />professionally produced.</span></div>
       <div className="podcastChoices">
         <article data-reveal><span>01</span><h3>Create your podcast</h3><p>Bring your concept or existing show to SPILL for development, recording, editing, content creation, and ongoing support.</p><Link href="/podcast#inquiry">Produce with SPILL →</Link></article>
-        <article data-reveal><span>02</span><h3>Be part of SPILL Podcast</h3><p>Exceptional people and stories discovered through the wider SPILL ecosystem can be invited back for deeper conversations.</p><a href="https://www.youtube.com/@spillsaigon" target="_blank" rel="noreferrer">Watch SPILL Podcast ↗</a></article>
+        <article data-reveal><span>02</span><h3>Be part of <SpillWordmark /> Podcast</h3><p>Exceptional people and stories discovered through the wider SPILL ecosystem can be invited back for deeper conversations.</p><a href="https://www.youtube.com/@spillsaigon" target="_blank" rel="noreferrer">Watch SPILL Podcast ↗</a></article>
       </div>
     </section>
 
     <section className="masterSection originalsSection" id="originals">
-      <div className="originalsIntro" data-reveal><div className="sectionNumber">08 / Premium SPILL-developed media</div><h2>SPILL<br /><em>Originals.</em></h2><p>The strongest ideas from across the SPILL ecosystem can grow into shows, series, stories, interviews, documentaries, performances, and media properties for YouTube and wider distribution.</p><a className="button primary" href="https://www.youtube.com/@spillsaigon" target="_blank" rel="noreferrer">Watch SPILL Originals ↗</a></div>
+      <div className="originalsIntro" data-reveal><div className="sectionNumber">08 / Premium SPILL-developed media</div><h2><SpillWordmark /><br /><em>Originals.</em></h2><p>The strongest ideas from across the SPILL ecosystem can grow into shows, series, stories, interviews, documentaries, performances, and media properties for YouTube and wider distribution.</p><a className="button primary" href="https://www.youtube.com/@spillsaigon" target="_blank" rel="noreferrer">Watch SPILL Originals ↗</a></div>
       <div className="originalsBoard" aria-label="SPILL Originals concepts">
-        {["Local Legends", "Founders at SPILL", "42 Questions", "The Big SPILL"].map((name, index) => <article key={name}><span>0{index + 1}</span><h3>{name}</h3><small>In development</small></article>)}
+        {["Local Legends", "Founders at SPILL", "42 Questions", "The Big SPILL"].map((name, index) => <article key={name}><span>0{index + 1}</span><h3><BrandedText text={name} /></h3><small>In development</small></article>)}
       </div>
     </section>
 
     <section className="masterSection storySection" aria-labelledby="story-heading">
       <div className="storyIntro" data-reveal><div className="sectionNumber">09 / The physical-to-digital flywheel</div><h2 id="story-heading">One story.<br /><em>Many possibilities.</em></h2></div>
-      <div className="storyPath">{storyPath.map(([title, detail], index) => <article key={title}><span>0{index + 1}</span><div><h3>SPILL {title}</h3><p>{detail}</p></div>{index < storyPath.length - 1 && <b aria-hidden="true">↓</b>}</article>)}</div>
+      <div className="storyPath">{storyPath.map(([title, detail], index) => <article key={title}><span>0{index + 1}</span><div><h3><SpillWordmark tone="dark" /> {title}</h3><p>{detail}</p></div>{index < storyPath.length - 1 && <b aria-hidden="true">↓</b>}</article>)}</div>
       <div className="distributionRail"><span>Clips</span><i>→</i><span>YouTube</span><i>→</i><span>Social</span><i>→</i><span>Audience</span><i>→</i><span>Events</span><i>→</i><span>Partnerships</span><i>→</i><strong>New people at SPILL</strong></div>
     </section>
 
@@ -121,22 +122,22 @@ export default function HomePage() {
     <EventsProgramming />
 
     <section className="masterSection chooseSection" id="future-locations">
-      <div className="chooseHeading" data-reveal><div className="sectionNumber">12 / Choose your SPILL</div><h2>Where will<br />you <em>SPILL?</em></h2></div>
+      <div className="chooseHeading" data-reveal><div className="sectionNumber">12 / Choose your SPILL</div><h2>Where will<br />you <em><SpillWordmark /></em>?</h2></div>
       <div className="chooseGrid">
-        <Link className="cityCard saigonCard" href="/saigon"><Image src="/assets/spill/concept-exterior-day.webp" alt="SPILL Saigon" fill sizes="(max-width: 900px) 100vw, 50vw" /><div className="cityCardVeil" /><div><span>01 / Launching soon</span><h3>SPILL Saigon</h3><p>The original. Born in Vietnam.</p><b>Explore SPILL Saigon →</b></div></Link>
-        <Link className="cityCard tokyoCard" href="/tokyo"><div><span>02 / Coming next</span><h3>SPILL Tokyo</h3><p>Same SPILL system. A new local expression.</p><b>Explore SPILL Tokyo →</b></div></Link>
+        <Link className="cityCard saigonCard" href="/saigon"><Image src="/assets/spill/concept-exterior-day.webp" alt="SPILL Saigon" fill sizes="(max-width: 900px) 100vw, 50vw" /><div className="cityCardVeil" /><div><span>01 / Launching soon</span><h3><SpillWordmark /> Saigon</h3><p>The original. Born in Vietnam.</p><b>Explore SPILL Saigon →</b></div></Link>
+        <Link className="cityCard tokyoCard" href="/tokyo"><div><span>02 / Coming next</span><h3><SpillWordmark /> Tokyo</h3><p>Same SPILL system. A new local expression.</p><b>Explore SPILL Tokyo →</b></div></Link>
         <div className="futureCard"><span>03 / Future locations</span><h3>Hanoi · Bangkok<br />+ What comes next</h3><p>A global system, always rooted in local community and culture.</p><Link href="/partner">Discover what’s next →</Link></div>
       </div>
     </section>
 
     <section className="brandStatement">
       <div className="brandStatementMark" aria-hidden="true">“</div>
-      <div data-reveal><p>Karaoke gave everyday people the microphone.</p><h2>SPILL gives everyday<br />people the <em>platform.</em></h2><p>Come with followers or without them. Come with a business, a story, an idea, a question, or nothing planned at all. Talk. Listen. Connect. Participate. Discover what happens next.</p></div>
+      <div data-reveal><p>Karaoke gave everyday people the microphone.</p><h2><SpillWordmark /> gives everyday<br />people the <em>platform.</em></h2><p>Come with followers or without them. Come with a business, a story, an idea, a question, or nothing planned at all. Talk. Listen. Connect. Participate. Discover what happens next.</p></div>
     </section>
 
     <section className="finalCta">
       <Image src="/assets/spill/home/venue-night.jpg" alt="" fill sizes="100vw" /><div className="finalCtaVeil" />
-      <div data-reveal><p className="eyebrow">What are you doing tonight?</p><h2>Let’s go<br /><em>SPILL.</em></h2><p>Come for a coffee. Stay for a drink. Meet someone. Start a conversation. Join the audience. Take the mic. Watch something happen—or make something happen.</p><div className="actions"><a className="button primary" href="#locations">Find your SPILL</a><a className="button secondary" href="#journey">Explore the experience</a></div></div>
+      <div data-reveal><p className="eyebrow">What are you doing tonight?</p><h2>Let’s go<br /><em><SpillWordmark /></em>.</h2><p>Come for a coffee. Stay for a drink. Meet someone. Start a conversation. Join the audience. Take the mic. Watch something happen—or make something happen.</p><div className="actions"><a className="button primary" href="#locations">Find your SPILL</a><a className="button secondary" href="#journey">Explore the experience</a></div></div>
     </section>
   </main>;
 }

@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { GlobalHeader } from "@/components/global-header";
 import { LivestreamAnimations } from "@/components/livestream-animations";
+import { BrandedText } from "@/components/brand-text";
 
 export const metadata: Metadata = {
   title: "SPILL Livestream — Live People, Ideas & Culture",
@@ -104,7 +105,7 @@ export default function LivestreamPage() {
 
     <section className="liveDiscovery">
       <div className="liveDiscoveryIntro" data-live-reveal><p className="liveKicker">08 / The discovery engine</p><h2>See who stands out.<br /><em>Then go deeper.</em></h2><p>SPILL can discover proven personalities and topics through real audience response—not guess who might make a great long-form guest.</p></div>
-      <div className="liveDiscoveryPath">{[["01", "Livestream appearance"], ["02", "Audience response"], ["03", "Strong guest identified"], ["04", "SPILL Podcast invitation"], ["05", "Long-form episode"], ["06", "Ongoing relationship"]].map(([number, title], index) => <article key={title} data-live-reveal><span>{number}</span><h3>{title}</h3>{index < 5 && <b>↓</b>}</article>)}</div>
+      <div className="liveDiscoveryPath">{[["01", "Livestream appearance"], ["02", "Audience response"], ["03", "Strong guest identified"], ["04", "SPILL Podcast invitation"], ["05", "Long-form episode"], ["06", "Ongoing relationship"]].map(([number, title], index) => <article key={title} data-live-reveal><span>{number}</span><h3><BrandedText text={title} /></h3>{index < 5 && <b>↓</b>}</article>)}</div>
       <div className="liveCreatorPath" data-live-reveal><span>From guest to creator</span><p>First appearance → repeat appearances → Podcast guest → concept development → SPILL Podcast production</p><Link href="/podcast">Explore SPILL Podcast →</Link></div>
     </section>
 
