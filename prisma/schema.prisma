@@ -143,19 +143,22 @@ model ConnectionSelection {
 }
 
 model Spill {
-  id         String    @id @default(cuid())
-  type       SpillType
-  content    String
-  category   String?
-  difficulty Int?
-  active     Boolean   @default(true)
-  createdAt  DateTime  @default(now()) @map("created_at")
-  updatedAt  DateTime  @updatedAt @map("updated_at")
+  id            String           @id @default(cuid())
+  type          SpillType
+  content       String
+  category      String?
+  difficulty    Int?
+  active        Boolean          @default(true)
+  // Rỗng = phù hợp với MỌI connection type. Có giá trị = chỉ hiện cho các type liệt kê.
+  eligibleTypes ConnectionType[] @default([]) @map("eligible_types")
+  createdAt     DateTime         @default(now()) @map("created_at")
+  updatedAt     DateTime         @updatedAt @map("updated_at")
 
   sessionSpills SessionSpill[]
 
   @@map("spills")
 }
+
 
 model SessionSpill {
   id          String    @id @default(cuid())
