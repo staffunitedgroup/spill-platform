@@ -70,13 +70,13 @@ export default function HomePage() {
       <div className="ecosystemViewport" data-reveal>
         <div className="ecosystemTrack">
           {[0, 1].map((loopIndex) => <div className="ecosystemSequence" key={loopIndex} aria-hidden={loopIndex === 1}>
-            {ecosystemStages.map((stage, index) => <article className="ecosystemCard" key={`${stage.title}-${loopIndex}`}>
+            {ecosystemStages.map((stage, index) => <article className="ecosystemCard" id={loopIndex === 0 ? `ecosystem-${index}` : undefined} key={`${stage.title}-${loopIndex}`}>
               <div className="ecosystemCardMedia">
                 <Image src={stage.image} alt="" fill sizes="(max-width: 760px) 78vw, 30vw" />
               </div>
               <div className="ecosystemCardVeil" />
               <div className="ecosystemCardCopy"><span>{String(index + 1).padStart(2, "0")}</span><h3>{stage.title}</h3><p>{stage.detail}</p></div>
-              <b aria-hidden="true">{index === ecosystemStages.length - 1 ? "↻" : "→"}</b>
+              {loopIndex === 0 ? <a className="ecosystemNext" href={`#ecosystem-${index === ecosystemStages.length - 1 ? 0 : index + 1}`} aria-label={index === ecosystemStages.length - 1 ? "Return to Venues" : `Continue to ${ecosystemStages[index + 1].title}`}>{index === ecosystemStages.length - 1 ? "↻" : "→"}</a> : <b aria-hidden="true">{index === ecosystemStages.length - 1 ? "↻" : "→"}</b>}
             </article>)}
           </div>)}
         </div>
@@ -162,7 +162,7 @@ export default function HomePage() {
       <div className="chooseGrid">
         <Link className="cityCard saigonCard" href="/saigon"><Image src="/assets/spill/concept-exterior-day.webp" alt="SPILL Saigon" fill sizes="(max-width: 900px) 100vw, 50vw" /><div className="cityCardVeil" /><div><span>01 / Launching soon</span><h3><SpillWordmark /> <span className="cityName">Saigon</span></h3><p>The original. Born in Vietnam.</p><b>Explore SPILL Saigon →</b></div></Link>
         <Link className="cityCard tokyoCard" href="/tokyo"><div><span>02 / Coming next</span><h3><SpillWordmark /> <span className="cityName">Tokyo</span></h3><p>Same SPILL system. A new local expression.</p><b>Explore SPILL Tokyo →</b></div></Link>
-        <div className="futureCard"><span>03 / Future locations</span><h3>Hanoi · Bangkok<br />+ What comes next</h3><p>A global system, always rooted in local community and culture.</p><Link href="/partner">Discover what’s next →</Link></div>
+        <div className="futureCard"><span>03 / Future locations</span><h3>Hanoi · Bangkok</h3><h4>+ What comes next</h4><p>A global system, always rooted in local community and culture.</p><Link href="/partner">Discover what’s next →</Link></div>
       </div>
     </section>
 
