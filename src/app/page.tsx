@@ -6,19 +6,19 @@ import { HomeAnimations } from "@/components/home-animations";
 import { BrandedText, SpillWordmark } from "@/components/brand-text";
 
 const journey = [
-  { number: "01", name: "SPILL Connections", verb: "Connect", copy: "Start better conversations with friends, dates, coworkers, new people, or someone you just met at SPILL.", cta: "Explore Connections", href: "/spill-42", image: "/assets/spill/home/journey/connections.jpg" },
-  { number: "02", name: "SPILL Confessional", verb: "Express", copy: "Step inside. Tell your story. Keep it private, save it for yourself, or choose to let it travel further.", cta: "Explore Confessional", href: "/confessional", image: "/assets/spill/home/journey/confessional.jpg" },
-  { number: "03", name: "SPILL Livestream", verb: "Be seen", copy: "Share your story, talent, business, launch, performance, idea, opinion, or perspective with the SPILL audience.", cta: "Explore Livestream", href: "/livestream", image: "/assets/spill/home/journey/livestream.jpg" },
-  { number: "04", name: "SPILL Podcast", verb: "Go deeper", copy: "Build meaningful long-form conversations with professional production and room for the idea to grow.", cta: "Explore Podcast", href: "/podcast", image: "/assets/spill/home/journey/podcast.jpg" },
-  { number: "05", name: "SPILL Original", verb: "Become original", copy: "The strongest people, stories, ideas, and formats can grow into premium SPILL-developed media.", cta: "Watch Originals", href: "#originals", image: "/assets/spill/home/journey/original.jpg" },
+  { number: "01", name: "SPILL Connections", verb: "Connect", copy: "Start better conversations with friends, dates, coworkers, new people, or someone you just met at SPILL.", cta: "Explore Connections", href: "/spill-42", image: "/assets/spill/home/journey/connections.png" },
+  { number: "02", name: "SPILL Confessional", verb: "Express", copy: "Step inside. Tell your story. Keep it private, save it for yourself, or choose to let it travel further.", cta: "Explore Confessional", href: "/confessional", image: "/assets/spill/home/journey/confessional.png" },
+  { number: "03", name: "SPILL Livestream", verb: "Be seen", copy: "Share your story, talent, business, launch, performance, idea, opinion, or perspective with the SPILL audience.", cta: "Explore Livestream", href: "/livestream", image: "/assets/spill/home/journey/livestream.png" },
+  { number: "04", name: "SPILL Podcast", verb: "Go deeper", copy: "Build meaningful long-form conversations with professional production and room for the idea to grow.", cta: "Explore Podcast", href: "/podcast", image: "/assets/spill/home/journey/podcast.png" },
+  { number: "05", name: "SPILL Original", verb: "Become original", copy: "The strongest people, stories, ideas, and formats can grow into premium SPILL-developed media.", cta: "Watch Originals", href: "#originals", image: "/assets/spill/home/journey/original.png" },
 ];
 
 const storyPath = [
-  { title: "Connections", detail: "A conversation starts.", image: "/assets/spill/home/journey/connections.jpg" },
-  { title: "Confessional", detail: "Someone decides to record it.", image: "/assets/spill/home/journey/confessional.jpg" },
-  { title: "Livestream", detail: "The story reaches an audience.", image: "/assets/spill/home/journey/livestream.jpg" },
-  { title: "Podcast", detail: "The conversation goes deeper.", image: "/assets/spill/home/journey/podcast.jpg" },
-  { title: "Original", detail: "The idea becomes something bigger.", image: "/assets/spill/home/journey/original.jpg" },
+  { title: "Connections", detail: "A conversation starts.", image: "/assets/spill/home/journey/connections.png" },
+  { title: "Confessional", detail: "Someone decides to record it.", image: "/assets/spill/home/journey/confessional.png" },
+  { title: "Livestream", detail: "The story reaches an audience.", image: "/assets/spill/home/journey/livestream.png" },
+  { title: "Podcast", detail: "The conversation goes deeper.", image: "/assets/spill/home/journey/podcast.png" },
+  { title: "Original", detail: "The idea becomes something bigger.", image: "/assets/spill/home/journey/original.png" },
 ];
 
 export default function HomePage() {
@@ -29,7 +29,7 @@ export default function HomePage() {
       <div className="masterHeroContent">
         <p className="eyebrow">A café bar. A social experience. A media platform.</p>
         <h1>First we danced<br />Then we sang<br /><em>Now we <SpillWordmark /></em></h1>
-        <div className="masterHeroBottom"><p>A new kind of social venue. Media built in.</p><p>SPILL brings people together to connect, talk, create, discover, and share.</p></div>
+        <div className="masterHeroBottom"><p>Come for coffee, drinks and connection. Stay for the experiences. Become part of something that can travel far beyond the room.</p></div>
         <div className="actions"><Link className="button primary" href="#locations">Choose your SPILL <span>↘</span></Link><Link className="button secondary" href="#journey">Explore the experience</Link></div>
       </div>
       <div className="heroCityRail" id="locations">
@@ -42,18 +42,17 @@ export default function HomePage() {
     <section className="masterSection whatSection" id="about-spill">
       <div className="sectionNumber">01 / What is SPILL?</div>
       <div className="statementGrid" data-reveal>
-        <h2>Come together.<br /><em>See what happens.</em></h2>
-        <div><p className="bodyLead">SPILL is a café bar, social experience, and media platform built around conversation, connection, expression, and discovery.</p><p>Come for coffee. Meet someone. Have a drink. Start a conversation. Keep it private, record something, step into the public spotlight, or simply enjoy being part of the room.</p></div>
+        <h2>The venue is<br /><em>just the beginning.</em></h2>
+        <div><p className="bodyLead">SPILL Café Bar is not just a destination. It’s a gateway.</p><p>The venue is the physical front door to a larger world of connection, creation and entertainment.</p><p>Come for coffee. Meet someone. Have a drink. Start a conversation. Keep it private—or take it further.</p><p>Through SPILL experiences, conversations and personalities can become content, reach new audiences, build communities and travel far beyond the venue.</p></div>
       </div>
       <div className="whatMedia" data-reveal>
-        <video autoPlay muted loop playsInline preload="metadata" poster="/assets/spill/home/about-poster.jpg" aria-hidden="true"><source src="/assets/spill/home/about.mp4" type="video/mp4" />Your browser does not support background video.</video>
+        <video autoPlay muted loop playsInline preload="metadata" poster="/assets/spill/home/what-is-spill-poster.jpg" aria-hidden="true"><source src="/assets/spill/home/what-is-spill.mp4" type="video/mp4" />Your browser does not support background video.</video>
       </div>
-      <p className="signatureLine" data-reveal>Participation is optional. <span>Possibility is always present.</span></p>
     </section>
 
     <section className="masterSection journeySection" id="journey">
       <div className="sectionTopline"><div className="sectionNumber">02 / The SPILL Journey</div><p>Private connection → public platform</p></div>
-      <div className="journeyIntro" data-reveal><h2>How far do you<br />want to <em><SpillWordmark /></em>?</h2><p>Connect → Express → Be Seen → Go Deeper → Become Original</p></div>
+      <div className="journeyIntro" data-reveal><h2>How far do you<br />want to <em><SpillWordmark /></em>?</h2></div>
       <div className="journeyGrid">
         {journey.map((step) => <article className="journeyCard" key={step.name}>
           <div className="journeyCardMedia"><Image src={step.image} alt="" fill sizes="(max-width: 760px) 100vw, (max-width: 1100px) 50vw, 20vw" /></div>
