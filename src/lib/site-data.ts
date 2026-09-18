@@ -27,11 +27,11 @@ export function locationStatus(location: Location) {
 }
 
 export const socialLinks = [
-  { label: "Instagram", href: "https://www.instagram.com/spillsaigon" },
+  { label: "Instagram", href: "https://www.instagram.com/spillsaigon/" },
   { label: "TikTok", href: "https://www.tiktok.com/@spillsaigon" },
-  { label: "Threads", href: "https://www.threads.net/@spillsaigon" },
+  { label: "Threads", href: "https://www.threads.com/@spillsaigon" },
   { label: "X", href: "https://x.com/spillsaigon" },
-  { label: "Facebook", href: "https://www.facebook.com/spillsaigon" },
-  { label: "LinkedIn", href: "https://www.linkedin.com/company/spillsaigon" },
+  { label: "Facebook", href: "https://www.facebook.com/profile.php?id=61594129274861" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/company/spill-saigon/about/" },
   { label: "YouTube", href: "https://www.youtube.com/@spillsaigon" },
 ];

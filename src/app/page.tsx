@@ -6,19 +6,19 @@ import { HomeAnimations } from "@/components/home-animations";
 import { BrandedText, SpillWordmark } from "@/components/brand-text";
 
 const journey = [
-  { number: "01", name: "SPILL Connections", verb: "Connect", copy: "Start better conversations with friends, dates, coworkers, new people, or someone you just met at SPILL.", cta: "Explore Connections", href: "/spill-42" },
-  { number: "02", name: "SPILL Confessional", verb: "Express", copy: "Step inside. Tell your story. Keep it private, save it for yourself, or choose to let it travel further.", cta: "Explore Confessional", href: "/confessional" },
-  { number: "03", name: "SPILL Livestream", verb: "Be seen", copy: "Share your story, talent, business, launch, performance, idea, opinion, or perspective with the SPILL audience.", cta: "Explore Livestream", href: "/livestream" },
-  { number: "04", name: "SPILL Podcast", verb: "Go deeper", copy: "Build meaningful long-form conversations with professional production and room for the idea to grow.", cta: "Explore Podcast", href: "/podcast" },
-  { number: "05", name: "SPILL Original", verb: "Become original", copy: "The strongest people, stories, ideas, and formats can grow into premium SPILL-developed media.", cta: "Watch Originals", href: "#originals" },
+  { number: "01", name: "SPILL Connections", verb: "Connect", copy: "Start better conversations with friends, dates, coworkers, new people, or someone you just met at SPILL.", cta: "Explore Connections", href: "/spill-42", image: "/assets/spill/home/journey/connections.jpg" },
+  { number: "02", name: "SPILL Confessional", verb: "Express", copy: "Step inside. Tell your story. Keep it private, save it for yourself, or choose to let it travel further.", cta: "Explore Confessional", href: "/confessional", image: "/assets/spill/home/journey/confessional.jpg" },
+  { number: "03", name: "SPILL Livestream", verb: "Be seen", copy: "Share your story, talent, business, launch, performance, idea, opinion, or perspective with the SPILL audience.", cta: "Explore Livestream", href: "/livestream", image: "/assets/spill/home/journey/livestream.jpg" },
+  { number: "04", name: "SPILL Podcast", verb: "Go deeper", copy: "Build meaningful long-form conversations with professional production and room for the idea to grow.", cta: "Explore Podcast", href: "/podcast", image: "/assets/spill/home/journey/podcast.jpg" },
+  { number: "05", name: "SPILL Original", verb: "Become original", copy: "The strongest people, stories, ideas, and formats can grow into premium SPILL-developed media.", cta: "Watch Originals", href: "#originals", image: "/assets/spill/home/journey/original.jpg" },
 ];
 
 const storyPath = [
-  ["Connections", "A conversation starts."],
-  ["Confessional", "Someone decides to record it."],
-  ["Livestream", "The story reaches an audience."],
-  ["Podcast", "The conversation goes deeper."],
-  ["Original", "The idea becomes something bigger."],
+  { title: "Connections", detail: "A conversation starts.", image: "/assets/spill/home/journey/connections.jpg" },
+  { title: "Confessional", detail: "Someone decides to record it.", image: "/assets/spill/home/journey/confessional.jpg" },
+  { title: "Livestream", detail: "The story reaches an audience.", image: "/assets/spill/home/journey/livestream.jpg" },
+  { title: "Podcast", detail: "The conversation goes deeper.", image: "/assets/spill/home/journey/podcast.jpg" },
+  { title: "Original", detail: "The idea becomes something bigger.", image: "/assets/spill/home/journey/original.jpg" },
 ];
 
 export default function HomePage() {
@@ -28,7 +28,7 @@ export default function HomePage() {
       <div className="masterHeroVeil" /><GlobalHeader />
       <div className="masterHeroContent">
         <p className="eyebrow">A café bar. A social experience. A media platform.</p>
-        <h1>First we danced.<br />Then we sang.<br /><em>Now we <SpillWordmark />.</em></h1>
+        <h1>First we danced<br />Then we sang<br /><em>Now we <SpillWordmark /></em></h1>
         <div className="masterHeroBottom"><p>A new kind of social venue. Media built in.</p><p>SPILL brings people together to connect, talk, create, discover, and share.</p></div>
         <div className="actions"><Link className="button primary" href="#locations">Choose your SPILL <span>↘</span></Link><Link className="button secondary" href="#journey">Explore the experience</Link></div>
       </div>
@@ -45,6 +45,9 @@ export default function HomePage() {
         <h2>Come together.<br /><em>See what happens.</em></h2>
         <div><p className="bodyLead">SPILL is a café bar, social experience, and media platform built around conversation, connection, expression, and discovery.</p><p>Come for coffee. Meet someone. Have a drink. Start a conversation. Keep it private, record something, step into the public spotlight, or simply enjoy being part of the room.</p></div>
       </div>
+      <div className="whatMedia" data-reveal>
+        <video autoPlay muted loop playsInline preload="metadata" poster="/assets/spill/home/about-poster.jpg" aria-hidden="true"><source src="/assets/spill/home/about.mp4" type="video/mp4" />Your browser does not support background video.</video>
+      </div>
       <p className="signatureLine" data-reveal>Participation is optional. <span>Possibility is always present.</span></p>
     </section>
 
@@ -53,24 +56,24 @@ export default function HomePage() {
       <div className="journeyIntro" data-reveal><h2>How far do you<br />want to <em><SpillWordmark /></em>?</h2><p>Connect → Express → Be Seen → Go Deeper → Become Original</p></div>
       <div className="journeyGrid">
         {journey.map((step) => <article className="journeyCard" key={step.name}>
-          <div className="journeyCardTop"><span>{step.number}</span><i aria-hidden="true" /></div>
-          <p>{step.verb}</p><h3><BrandedText text={step.name} /></h3><div className="journeyDetail"><p>{step.copy}</p><Link href={step.href}>{step.cta} <span>↗</span></Link></div>
+          <div className="journeyCardMedia"><Image src={step.image} alt="" fill sizes="(max-width: 760px) 100vw, (max-width: 1100px) 50vw, 20vw" /></div>
+          <div className="journeyCardContent"><div className="journeyCardTop"><span>{step.number}</span><i aria-hidden="true" /></div>
+          <div className="journeyCardBody"><p>{step.verb}</p><h3><BrandedText text={step.name} /></h3><div className="journeyDetail"><p>{step.copy}</p><Link href={step.href}>{step.cta} <span>↗</span></Link></div></div></div>
         </article>)}
       </div>
     </section>
 
     <section className="masterSection connectionsSection" id="connections">
       <div className="connectionsVisual" data-reveal>
-        <Image src="/assets/spill/home/common-area-poster.jpg" alt="People connecting over drinks at a SPILL café bar" fill sizes="(max-width: 900px) 100vw, 55vw" />
-        <div className="connectionsInset"><Image src="/assets/spill/concept-spill42.webp" alt="SPILL 42 conversation menu" fill sizes="220px" /></div>
+        <video autoPlay muted loop playsInline preload="metadata" poster="/assets/spill/home/spill-42-poster.jpg" aria-hidden="true"><source src="/assets/spill/home/spill-42.mp4" type="video/mp4" />Your browser does not support background video.</video>
         <span>42 prompts.<br />Countless conversations.</span>
       </div>
-      <div className="connectionsCopy" data-reveal><div className="sectionNumber">03 / SPILL Connections</div><h2>Real connection<br />starts <em>offline.</em></h2><p>SPILL Connections uses SPILL 42 to make starting a better conversation easier. Sit down with someone you know—or someone you have just met—and move beyond small talk.</p><div className="tagCloud"><span>Dates</span><span>Friends</span><span>Coworkers</span><span>New people</span><span>One table</span></div><Link className="textLink" href="/spill-42">Discover SPILL Connections <span>→</span></Link></div>
+      <div className="connectionsCopy" data-reveal><div className="sectionNumber">03 / SPILL Connections</div><h2>Real connection<br />starts <em>offline.</em></h2><p>SPILL Connections uses SPILL 42 to make starting a better conversation easier. Sit down with someone you know—or someone you have just met—and move beyond small talk.</p><div className="tagCloud"><span>Dates</span><span>Friends</span><span>Coworkers</span><span>New people</span><span>One table</span></div><Link className="textLink" href="/spill-42">Discover SPILL 42 <span>→</span></Link></div>
     </section>
 
     <section className="hospitalitySection" id="hospitality">
       <div className="hospitalityCopy" data-reveal><div className="sectionNumber">04 / Hospitality</div><h2>Coffee. Cocktails.<br />Food. <em>Conversation.</em></h2><p>One continuous café-bar experience, moving naturally from daytime coffee culture into a richer evening atmosphere.</p><div className="offeringList">{["Coffee", "Tea", "Food", "Cocktails", "Beer + Wine", "Signature SPILL Drinks"].map((item, index) => <span key={item}><b>0{index + 1}</b>{item}</span>)}</div><div className="inlineActions"><Link className="textLink" href="/saigon/menu">Saigon menu <span>→</span></Link><Link className="textLink mutedLink" href="/tokyo/menu">Tokyo menu · coming soon</Link></div></div>
-      <div className="hospitalityGallery" data-reveal><div className="hospitalityMain"><Image src="/assets/spill/concept-menu.webp" alt="SPILL drinks and food menu" fill sizes="(max-width: 900px) 100vw, 50vw" /></div><div className="hospitalityDetail"><Image src="/assets/spill/home/coffee.jpg" alt="SPILL coffee and café branding" fill sizes="(max-width: 900px) 80vw, 28vw" /></div></div>
+      <div className="hospitalityGallery" data-reveal><video autoPlay muted loop playsInline preload="metadata" poster="/assets/spill/menu/hero-poster.jpg" aria-hidden="true"><source src="/assets/spill/menu/hero.mp4" type="video/mp4" />Your browser does not support background video.</video></div>
     </section>
 
     <section className="dayNightSection" aria-labelledby="day-night-heading">
@@ -83,7 +86,7 @@ export default function HomePage() {
     </section>
 
     <section className="masterSection livestreamSection" id="livestream">
-      <div className="livestreamMedia" data-reveal><Image src="/assets/spill/home/common-area-poster.jpg" alt="A live SPILL audience and café bar atmosphere" fill sizes="(max-width: 900px) 100vw, 58vw" /><div className="onAir"><i /> On air</div></div>
+      <div className="livestreamMedia" data-reveal><Image src="/assets/spill/home/livestream.jpg" alt="SPILL Livestream hosts speaking with a live audience at SPILL Saigon" fill sizes="(max-width: 900px) 100vw, 58vw" /><div className="onAir"><i /> On air</div></div>
       <div className="livestreamCopy" data-reveal><div className="sectionNumber">06 / SPILL Livestream</div><h2>Got something<br /><em>to show?</em></h2><p>SPILL Livestream gives everyday people, creators, founders, businesses, performers, and emerging talent a professional public platform.</p><p>Launch something. Perform. Tell a story. Express an opinion. Show your talent. Give people a reason to discover you.</p><strong>Professional production. Real audience. Instant visibility.</strong><Link className="textLink" href="/livestream">Explore SPILL Livestream <span>→</span></Link></div>
     </section>
 
@@ -105,7 +108,7 @@ export default function HomePage() {
 
     <section className="masterSection storySection" aria-labelledby="story-heading">
       <div className="storyIntro" data-reveal><div className="sectionNumber">09 / The physical-to-digital flywheel</div><h2 id="story-heading">One story.<br /><em>Many possibilities.</em></h2></div>
-      <div className="storyPath">{storyPath.map(([title, detail], index) => <article key={title}><span>0{index + 1}</span><div><h3><SpillWordmark tone="dark" /> {title}</h3><p>{detail}</p></div>{index < storyPath.length - 1 && <b aria-hidden="true">↓</b>}</article>)}</div>
+      <div className="storyPath">{storyPath.map(({ title, detail, image }, index) => <article key={title}><div className="storyPathMedia"><Image src={image} alt="" fill sizes="(max-width: 760px) 35vw, 260px" /></div><span>0{index + 1}</span><div className="storyPathCopy"><h3><SpillWordmark /> {title}</h3><p>{detail}</p></div>{index < storyPath.length - 1 && <b aria-hidden="true">↓</b>}</article>)}</div>
       <div className="distributionRail"><span>Clips</span><i>→</i><span>YouTube</span><i>→</i><span>Social</span><i>→</i><span>Audience</span><i>→</i><span>Events</span><i>→</i><span>Partnerships</span><i>→</i><strong>New people at SPILL</strong></div>
     </section>
 

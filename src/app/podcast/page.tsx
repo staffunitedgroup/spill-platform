@@ -75,7 +75,7 @@ export default function PodcastPage() {
       <GlobalHeader />
       <div className="podHeroContent">
         <p className="eyebrow">SPILL Podcast · Long-form conversations</p>
-        <h1>Some stories<br />deserve<span className="podMobileBreak"><br /></span>{"\u00a0"}<em>more time.</em></h1>
+        <h1>Some stories<br />deserve<span className="podMobileBreak"><br /></span>{"\u00a0"}<em>more time</em></h1>
         <p>SPILL Podcast is where conversations go deeper. Create your own professionally produced podcast, build a recurring series, or discover the people and stories SPILL believes deserve a longer conversation.</p>
         <strong>Bring your idea. We’ll help turn it into a great production—and give it the opportunity to grow.</strong>
         <div className="actions"><a className="button primary" href="#inquiry">Start your podcast <span>↘</span></a><a className="button secondary" href="#watch">Watch SPILL Podcast</a></div>
