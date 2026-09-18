@@ -13,7 +13,12 @@ export async function GET(
 
   if (!session) {
     return NextResponse.json(
-      { error: { code: "SESSION_NOT_FOUND", message: "Session not found." } },
+      {
+        error: {
+          code: "SESSION_NOT_FOUND",
+          message: "Something went wrong. Please ask staff to help you start.",
+        },
+      },
       { status: 404 },
     );
   }

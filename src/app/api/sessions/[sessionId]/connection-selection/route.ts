@@ -121,7 +121,13 @@ export async function POST(
     switch (result.error) {
       case "SESSION_NOT_FOUND":
         return NextResponse.json(
-          { error: { code: result.error, message: "Session not found." } },
+          {
+            error: {
+              code: result.error,
+              message:
+                "Something went wrong. Please ask staff to help you start.",
+            },
+          },
           { status: 404 },
         );
       case "PARTICIPANT_NOT_FOUND":

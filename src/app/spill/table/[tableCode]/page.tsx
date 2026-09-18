@@ -28,7 +28,7 @@ export default function TableEntryPage() {
 
         router.replace(`/spill/${data.session.sessionCode}/join`);
       } catch {
-        setErrorMessage("Could not reach the server. Please try again.");
+        setErrorMessage("Connection issue - Please try again.");
       }
     }
 

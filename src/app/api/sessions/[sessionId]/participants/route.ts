@@ -95,7 +95,13 @@ export async function POST(
     switch (result.error) {
       case "SESSION_NOT_FOUND":
         return NextResponse.json(
-          { error: { code: result.error, message: "Session not found." } },
+          {
+            error: {
+              code: result.error,
+              message:
+                "Something went wrong. Please ask staff to help you start.",
+            },
+          },
           { status: 404 },
         );
       case "SESSION_UNAVAILABLE":
@@ -113,7 +119,8 @@ export async function POST(
           {
             error: {
               code: result.error,
-              message: "This SPILL session is already full.",
+              message:
+                "This table's SPILL is already in progress. Ask a staff member for help.",
             },
           },
           { status: 409 },

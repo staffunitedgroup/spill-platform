@@ -32,7 +32,10 @@ export default function JoinPage() {
         const data = await res.json();
 
         if (!res.ok) {
-          setErrorMessage(data.error?.message ?? "Session not found.");
+          setErrorMessage(
+            data.error?.message ??
+              "Something went wrong. Please ask staff to help you start.",
+          );
           setStatus("error");
           return;
         }
@@ -41,7 +44,9 @@ export default function JoinPage() {
           data.session.status !== "WAITING" &&
           data.session.status !== "READY"
         ) {
-          setErrorMessage("This SPILL session is no longer available.");
+          setErrorMessage(
+            "This SPILL has ended. Scan again to start a new one, or ask staff for help",
+          );
           setStatus("error");
           return;
         }
@@ -49,7 +54,7 @@ export default function JoinPage() {
         setSessionId(data.session.id);
         setStatus("idle");
       } catch {
-        setErrorMessage("Could not reach the server. Please try again.");
+        setErrorMessage("Connection issue - Please try again.");
         setStatus("error");
       }
     }
@@ -88,7 +93,7 @@ export default function JoinPage() {
 
       router.push(`/spill/${sessionCode}`);
     } catch {
-      setErrorMessage("Could not reach the server. Please try again.");
+      setErrorMessage("Connection issue - Please try again.");
       setStatus("error");
     }
   }
