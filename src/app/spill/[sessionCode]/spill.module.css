@@ -194,3 +194,29 @@
   text-transform: uppercase;
   color: #555;
 }
+
+.endRow {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.linkButton {
+  background: none;
+  border: none;
+  color: #777;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.linkButton:hover:not(:disabled) {
+  color: #ff5a2b;
+}
+
+.linkButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

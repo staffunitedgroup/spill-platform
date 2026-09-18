@@ -64,7 +64,6 @@ export async function POST(
       data: { wantsStayConnected, status: "COMPLETED" },
     });
 
-    // Chuyển ENDING ngay khi người đầu tiên bấm kết thúc, khóa next-spill/connection-selection
     if (session.status === "ACTIVE") {
       await tx.session.update({
         where: { id: session.id },
@@ -84,7 +83,6 @@ export async function POST(
       return { bothSubmitted: false as const };
     }
 
-    // Chỉ tạo Connection MUTUAL khi CẢ 2 đều chọn true
     const mutual = allParticipants.every((p) => p.wantsStayConnected === true);
 
     if (mutual && allParticipants.length === 2) {
