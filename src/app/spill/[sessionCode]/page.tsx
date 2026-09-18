@@ -63,6 +63,7 @@ export default function SpillSessionPage() {
       return;
     }
     const parsed = JSON.parse(saved);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSessionId(parsed.sessionId);
     setParticipantToken(parsed.participantToken);
   }, [sessionCode, router]);
@@ -78,6 +79,7 @@ export default function SpillSessionPage() {
 
   useEffect(() => {
     if (!sessionId) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchState();
     const interval = setInterval(fetchState, 2000);
     return () => clearInterval(interval);
