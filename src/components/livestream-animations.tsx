@@ -12,13 +12,14 @@ export function LivestreamAnimations() {
 
     media.add("(prefers-reduced-motion: no-preference)", () => {
       gsap.timeline({ defaults: { ease: "power3.out" } })
-        .from(".liveHeroPoster", { x: 55, opacity: 0, duration: 1.15 })
+        .from(".liveHeroMedia", { scale: 1.08, opacity: 0, duration: 1.4, ease: "power2.out" })
         .from(".liveHero .siteHeader", { y: -20, opacity: 0, duration: 0.65 }, "-=.85")
         .from(".liveHeroCopy > *", { y: 38, opacity: 0, duration: 0.78, stagger: 0.09 }, "-=.5")
         .from(".liveTicker > *", { opacity: 0, duration: 0.4, stagger: 0.04 }, "-=.25");
 
-      gsap.to(".liveHeroPoster img", {
+      gsap.to(".liveHeroMedia", {
         yPercent: 6,
+        scale: 1.06,
         ease: "none",
         scrollTrigger: { trigger: ".liveHero", start: "top top", end: "bottom top", scrub: 0.8 },
       });

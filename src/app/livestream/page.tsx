@@ -50,6 +50,7 @@ export default function LivestreamPage() {
   return <main className="livePage">
     <LivestreamAnimations />
     <section className="liveHero">
+      <video className="liveHeroMedia" autoPlay muted loop playsInline preload="metadata" poster="/assets/spill/home/livestream-promotion-poster.jpg" aria-hidden="true"><source src="/assets/spill/home/livestream-promotion.mp4" type="video/mp4" />Your browser does not support background video.</video>
       <div className="liveHeroBackdrop" />
       <GlobalHeader />
       <div className="liveHeroGrid">
@@ -61,7 +62,6 @@ export default function LivestreamPage() {
           <strong>Professional production. Real audience. Shareable content.</strong>
           <div className="actions"><Link className="button primary" href="/create">Book your appearance <span>↗</span></Link><a className="button secondary" href="https://www.youtube.com/@spillsaigon" target="_blank" rel="noreferrer">Watch SPILL live</a></div>
         </div>
-        <div className="liveHeroPoster"><Image src="/assets/spill/livestream/hero.png" alt="SPILL Livestream hosts speaking with a live audience at SPILL Saigon" fill loading="eager" sizes="(max-width: 820px) 100vw, 44vw" /></div>
       </div>
       <div className="liveTicker"><span>Creators</span><i>•</i><span>Founders</span><i>•</i><span>Brands</span><i>•</i><span>Culture</span><i>•</i><span>Real stories</span><i>•</i><span>Live audience</span></div>
     </section>
