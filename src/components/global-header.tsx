@@ -1,32 +1,33 @@
 import Link from "next/link";
 import Image from "next/image";
-import { locations, locationStatus } from "@/lib/site-data";
+import { HoverDropdown } from "./hover-dropdown";
+import { corporateNavigation, globalNavigation, locations, locationStatus } from "@/lib/site-data";
 
-const experienceNavigation = [
-  { label: "The SPILL Experience", href: "/#journey" },
-  { label: "Confessional", href: "/confessional" },
-  { label: "Livestream", href: "/livestream" },
-  { label: "Podcast", href: "/podcast" },
-  { label: "Originals", href: "/#originals" },
-  { label: "About", href: "/about" },
-];
+function anchorFor(label: string) {
+  return label.toLowerCase().replaceAll("+", "and").replaceAll("/", "-").replaceAll(" ", "-").replaceAll("’", "").replaceAll("'", "");
+}
 
 export function GlobalHeader() {
   return <header className="siteHeader">
     <Link className="brand brandLogo" href="/" aria-label="SPILL home"><Image src="/assets/spill/brand/wordmark-bright.png" alt="SPILL" width={1580} height={250} priority /></Link>
     <nav className="desktopNav" aria-label="Global navigation">
-      <details className="navDropdown"><summary>Locations <span>⌄</span></summary><div className="dropdownPanel">
+      <HoverDropdown className="navDropdown" summary={<>Locations <span>⌄</span></>}><div className="dropdownPanel">
         {locations.map((location) => <Link key={location.slug} href={`/${location.slug}`}><span>{location.name}</span><small>{locationStatus(location)}</small></Link>)}
         <span className="dropdownSoon">More locations coming</span>
-      </div></details>
-      {experienceNavigation.map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}
+      </div></HoverDropdown>
+      {globalNavigation.map((item) => <HoverDropdown className="navDropdown" key={item.href} summary={<><Link href={item.href}>{item.label}</Link> <span>⌄</span></>}><div className="dropdownPanel">
+        {item.items.map((label) => <Link key={label} href={`${item.href}#${anchorFor(label)}`}>{label}<span>↗</span></Link>)}
+      </div></HoverDropdown>)}
+      <div className="corporateNav">{corporateNavigation.map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}</div>
     </nav>
     <details className="mobileMenu">
       <summary aria-label="Open navigation"><span /><span /></summary>
       <nav aria-label="Mobile navigation">
         <p>Navigate SPILL</p>
-        {experienceNavigation.map((item) => <Link key={item.href} href={item.href}>{item.label}<span>↗</span></Link>)}
-        <Link href="/#locations">Choose a location<span>↘</span></Link>
+        <Link href="/">SPILL Global<span>↗</span></Link>
+        <Link href="/#locations">Locations<span>↘</span></Link>
+        {globalNavigation.map((item) => <Link key={item.href} href={item.href}>{item.label}<span>↗</span></Link>)}
+        {corporateNavigation.map((item) => <Link key={item.href} href={item.href}>{item.label}<span>↗</span></Link>)}
       </nav>
     </details>
   </header>;

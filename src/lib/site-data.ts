@@ -9,8 +9,15 @@ export const locations: Location[] = [
 ];
 
 export const globalNavigation = [
-  { label: "What’s On", href: "/whats-on" }, { label: "Create", href: "/create" },
-  { label: "Partner", href: "/partner" }, { label: "About", href: "/about" },
+  { label: "What’s On", href: "/whats-on", items: ["Events", "SPILL 42", "Live", "This Week", "Upcoming", "Highlights"] },
+  { label: "Create", href: "/create", items: ["Podcast", "Livestream", "Confessional", "Perform", "Host an Event", "Creator Opportunities"] },
+  { label: "Partner", href: "/partner", items: ["Brand Partnerships", "Sponsorship", "Events + Activations", "Content Partnerships", "Corporate Events", "Venue Hire"] },
+  { label: "About", href: "/about", items: ["Our Story", "The Concept", "Community", "Locations", "Careers", "Contact"] },
+];
+
+export const corporateNavigation = [
+  { label: "Invest", href: "/partner/investors" },
+  { label: "Franchise", href: "/partner/bring-spill-to-your-city" },
 ];
 
 export const localNavigation = [
