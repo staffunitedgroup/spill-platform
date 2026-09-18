@@ -1,15 +1,17 @@
 import Link from "next/link";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { LocalHeader } from "@/components/local-header";
-import { BrandedText, SpillWordmark } from "@/components/brand-text";
-import { getLocation, locations, socialLinks } from "@/lib/site-data";
+import { BrandedText } from "@/components/brand-text";
+import { getLocation, locations } from "@/lib/site-data";
 
-const conceptVisuals = [
-  { src: "/assets/spill/concept-exterior-day.webp", alt: "Daytime exterior concept for SPILL Saigon", label: "The venue", detail: "A future home for coffee, culture, and conversation." },
-  { src: "/assets/spill/concept-menu.webp", alt: "SPILL Saigon concept food and drink menu", label: "Eat + drink", detail: "An all-day menu designed to move from coffee into cocktails." },
-  { src: "/assets/spill/concept-spill42.webp", alt: "SPILL 42 selection menu concept", label: "SPILL 42", detail: "Forty-two prompts and four ways to connect." },
-  { src: "/assets/spill/concept-confessional.webp", alt: "SPILL Confessional booth concept", label: "Create", detail: "A space for stories, podcasts, livestreams, and creators." },
+const homeSections = [
+  { eyebrow: "Tonight at SPILL", title: "What’s happening tonight?", text: "The quickest view of tonight’s events, live moments, and reasons to come by.", href: "/saigon/whats-on#tonight" },
+  { eyebrow: "Coming up", title: "Plan the next night.", text: "See the week ahead across events, SPILL 42, performances, and creator formats.", href: "/saigon/whats-on#upcoming" },
+  { eyebrow: "Eat + Drink", title: "Coffee through cocktails.", text: "An all-day menu made for quick stops, long conversations, and everything between.", href: "/saigon/menu" },
+  { eyebrow: "SPILL 42", title: "Put the phones down.", text: "Forty-two prompts and four ways to connect in the room.", href: "/saigon/spill42" },
+  { eyebrow: "Create at SPILL", title: "Make something real.", text: "Podcast, livestream, confessional, perform, host, and collaborate.", href: "/saigon/create" },
+  { eyebrow: "Latest from SPILL", title: "Stories beyond the room.", text: "Catch new clips, conversations, highlights, and people from SPILL Saigon.", href: "/whats-on#highlights" },
+  { eyebrow: "Visit SPILL Saigon", title: "Find your way in.", text: "Location, hours, directions, contact, accessibility, and house information.", href: "/saigon/visit" },
 ];
 
 export function generateStaticParams() { return locations.map(({ slug }) => ({ location: slug })); }
@@ -20,9 +22,7 @@ export default async function LocationHome({ params }: { params: Promise<{ locat
   if (!location) notFound();
   if (location.status === "coming-soon") return <main className="comingSoon"><LocalHeader location={location} /><section><p className="eyebrow">Coming soon</p><h1><BrandedText text={location.name} /></h1><p>{location.strapline}</p><Link className="button primary" href="/partner">Bring SPILL to your market</Link></section></main>;
 
-  return <main><section className="hero localHero"><video className="localHeroMedia" autoPlay muted loop playsInline preload="metadata" poster="/assets/spill/home/hero-v2-poster.jpg" aria-hidden="true"><source src="/assets/spill/home/hero-v2.mp4" type="video/mp4" />Your browser does not support background video.</video><div className="localHeroVeil" /><LocalHeader location={location} /><div className="heroContent"><p className="eyebrow">{location.name} · Coming soon</p><h1>Eat<br />Drink<br /><em>Meet Create</em></h1><div className="actions"><a className="button primary" href="mailto:hello@spillcafebar.com?subject=Join%20the%20SPILL%20Saigon%20waitlist">Join the waitlist</a><Link className="button secondary" href={`/${slug}/whats-on`}>Explore the concept</Link></div></div><p className="heroNote">Launching soon · Saigon</p></section>
-    <section className="conceptGallery" aria-labelledby="concept-heading"><div className="conceptGalleryIntro"><p className="eyebrow">A first look</p><h2 id="concept-heading">The <SpillWordmark /> Saigon vision.</h2><p>These early concept visuals show the experience we are building. The final venue and offering may evolve as launch approaches.</p></div><div className="conceptGrid">{conceptVisuals.map((visual, index) => <article className={index === 0 ? "conceptCard conceptCardWide" : "conceptCard"} key={visual.label}><div className="conceptImage"><Image src={visual.src} alt={visual.alt} fill sizes={index === 0 ? "(max-width: 900px) 100vw, 66vw" : "(max-width: 900px) 100vw, 33vw"} /></div><div><span>0{index + 1}</span><h3><BrandedText text={visual.label} /></h3><p>{visual.detail}</p></div></article>)}</div></section>
-    <section className="localDashboard"><Link href={`/${slug}/whats-on`}><span>Planned experiences</span><h2>See what’s coming.</h2><b>Explore the vision →</b></Link><Link href={`/${slug}/menu`}><span>Eat + Drink</span><h2>Concept menu.</h2><b>Preview the menu →</b></Link><Link href={`/${slug}/spill42`}><span>SPILL 42</span><h2>Put the phones down.</h2><b>Discover the concept →</b></Link><Link href={`/${slug}/create`}><span>Create</span><h2>Make it at <SpillWordmark />.</h2><b>Register interest →</b></Link></section>
-    <section className="socialBand"><div><p className="eyebrow">Follow the build</p><h2>@spillsaigon</h2><p>Launch updates, concept reveals, creator opportunities, and the road to opening.</p></div><div>{socialLinks.map((social) => <a href={social.href} target="_blank" rel="noreferrer" key={social.label}>{social.label}<span>↗</span></a>)}</div></section>
-    <section className="visitStrip"><div><p className="eyebrow">Discover SPILL Saigon</p><h2>Good people.<br />Great stories.</h2><p className="conceptNotice">Concept visuals represent the planned SPILL Saigon experience. Final venue details may evolve.</p></div><a className="button primary" href="mailto:hello@spillcafebar.com?subject=SPILL%20Saigon%20launch%20updates">Get launch updates</a></section></main>;
+  return <main><section className="hero localHero"><video className="localHeroMedia" autoPlay muted loop playsInline preload="metadata" poster="/assets/spill/home/hero-v2-poster.jpg" aria-hidden="true"><source src="/assets/spill/home/hero-v2.mp4" type="video/mp4" />Your browser does not support background video.</video><div className="localHeroVeil" /><LocalHeader location={location} /><div className="heroContent"><p className="eyebrow">Launching soon</p><h1><BrandedText text="SPILL Saigon" /></h1><p className="intro">Eat. Drink. Meet. Create.</p><div className="actions"><a className="button primary" href="mailto:hello@spillcafebar.com?subject=Join%20the%20SPILL%20Saigon%20waitlist">Join the waitlist</a><Link className="button secondary" href={`/${slug}/whats-on`}>What’s on</Link></div></div><p className="heroNote">Good people · Brighter conversations</p></section>
+    <section className="localDashboard localHomeSections">{homeSections.map((section, index) => <Link id={section.eyebrow.toLowerCase().replaceAll(" ", "-")} href={section.href} key={section.eyebrow}><span>{String(index + 1).padStart(2, "0")} / {section.eyebrow}</span><h2>{section.title}</h2><p>{section.text}</p><b>Explore →</b></Link>)}</section>
+    <section className="visitStrip"><div><p className="eyebrow">SPILL Saigon</p><h2>The room is only<br />the beginning.</h2><p className="conceptNotice">Join the list for opening news, first events, creator opportunities, and booking access.</p></div><a className="button primary" href="mailto:hello@spillcafebar.com?subject=SPILL%20Saigon%20launch%20updates">Get launch updates</a></section></main>;
 }
