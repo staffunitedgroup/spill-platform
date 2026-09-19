@@ -5,6 +5,7 @@ import { GlobalHeader } from "@/components/global-header";
 import { HomeAnimations } from "@/components/home-animations";
 import { BrandedText, SpillWordmark } from "@/components/brand-text";
 import { EcosystemCarousel } from "@/components/ecosystem-carousel";
+import { NavArrow } from "@/components/nav-arrow";
 
 const journey = [
   { number: "01", name: "SPILL Connections", verb: "Connect", copy: "Start better conversations with friends, dates, coworkers, new people, or someone you just met at SPILL.", cta: "Explore Connections", href: "/spill-42", image: "/assets/spill/home/journey/connections.png" },
@@ -31,7 +32,7 @@ export default function HomePage() {
         <p className="eyebrow">A café bar. A social experience. A media platform.</p>
         <h1>First we danced<br />Then we sang<br /><em>Now we <SpillWordmark /></em></h1>
         <div className="masterHeroBottom"><p>Come for coffee, drinks and connection. Stay for the experiences. Become part of something that can travel far beyond the room.</p></div>
-        <div className="actions"><Link className="button primary" href="#locations">Choose your SPILL <span>↘</span></Link><Link className="button secondary" href="#journey">Explore the experience</Link></div>
+        <div className="actions"><Link className="button primary" href="#locations">Choose your SPILL <NavArrow direction="down" /></Link><Link className="button secondary" href="#journey">Explore the experience</Link></div>
       </div>
       <div className="heroCityRail" id="locations">
         <Link href="/saigon"><span>01</span><strong>SPILL Saigon</strong><small>Born in Vietnam.</small></Link>

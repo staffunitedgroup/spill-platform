@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { HoverDropdown } from "./hover-dropdown";
 import { corporateNavigation, globalNavigation, locations, locationStatus } from "@/lib/site-data";
+import { NavArrow } from "./nav-arrow";
 
 export function GlobalHeader() {
   return <header className="siteHeader">
@@ -12,7 +13,7 @@ export function GlobalHeader() {
         <span className="dropdownSoon">More locations coming</span>
       </div></HoverDropdown>
       {globalNavigation.map((item) => <HoverDropdown className="navDropdown" key={item.href} summary={<><Link href={item.href}>{item.label}</Link> <span>⌄</span></>}><div className="dropdownPanel">
-        {item.items.map((child) => <Link key={child.label} href={child.href}>{child.label}<span>↗</span></Link>)}
+        {item.items.map((child) => <Link key={child.label} href={child.href}>{child.label}<NavArrow /></Link>)}
       </div></HoverDropdown>)}
       <div className="corporateNav">{corporateNavigation.map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}</div>
     </nav>
@@ -20,10 +21,10 @@ export function GlobalHeader() {
       <summary aria-label="Open navigation"><span /><span /></summary>
       <nav aria-label="Mobile navigation">
         <p>Navigate SPILL</p>
-        <Link href="/">SPILL Global<span>↗</span></Link>
-        <Link href="/#locations">Locations<span>↘</span></Link>
-        {globalNavigation.map((item) => <Link key={item.href} href={item.href}>{item.label}<span>↗</span></Link>)}
-        {corporateNavigation.map((item) => <Link key={item.href} href={item.href}>{item.label}<span>↗</span></Link>)}
+        <Link href="/">SPILL Global<NavArrow /></Link>
+        <Link href="/#locations">Locations<NavArrow direction="down" /></Link>
+        {globalNavigation.map((item) => <Link key={item.href} href={item.href}>{item.label}<NavArrow /></Link>)}
+        {corporateNavigation.map((item) => <Link key={item.href} href={item.href}>{item.label}<NavArrow /></Link>)}
       </nav>
     </details>
   </header>;

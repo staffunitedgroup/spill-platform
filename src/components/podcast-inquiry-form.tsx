@@ -1,38 +1,30 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { submitInquiry } from "@/lib/submit-inquiry";
 
 export function PodcastInquiryForm() {
   const [message, setMessage] = useState("");
+  const [sending, setSending] = useState(false);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const lines = [
-      `Name: ${data.get("name")}`,
-      `Email: ${data.get("email")}`,
-      `Phone / WhatsApp: ${data.get("phone") || "Not supplied"}`,
-      `Location: ${data.get("location")}`,
-      `Project type: ${data.get("projectType")}`,
-      `Existing podcast: ${data.get("existingPodcast")}`,
-      `Format: ${data.get("format")}`,
-      `Editing required: ${data.get("editing")}`,
-      `Short-form content: ${data.get("shortForm")}`,
-      `Recording frequency: ${data.get("frequency")}`,
-      `Audience recording: ${data.get("audience")}`,
-      `Sponsorship interest: ${data.get("sponsorship")}`,
-      "",
-      "Idea / show:",
-      String(data.get("idea") || ""),
-      "",
-      "Additional information:",
-      String(data.get("additional") || ""),
-    ];
-
-    const subject = encodeURIComponent(`SPILL Podcast inquiry — ${data.get("name")}`);
-    const body = encodeURIComponent(lines.join("\n"));
-    setMessage("Your email app is opening with the production brief ready to send.");
-    window.location.href = `mailto:hello@spillcafebar.com?subject=${subject}&body=${body}`;
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    const fields = {
+      Name: String(data.get("name") ?? ""), Email: String(data.get("email") ?? ""), "Phone / WhatsApp": String(data.get("phone") || "Not supplied"), Location: String(data.get("location") ?? ""), "Project type": String(data.get("projectType") ?? ""), "Existing podcast": String(data.get("existingPodcast") ?? ""), Format: String(data.get("format") ?? ""), "Editing required": String(data.get("editing") ?? ""), "Short-form content": String(data.get("shortForm") ?? ""), "Recording frequency": String(data.get("frequency") ?? ""), "Audience recording": String(data.get("audience") ?? ""), "Sponsorship interest": String(data.get("sponsorship") ?? ""), "Idea / show": String(data.get("idea") ?? ""), "Additional information": String(data.get("additional") ?? ""),
+    };
+    setSending(true);
+    setMessage("Sending your production brief…");
+    try {
+      await submitInquiry({ subject: `SPILL Podcast inquiry — ${fields.Name}`, fields });
+      form.reset();
+      setMessage("Thank you. Your podcast enquiry has been sent to the SPILL team.");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Your enquiry could not be sent. Please try again.");
+    } finally {
+      setSending(false);
+    }
   }
 
   return <form className="podInquiryForm" onSubmit={handleSubmit}>
@@ -52,6 +44,6 @@ export function PodcastInquiryForm() {
     </div>
     <label className="podFormWide"><span>Tell us about your idea or show *</span><textarea name="idea" rows={5} required /></label>
     <label className="podFormWide"><span>Additional information</span><textarea name="additional" rows={3} /></label>
-    <div className="podFormSubmit"><button className="button primary" type="submit">Start the conversation <span>↗</span></button><p>{message || "Submitting opens a prepared email to the SPILL team."}</p></div>
+    <div className="podFormSubmit"><button className="button primary" type="submit" disabled={sending}>{sending ? "Sending…" : "Start the conversation"} <span>↗</span></button><p aria-live="polite">{message || "Your production brief will be sent directly to the SPILL team."}</p></div>
   </form>;
 }
