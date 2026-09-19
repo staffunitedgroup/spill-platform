@@ -1292,6 +1292,7 @@ a:hover > .navArrow.down { transform:rotate(90deg) translate(2px,-2px); }
 .confPage { overflow:hidden; background:#090807; }
 .confPage h1,.confPage h2,.confPage h3 { font-weight:400; }
 .confPage h1,.confPage h2,.confPage h3 { text-wrap:balance; }
+.confPage h2 { white-space:nowrap; }
 .confPage p,.confPage li { text-wrap:pretty; }
 .confPage h2 { margin:0; font-size:clamp(48px,6.6vw,98px); line-height:.93; letter-spacing:-.05em; text-transform:uppercase; }
 .confPage p { font-size:16px; line-height:1.65; }
@@ -1573,6 +1574,76 @@ a:hover > .navArrow.down { transform:rotate(90deg) translate(2px,-2px); }
 .confFutureIntro > p:last-child { max-width:720px; margin:28px 0 0; color:#696662; }
 .confFuture > .confProductFamily { margin:0; padding:0 clamp(22px,6vw,96px) clamp(90px,11vw,170px); background:#e5e0d9; color:#111214; }
 
+/* Confessional editorial restyle */
+.confPage { --red:#e8472f; --conf-neon:#ff5638; --conf-deep:#a82e22; --conf-black:#111; --conf-silver:#c0c4c8; }
+.confExperience,.confEcosystem,.confAccess,.confContent,.confProduct,.confFutureIntro,.confFuture > .confProductFamily,.confRoadmap { background:var(--conf-silver); }
+.confExperienceIntro,.confEcosystemHeading,.confLaunchIntro,.confRevenueHeading,.confSponsorsIntro,.confContentHeading,.confPrivacyIntro,.confExternalHeading,.confEventsIntro,.confProductHeading,.confNetworkIntro,.confRoadmapHeading { display:block; }
+.confExperienceIntro h2,.confEcosystemHeading h2,.confLaunchIntro h2,.confRevenueHeading h2,.confSponsorsIntro h2,.confContentHeading h2,.confPrivacyIntro h2,.confExternalHeading h2,.confEventsIntro h2,.confProductHeading h2,.confNetworkIntro h2,.confRoadmapHeading h2 { width:100%; margin-top:34px; grid-column:auto; }
+.confExperienceIntro > p:last-child,.confLaunchIntro > p:last-child,.confRevenueHeading > p:last-child,.confSponsorsIntro > p:last-child,.confContentHeading > p:last-child,.confPrivacyIntro > p:last-child,.confExternalHeading > p:last-child,.confEventsIntro > p:last-child,.confProductHeading > p:last-child,.confNetworkIntro > p:last-child { max-width:900px; margin:30px 0 0; grid-column:auto; }
+.confExperienceBooth { grid-template-columns:1.35fr .65fr; }
+.confExperienceBoothMedia video { width:100%; height:100%; position:absolute; inset:0; display:block; object-fit:cover; }
+.confSteps,.confModeGrid { gap:18px; border:0; }
+.confSteps article { min-height:155px; border:0; border-top:2px solid var(--red); }
+.confModeGrid article { min-height:230px; border:0; background:rgba(17,17,17,.07); }
+.confModeGrid article:nth-child(2n) { background:rgba(255,255,255,.24); }
+.confModeGrid article:last-child { background:var(--conf-black); }
+.confFormatCompare { gap:14px; }
+.confFormatCompare article { min-height:520px; position:relative; overflow:hidden; border:0!important; background-position:center; background-size:cover; color:#fff; }
+.confFormatCompare article:nth-child(1) { background-image:linear-gradient(0deg,rgba(0,0,0,.9),rgba(0,0,0,.08) 75%),url('/assets/spill/home/podcast-poster.jpg'); }
+.confFormatCompare article:nth-child(2) { background-image:linear-gradient(0deg,rgba(0,0,0,.9),rgba(0,0,0,.08) 75%),url('/assets/spill/home/livestream-promotion-poster.jpg'); }
+.confFormatCompare article:nth-child(3) { background-image:linear-gradient(0deg,rgba(0,0,0,.9),rgba(0,0,0,.08) 75%),url('/assets/spill/home/confessional-poster.jpg'); }
+.confFormatCompare article.active { background-color:var(--conf-deep); }
+.confFormatCompare article p,.confFormatCompare .active p { color:#e3e3e3; }
+.confFormatCompare span,.confFormatCompare .active span { color:var(--conf-neon); }
+.confLaunch,.confRelocatable { background:var(--conf-deep); }
+.confLaunchVisual { height:clamp(400px,58vw,760px); margin:0 calc(clamp(22px,6vw,96px) * -1) 65px; position:relative; overflow:hidden; }
+.confLaunchVisual img { object-fit:cover; }
+.confMetricGrid { grid-template-columns:repeat(3,1fr); gap:0 30px; border:0; }
+.confMetricGrid article { min-height:105px; padding:20px 0; border:0; border-bottom:1px solid rgba(255,255,255,.34); }
+.confPriceTable { gap:14px; }
+.confPriceTable article { min-height:500px; position:relative; overflow:hidden; border:0!important; background-position:center; background-size:cover; }
+.confPriceTable article:nth-child(1) { background-image:linear-gradient(0deg,rgba(0,0,0,.94),rgba(0,0,0,.14)),url('/assets/spill/concept-confessional.webp'); }
+.confPriceTable article:nth-child(2) { background-image:linear-gradient(0deg,rgba(0,0,0,.94),rgba(0,0,0,.14)),url('/assets/spill/home/coffee.jpg'); }
+.confPriceTable article:nth-child(3) { background-image:linear-gradient(0deg,rgba(0,0,0,.94),rgba(0,0,0,.14)),url('/assets/spill/home/people-visitors-connections.png'); }
+.confPriceTable p { color:#d0d0d0; }
+.confFnbSection { position:relative; overflow:hidden; background:linear-gradient(90deg,rgba(17,17,17,.97),rgba(17,17,17,.64)),url('/assets/spill/home/coffee.jpg') center/cover; color:#fff; }
+.confFnbSection .confFnb h3 { color:#fff; }
+.confFnbSection .confFnb li { border-color:rgba(255,255,255,.28); color:#ddd; }
+.confAccessGrid { gap:14px; }
+.confAccessGrid article { min-height:560px; border:0!important; background-position:center; background-size:cover; color:#fff; }
+.confAccessGrid article:nth-child(1) { background-image:linear-gradient(0deg,rgba(0,0,0,.92),rgba(0,0,0,.08)),url('/assets/spill/home/people-everyday-stories.png'); }
+.confAccessGrid article:nth-child(2) { background-image:linear-gradient(0deg,rgba(0,0,0,.92),rgba(0,0,0,.08)),url('/assets/spill/home/people-founders-creators-professionals.png'); }
+.confAccessGrid article:nth-child(3) { background-image:linear-gradient(0deg,rgba(0,0,0,.92),rgba(0,0,0,.08)),url('/assets/spill/home/people-visitors-connections.png'); }
+.confAccessGrid p { color:#ddd; }
+.confSponsors { position:relative; background:linear-gradient(rgba(17,17,17,.94),rgba(17,17,17,.86)),url('/assets/spill/home/ecosystem-community.png') center/cover; }
+.confSponsorIdeas { grid-template-columns:repeat(7,1fr); border:0; gap:12px; }
+.confSponsorIdeas article { min-height:240px; border:0; border-top:2px solid var(--red); background:rgba(17,17,17,.58); backdrop-filter:blur(8px); }
+.confContentVisual { min-height:clamp(560px,76vw,1050px); margin:clamp(65px,8vw,115px) calc(clamp(22px,6vw,96px) * -1) 0; position:relative; overflow:hidden; }
+.confContentVisual img { object-fit:cover; }
+.confContentVisual > div { padding:clamp(24px,4vw,55px); position:absolute; inset:auto 0 0; display:flex; flex-wrap:wrap; gap:8px; background:linear-gradient(0deg,rgba(0,0,0,.94),transparent); }
+.confContentVisual span { padding:10px 13px; border:1px solid rgba(255,255,255,.45); color:#fff; font-size:12px; text-transform:uppercase; }
+.confPrivacy { background:linear-gradient(90deg,rgba(17,17,17,.97),rgba(17,17,17,.78)),url('/assets/spill/home/confessional-poster.jpg') center/cover; }
+.confConsentGrid { gap:14px; border:0; }
+.confConsentGrid article { border:0; background:rgba(17,17,17,.72); backdrop-filter:blur(8px); }
+.confConsentGrid article:first-child { background:var(--conf-deep); }
+.confCityNetwork { position:relative; background:linear-gradient(90deg,rgba(17,17,17,.96),rgba(17,17,17,.56)),url('/assets/spill/home/ecosystem-back-to-spill.png') center/cover; color:#fff; }
+.confCityNetwork h2 em { color:var(--conf-neon); }
+.confCityMessage > p { color:#ddd; }
+.confCityMessage blockquote { border-color:var(--conf-neon); background:rgba(17,17,17,.66); }
+.confEvents { background:linear-gradient(rgba(17,17,17,.94),rgba(17,17,17,.82)),url('/assets/spill/home/ecosystem-experiences.png') center/cover; }
+.confEventGrid { gap:12px; border:0; }
+.confEventGrid article { border:0; border-top:2px solid var(--red); background:rgba(17,17,17,.62); backdrop-filter:blur(7px); }
+.confEventPrompts { gap:12px; border:0; }
+.confEventPrompts p { border:0; background:rgba(17,17,17,.68); }
+.confProductVisual { height:clamp(540px,76vw,1050px); margin:clamp(65px,8vw,115px) calc(clamp(22px,6vw,96px) * -1) 0; position:relative; overflow:hidden; }
+.confProductVisual img { object-fit:cover; }
+.confCustomerCloud { justify-content:center; }
+.confFutureIntro { position:relative; background:linear-gradient(90deg,rgba(17,17,17,.97),rgba(17,17,17,.48)),url('/assets/spill/home/people-founders-creators-professionals.png') center/cover; color:#fff; }
+.confFutureIntro > p:last-child { color:#ddd; }
+.confFuture > .confProductFamily { padding-top:clamp(65px,8vw,115px); }
+.confProductFamily { gap:14px; }
+.confProductFamily article { border:0!important; border-top:2px solid var(--red)!important; background:rgba(255,255,255,.22); }
+
 @media (max-height:800px) and (min-width:901px) {
   .confHeroContent { padding:35px 0; }
   .confHeroContent h1 { margin:18px 0 22px; font-size:clamp(55px,6.5vw,90px); }
@@ -1595,6 +1666,8 @@ a:hover > .navArrow.down { transform:rotate(90deg) translate(2px,-2px); }
 }
 
 @media (max-width:820px) {
+  .confPage h2 { font-size:clamp(24px,7vw,40px); }
+  .confProductHeading h2,.confNetworkIntro h2 { font-size:clamp(22px,6vw,35px); }
   .confPrivacyIntro,.confEcosystemHeading,.confLaunchIntro,.confRevenueHeading,.confSponsorsIntro,.confContentHeading,.confExternalHeading,.confEventsIntro,.confProductHeading,.confNetworkIntro,.confRoadmapHeading { grid-template-columns:1fr; gap:28px; }
   .confPrivacyIntro h2,.confPrivacyIntro > p:last-child,.confEcosystemHeading h2,.confLaunchIntro h2,.confLaunchIntro > p:last-child,.confRevenueHeading h2,.confRevenueHeading > p:last-child,.confSponsorsIntro h2,.confSponsorsIntro > p:last-child,.confContentHeading h2,.confContentHeading > p:last-child,.confExternalHeading h2,.confExternalHeading > p:last-child,.confEventsIntro h2,.confEventsIntro > p:last-child,.confProductHeading h2,.confProductHeading > p:last-child,.confNetworkIntro h2,.confNetworkIntro > p:last-child,.confRoadmapHeading h2 { grid-column:auto; }
   .confConsentGrid,.confCities { grid-template-columns:repeat(2,1fr); }
@@ -1614,11 +1687,14 @@ a:hover > .navArrow.down { transform:rotate(90deg) translate(2px,-2px); }
 }
 
 @media (max-width:560px) {
-  .confPage h2 { font-size:clamp(39px,12vw,60px); }
+  .confPage h2 { font-size:clamp(24px,7vw,32px); }
+  .confProductHeading h2,.confNetworkIntro h2 { font-size:clamp(21px,6vw,28px); }
   .confConsentGrid,.confMetricGrid,.confSponsorIdeas,.confOutputGrid,.confExternalGrid,.confEventGrid,.confSoftwareGrid,.confCities,.confRoadmapGrid { grid-template-columns:1fr; }
   .confConsentGrid article { min-height:230px; }
   .confBoothMedia { min-height:500px; }
   .confExperienceBoothMedia { min-height:430px; }
+  .confExperienceBooth { margin-inline:calc(clamp(22px,6vw,96px) * -1); }
+  .confMetricGrid { grid-template-columns:1fr; }
   .confFeatureList { grid-template-columns:1fr; }
   .confFeatureList span:nth-child(even) { padding-left:0; border-left:0; }
   .confFormatCompare article,.confPriceTable article,.confAccessGrid article,.confProductFamily article { min-height:350px; }
