@@ -57,10 +57,8 @@ export default function ConfessionalPage() {
     <section className="confExperience" id="experience">
       <div className="confExperienceIntro" data-conf-reveal><p className="confKicker">01 / The Experience</p><h2>Designed to feel<br /><em>simple and private.</em></h2><p>The booth is designed for one person comfortably, two people maximum.</p></div>
       <div className="confSteps">{[["01", "Step in"], ["02", "Sit down"], ["03", "Choose a mode"], ["04", "Press record"], ["05", "SPILL"]].map(([number, label]) => <article key={label} data-conf-reveal><span>{number}</span><h3><BrandedText text={label} tone="dark" /></h3></article>)}</div>
-      <div className="confExperienceBooth" data-conf-reveal>
-        <div className="confExperienceBoothMedia"><video autoPlay muted loop playsInline preload="metadata" poster="/assets/spill/confessional/promotion-poster.jpg" aria-label="SPILL Confessional experience"><source src="/assets/spill/confessional/promotion.mp4" type="video/mp4" />Your browser does not support embedded video.</video></div>
-        <div className="confExperienceBoothCopy"><p className="confKicker">Inside</p><div className="confFeatureList">{boothFeatures.map((feature, index) => <span key={feature}><b>{String(index + 1).padStart(2, "0")}</b>{feature}</span>)}</div></div>
-      </div>
+      <div className="confExperienceVideo" data-conf-reveal><video autoPlay muted loop playsInline preload="metadata" poster="/assets/spill/confessional/promotion-poster.jpg" aria-label="SPILL Confessional experience"><source src="/assets/spill/confessional/promotion.mp4" type="video/mp4" />Your browser does not support embedded video.</video></div>
+      <div className="confExperienceDetails" data-conf-reveal><p className="confKicker">Inside</p><div className="confFeatureList">{boothFeatures.map((feature, index) => <span key={feature}><b>{String(index + 1).padStart(2, "0")}</b>{feature}</span>)}</div></div>
       <div className="confModeGrid">{modes.map(([title, copy], index) => <article key={title} data-conf-reveal><span>{String(index + 1).padStart(2, "0")}</span><h3>{title}</h3><p>{copy}</p></article>)}</div>
     </section>
 
@@ -75,7 +73,6 @@ export default function ConfessionalPage() {
       <div className="confLaunchIntro" data-conf-reveal><p className="confKicker">03 / Start Inside SPILL Saigon</p><h2>Start with two.<br /><em>Learn. Then expand.</em></h2><p>The first phase focuses entirely on the venue. Start with two self-contained booths, then expand to approximately four once demand is proven. Each relocatable unit can move with events, traffic, seating, sponsorships, and operational needs.</p></div>
       <div className="confLaunchNumbers" data-conf-reveal><div><strong>02</strong><span>Units at launch</span></div><b>→</b><div><strong>~04</strong><span>After demand is proven</span></div></div>
       <p className="confLabLine" data-conf-reveal>The first booths become SPILL’s live R&amp;D lab.</p>
-      <div className="confLaunchVisual" data-conf-reveal><Image src="/assets/spill/home/venue-night.jpg" alt="SPILL Saigon operating as a live testing ground for the Confessional" fill sizes="100vw" /></div>
       <div className="confMetricGrid">{launchMetrics.map((metric, index) => <article key={metric} data-conf-reveal><span>{String(index + 1).padStart(2, "0")}</span><h3>{metric}</h3></article>)}</div>
     </section>
 
@@ -99,7 +96,7 @@ export default function ConfessionalPage() {
 
     <section className="confContent">
       <div className="confContentHeading" data-conf-reveal><p className="confKicker">08 / Content Engine</p><h2>One honest moment.<br /><em>Many ways to travel.</em></h2><p>With participant permission, selected recordings become a continuous stream of authentic content without requiring SPILL to produce every piece from scratch.</p></div>
-      <div className="confContentVisual" data-conf-reveal><Image src="/assets/spill/home/ecosystem-content.png" alt="SPILL stories moving from the venue into social content" fill sizes="100vw" /><div>{contentOutputs.map((item) => <span key={item}>{item}</span>)}</div></div>
+      <div className="confOutputRail" data-conf-reveal>{contentOutputs.map((item, index) => <span key={item}><b>0{index + 1}</b>{item}</span>)}</div>
       <div className="confSeries" data-conf-reveal><h3>Recurring formats</h3><div>{recurringFormats.map((format) => <span key={format}>{format}</span>)}</div></div>
     </section>
 
@@ -126,7 +123,6 @@ export default function ConfessionalPage() {
 
     <section className="confProduct">
       <div className="confProductHeading" data-conf-reveal><p className="confKicker">13 / Selling the Product</p><h2>Hardware + recurring software.<br /><em>Not simply the box.</em></h2><p>Once thoroughly tested, SPILL can manufacture and sell unbranded versions to third parties.</p></div>
-      <div className="confProductVisual" data-conf-reveal><Image src="/assets/spill/home/ecosystem-streaming.png" alt="SPILL content platform displayed across television, tablet, mobile, and laptop" fill sizes="100vw" /></div>
       <div className="confCustomerCloud" data-conf-reveal>{productCustomers.map((item) => <span key={item}>{item}</span>)}</div>
       <div className="confSoftwareGrid">{software.map((item, index) => <article key={item} data-conf-reveal><span>{String(index + 1).padStart(2, "0")}</span><h3>{item}</h3></article>)}</div>
     </section>
