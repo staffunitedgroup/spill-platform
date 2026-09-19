@@ -3,10 +3,6 @@ import Image from "next/image";
 import { HoverDropdown } from "./hover-dropdown";
 import { corporateNavigation, globalNavigation, locations, locationStatus } from "@/lib/site-data";
 
-function anchorFor(label: string) {
-  return label.toLowerCase().replaceAll("+", "and").replaceAll("/", "-").replaceAll(" ", "-").replaceAll("’", "").replaceAll("'", "");
-}
-
 export function GlobalHeader() {
   return <header className="siteHeader">
     <Link className="brand brandLogo" href="/" aria-label="SPILL home"><Image src="/assets/spill/brand/wordmark-bright.png" alt="SPILL" width={1580} height={250} priority /></Link>
@@ -16,7 +12,7 @@ export function GlobalHeader() {
         <span className="dropdownSoon">More locations coming</span>
       </div></HoverDropdown>
       {globalNavigation.map((item) => <HoverDropdown className="navDropdown" key={item.href} summary={<><Link href={item.href}>{item.label}</Link> <span>⌄</span></>}><div className="dropdownPanel">
-        {item.items.map((label) => <Link key={label} href={`${item.href}#${anchorFor(label)}`}>{label}<span>↗</span></Link>)}
+        {item.items.map((child) => <Link key={child.label} href={child.href}>{child.label}<span>↗</span></Link>)}
       </div></HoverDropdown>)}
       <div className="corporateNav">{corporateNavigation.map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}</div>
     </nav>
