@@ -9,10 +9,27 @@ export const locations: Location[] = [
 ];
 
 export const globalNavigation = [
-  { label: "What’s On", href: "/whats-on", items: ["Events", "SPILL 42", "Live", "This Week", "Upcoming", "Highlights"] },
-  { label: "Create", href: "/create", items: ["Podcast", "Livestream", "Confessional", "Perform", "Host an Event", "Creator Opportunities"] },
-  { label: "Partner", href: "/partner", items: ["Brand Partnerships", "Sponsorship", "Events + Activations", "Content Partnerships", "Corporate Events", "Venue Hire"] },
-  { label: "About", href: "/about", items: ["Our Story", "The Concept", "Community", "Locations", "Careers", "Contact"] },
+  { label: "What’s On", href: "/whats-on", items: [
+    { label: "Events", href: "/whats-on#events" }, { label: "SPILL 42", href: "/spill-42" }, { label: "Live", href: "/livestream" }, { label: "This Week", href: "/whats-on#this-week" }, { label: "Upcoming", href: "/whats-on#upcoming" }, { label: "Highlights", href: "/whats-on#highlights" },
+  ] },
+  { label: "Create", href: "/create", items: [
+    { label: "Podcast", href: "/podcast" }, { label: "Livestream", href: "/livestream" }, { label: "Confessional", href: "/confessional" }, { label: "Perform", href: "/create#perform" }, { label: "Host an Event", href: "/saigon/private-events" }, { label: "Creator Opportunities", href: "/create#creator-opportunities" },
+  ] },
+  { label: "Partner", href: "/partner", items: [
+    { label: "Brand Partnerships", href: "/partner#brand-partnerships" }, { label: "Sponsorship", href: "/partner#sponsorship" }, { label: "Events + Activations", href: "/partner#events-and-activations" }, { label: "Content Partnerships", href: "/partner#content-partnerships" }, { label: "Corporate Events", href: "/saigon/private-events" }, { label: "Venue Hire", href: "/saigon/private-events" },
+  ] },
+  { label: "About", href: "/about", items: [
+    { label: "Our Story", href: "/about#our-story" }, { label: "The Concept", href: "/about#the-concept" }, { label: "Community", href: "/about#community" }, { label: "Locations", href: "/#locations" }, { label: "Careers", href: "/careers" }, { label: "Contact", href: "/contact" },
+  ] },
+];
+
+export const localCreateNavigation = [
+  { label: "Podcast", href: "/podcast" },
+  { label: "Livestream", href: "/livestream" },
+  { label: "Confessional", href: "/confessional" },
+  { label: "Perform", href: "/saigon/create#perform" },
+  { label: "Host an Event", href: "/saigon/private-events" },
+  { label: "Creator Opportunities", href: "/saigon/create#creator-opportunities" },
 ];
 
 export const corporateNavigation = [

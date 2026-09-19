@@ -4,6 +4,7 @@ import { EventsProgramming } from "@/components/events-programming";
 import { GlobalHeader } from "@/components/global-header";
 import { HomeAnimations } from "@/components/home-animations";
 import { BrandedText, SpillWordmark } from "@/components/brand-text";
+import { EcosystemCarousel } from "@/components/ecosystem-carousel";
 
 const journey = [
   { number: "01", name: "SPILL Connections", verb: "Connect", copy: "Start better conversations with friends, dates, coworkers, new people, or someone you just met at SPILL.", cta: "Explore Connections", href: "/spill-42", image: "/assets/spill/home/journey/connections.png" },
@@ -20,17 +21,6 @@ const storyPath = [
   { title: "Podcast", detail: "The conversation goes deeper.", image: "/assets/spill/home/journey/podcast.png" },
   { title: "Original", detail: "The idea becomes something bigger.", image: "/assets/spill/home/journey/original.png" },
 ];
-
-const ecosystemStages = [
-  { title: "Venues", detail: "The physical front door.", image: "/assets/spill/home/ecosystem-venues.png" },
-  { title: "Experiences", detail: "Connection · Confessional · Livestream · Podcast · Originals", image: "/assets/spill/home/ecosystem-experiences.png" },
-  { title: "Content", detail: "Vertical clips · livestreams · interviews · social posts", image: "/assets/spill/home/ecosystem-content.png" },
-  { title: "Creators", detail: "Faces, voices and ideas worth discovering.", image: "/assets/spill/home/ecosystem-creators.png" },
-  { title: "Community", detail: "Comments · shares · audiences · people returning", image: "/assets/spill/home/ecosystem-community.png" },
-  { title: "Culture", detail: "Moments spreading outside SPILL.", image: "/assets/spill/home/ecosystem-culture.png" },
-  { title: "SPILL Streaming", detail: "SPILL on TV · mobile · tablet", image: "/assets/spill/home/ecosystem-streaming.png" },
-  { title: "Back to SPILL", detail: "Digital discovery becomes real-world connection.", image: "/assets/spill/home/ecosystem-back-to-spill.png" },
-] as const;
 
 export default function HomePage() {
   return <main className="masterHome"><HomeAnimations />
@@ -67,20 +57,7 @@ export default function HomePage() {
         <h2 id="ecosystem-heading">One room.<br /><em>An entire ecosystem.</em></h2>
         <p className="ecosystemFormula">Venues <i>→</i> Experiences <i>→</i> Content <i>→</i> Creators <i>→</i> Community <i>→</i> Culture <i>→</i> Streaming <i>→</i> <strong>↻</strong></p>
       </div>
-      <div className="ecosystemViewport" data-reveal>
-        <div className="ecosystemTrack">
-          {[0, 1].map((loopIndex) => <div className="ecosystemSequence" key={loopIndex} aria-hidden={loopIndex === 1}>
-            {ecosystemStages.map((stage, index) => <article className="ecosystemCard" id={loopIndex === 0 ? `ecosystem-${index}` : undefined} key={`${stage.title}-${loopIndex}`}>
-              <div className="ecosystemCardMedia">
-                <Image src={stage.image} alt="" fill sizes="(max-width: 760px) 78vw, 30vw" />
-              </div>
-              <div className="ecosystemCardVeil" />
-              <div className="ecosystemCardCopy"><span>{String(index + 1).padStart(2, "0")}</span><h3>{stage.title}</h3><p>{stage.detail}</p></div>
-              {loopIndex === 0 ? <a className="ecosystemNext" href={`#ecosystem-${index === ecosystemStages.length - 1 ? 0 : index + 1}`} aria-label={index === ecosystemStages.length - 1 ? "Return to Venues" : `Continue to ${ecosystemStages[index + 1].title}`}>{index === ecosystemStages.length - 1 ? "↻" : "→"}</a> : <b aria-hidden="true">{index === ecosystemStages.length - 1 ? "↻" : "→"}</b>}
-            </article>)}
-          </div>)}
-        </div>
-      </div>
+      <EcosystemCarousel />
       <p className="ecosystemStatement" data-reveal>Real-world experiences create digital stories. Digital stories build audiences. Audiences discover SPILL. <span>And the cycle begins again.</span></p>
     </section>
 
