@@ -69,7 +69,7 @@ export default function HomePage() {
         {journey.map((step) => <article className="journeyCard" key={step.name}>
           <div className="journeyCardMedia"><Image src={step.image} alt="" fill sizes="(max-width: 760px) 100vw, (max-width: 1100px) 50vw, 20vw" /></div>
           <div className="journeyCardContent"><div className="journeyCardTop"><span>{step.number}</span><strong>{step.verb}</strong><i aria-hidden="true" /></div>
-          <div className="journeyCardBody"><h3><BrandedText text={step.name} /></h3><div className="journeyDetail"><p>{step.copy}</p><Link href={step.href}>{step.cta} <span>↗</span></Link></div></div></div>
+          <div className="journeyCardBody"><h3><BrandedText text={step.name} /></h3><div className="journeyDetail"><p>{step.copy}</p><Link href={step.href}>{step.cta} <NavArrow /></Link></div></div></div>
         </article>)}
       </div>
     </section>
@@ -106,12 +106,12 @@ export default function HomePage() {
       <div className="podcastMedia" data-reveal><video autoPlay muted loop playsInline poster="/assets/spill/home/podcast-poster.jpg"><source src="/assets/spill/home/podcast.mp4" type="video/mp4" /></video><span>Long-form conversations,<br />professionally produced.</span></div>
       <div className="podcastChoices">
         <article data-reveal><span>01</span><h3>Create your podcast</h3><p>Bring your concept or existing show to SPILL for development, recording, editing, content creation, and ongoing support.</p><Link href="/podcast#inquiry">Produce with SPILL →</Link></article>
-        <article data-reveal><span>02</span><h3>Be part of <SpillWordmark tone="dark" /> Podcast</h3><p>Exceptional people and stories discovered through the wider SPILL ecosystem can be invited back for deeper conversations.</p><a href="https://www.youtube.com/@spillsaigon" target="_blank" rel="noreferrer">Watch SPILL Podcast ↗</a></article>
+        <article data-reveal><span>02</span><h3>Be part of <SpillWordmark tone="dark" /> Podcast</h3><p>Exceptional people and stories discovered through the wider SPILL ecosystem can be invited back for deeper conversations.</p><a href="https://www.youtube.com/@spillsaigon" target="_blank" rel="noreferrer">Watch SPILL Podcast <NavArrow /></a></article>
       </div>
     </section>
 
     <section className="masterSection originalsSection" id="originals">
-      <div className="originalsIntro" data-reveal><div className="sectionNumber">08 / Premium SPILL-developed media</div><h2><SpillWordmark /><br /><em>Originals.</em></h2><p>The strongest ideas from across the SPILL ecosystem can grow into shows, series, stories, interviews, documentaries, performances, and media properties for YouTube and wider distribution.</p><a className="button primary" href="https://www.youtube.com/@spillsaigon" target="_blank" rel="noreferrer">Watch SPILL Originals ↗</a></div>
+      <div className="originalsIntro" data-reveal><div className="sectionNumber">08 / Premium SPILL-developed media</div><h2><SpillWordmark /><br /><em>Originals.</em></h2><p>The strongest ideas from across the SPILL ecosystem can grow into shows, series, stories, interviews, documentaries, performances, and media properties for YouTube and wider distribution.</p><a className="button primary" href="https://www.youtube.com/@spillsaigon" target="_blank" rel="noreferrer">Watch SPILL Originals <NavArrow /></a></div>
       <div className="originalsBoard" aria-label="SPILL Originals concepts">
         {["Local Legends", "Founders at SPILL", "42 Questions", "The Big SPILL"].map((name, index) => <article key={name}><span>0{index + 1}</span><h3><BrandedText text={name} /></h3><small>In development</small></article>)}
       </div>
