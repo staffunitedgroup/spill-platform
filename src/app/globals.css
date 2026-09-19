@@ -1744,6 +1744,88 @@ a:hover > .navArrow.down { transform:rotate(90deg) translate(2px,-2px); }
 .confNetwork { background:var(--conf-ink); }
 .confRoadmap { background:var(--conf-paper); }
 
+/* Confessional page: streamlined editorial layouts. */
+.confExperienceMediaSplit {
+  margin:clamp(60px,8vw,110px) calc(clamp(22px,6vw,96px) * -1) 0;
+  display:grid;
+  grid-template-columns:minmax(0,1.12fr) minmax(360px,.88fr);
+  align-items:stretch;
+  background:var(--conf-paper);
+}
+.confExperienceMediaSplit .confExperienceVideo {
+  min-height:clamp(620px,67vw,920px);
+  margin:0;
+  aspect-ratio:auto;
+}
+.confExperienceMediaSplit .confExperienceVideo::after {
+  background:linear-gradient(90deg,transparent 68%,var(--conf-paper) 100%),linear-gradient(180deg,var(--conf-paper) 0%,transparent 10%,transparent 90%,var(--conf-paper) 100%);
+}
+.confExperienceMediaSplit .confExperienceDetails {
+  margin:0;
+  padding:clamp(70px,8vw,120px) clamp(22px,6vw,96px) clamp(70px,8vw,120px) clamp(28px,4vw,64px);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+.confExperienceMediaSplit .confFeatureList { grid-template-columns:1fr; }
+.confExperienceMediaSplit .confFeatureList span { min-height:44px; }
+.confModesSplit {
+  margin-top:clamp(75px,9vw,130px);
+  display:grid;
+  grid-template-columns:minmax(0,1.2fr) minmax(360px,.8fr);
+  gap:clamp(28px,4vw,70px);
+  align-items:center;
+}
+.confModesImage { min-height:clamp(440px,54vw,780px); position:relative; overflow:hidden; background:#0b0807; }
+.confModesImage img { object-fit:contain; }
+.confModesSplit .confModeGrid { grid-template-columns:1fr; gap:0; }
+.confModesSplit .confModeGrid article,.confModesSplit .confModeGrid article:nth-child(2n),.confModesSplit .confModeGrid article:last-child {
+  min-height:0;
+  padding:18px 0;
+  display:grid;
+  grid-template-columns:34px minmax(145px,.8fr) 1.2fr;
+  gap:14px;
+  align-items:start;
+  border-bottom:1px solid #b9b9b5;
+  background:transparent;
+  color:#111;
+}
+.confModesSplit .confModeGrid h3,.confModesSplit .confModeGrid p { margin:0; }
+.confModesSplit .confModeGrid h3 { font-size:16px; }
+.confModesSplit .confModeGrid p { color:#55565a; font-size:14px; line-height:1.45; }
+.confFormatCompare article:nth-child(1),.confFormatCompare article:nth-child(2),.confFormatCompare article:nth-child(3) {
+  min-height:clamp(420px,43vw,610px);
+  background-position:center!important;
+  background-size:cover!important;
+}
+.confFormatCompare article:nth-child(1) { background:linear-gradient(0deg,rgba(0,0,0,.92),rgba(0,0,0,.38)),url('/assets/spill/home/podcast-poster.jpg')!important; }
+.confFormatCompare article:nth-child(2) { background:linear-gradient(0deg,rgba(0,0,0,.92),rgba(0,0,0,.38)),url('/assets/spill/home/livestream-promotion-poster.jpg')!important; }
+.confFormatCompare article:nth-child(3) { background:linear-gradient(0deg,rgba(0,0,0,.92),rgba(0,0,0,.38)),url('/assets/spill/home/confessional-poster.jpg')!important; }
+.confFormatCompare article h3 { margin:auto 0 18px; }
+.confFormatCompare article p,.confFormatCompare .active p { color:#e7e7e7; }
+.confFnb { display:block; }
+.confFnb > div { max-width:1100px; }
+.confFnb h3 { max-width:1050px; }
+.confFnb ul { max-width:1100px; margin-top:clamp(45px,6vw,80px); display:grid; grid-template-columns:1fr 1fr; border-top:1px solid #b9b9b5; }
+.confFnb li { padding:22px 18px 22px 0; }
+.confFnb li:nth-child(2n) { padding-left:18px; border-left:1px solid #b9b9b5; }
+.confAccessFormula {
+  margin-top:clamp(60px,8vw,110px);
+  display:grid;
+  grid-template-columns:1fr auto 1.4fr auto 1fr;
+  align-items:center;
+  border-block:1px solid #313134;
+}
+.confAccessFormula span { min-height:150px; padding:24px; display:grid; place-items:center; color:#fff; font-family:var(--font-display); font-size:clamp(18px,2vw,28px); text-align:center; text-transform:uppercase; }
+.confAccessFormula b { color:var(--red); font-size:28px; font-weight:400; }
+.confSponsorsIntro h2 em,.confExternalHeading h2 em { color:var(--red); font-style:normal; }
+.confCityNetwork { display:block; }
+.confCityNetwork > div:first-child,.confCityMessage { max-width:1100px; }
+.confCityMessage { margin-top:clamp(40px,6vw,80px); }
+.confCityMessage blockquote { max-width:900px; box-sizing:border-box; overflow-wrap:anywhere; }
+.confEventUsesRail { margin-top:clamp(55px,7vw,95px); display:flex; flex-wrap:wrap; gap:10px; }
+.confEventUsesRail span { padding:13px 16px; border:1px solid #313134; color:#c5c5c8; font-family:var(--font-display); font-size:13px; text-transform:uppercase; }
+
 @media (max-height:800px) and (min-width:901px) {
   .confHeroContent { padding:35px 0; }
   .confHeroContent h1 { margin:18px 0 22px; font-size:clamp(55px,6.5vw,90px); }
@@ -1786,6 +1868,14 @@ a:hover > .navArrow.down { transform:rotate(90deg) translate(2px,-2px); }
   .confEventPricing > div { border-left:1px solid #403a36; }
   .confCities b { right:calc(50% - 17px); bottom:-17px; transform:rotate(90deg); }
   .confCities > div:nth-child(2n) b { display:none; }
+  .confExperienceMediaSplit,.confModesSplit { grid-template-columns:1fr; }
+  .confExperienceMediaSplit .confExperienceVideo { min-height:0; aspect-ratio:16/9; }
+  .confExperienceMediaSplit .confExperienceVideo::after { background:linear-gradient(180deg,var(--conf-paper) 0%,transparent 14%,transparent 84%,var(--conf-paper) 100%); }
+  .confExperienceMediaSplit .confExperienceDetails { padding-top:42px; }
+  .confModesImage { min-height:0; aspect-ratio:3/2; }
+  .confAccessFormula { grid-template-columns:1fr; }
+  .confAccessFormula span { min-height:92px; }
+  .confAccessFormula b { height:0; position:relative; z-index:2; text-align:center; transform:translateY(-15px); }
 }
 
 @media (max-width:560px) {
@@ -1814,12 +1904,13 @@ a:hover > .navArrow.down { transform:rotate(90deg) translate(2px,-2px); }
   .confBigger .button { width:100%; }
 
   /* Compact mobile rhythm: dense information without empty card height. */
-  .confSteps { grid-template-columns:1fr 1fr; gap:1px; background:#b9b9b5; }
-  .confSteps article { min-height:82px; padding:16px; display:grid; grid-template-columns:24px 1fr; gap:8px; align-items:center; border:0; background:var(--conf-paper); }
-  .confSteps article:last-child { grid-column:1/-1; }
+  .confSteps { grid-template-columns:repeat(5,minmax(112px,1fr)); gap:0; overflow-x:auto; overscroll-behavior-inline:contain; scroll-snap-type:x proximity; scrollbar-width:none; background:transparent; border-block:1px solid #b9b9b5; }
+  .confSteps::-webkit-scrollbar { display:none; }
+  .confSteps article { min-height:76px; padding:13px 12px; display:grid; grid-template-columns:22px 1fr; gap:6px; align-items:center; border:0; border-right:1px solid #b9b9b5; background:var(--conf-paper); scroll-snap-align:start; }
+  .confSteps article:last-child { grid-column:auto; border-right:0; }
   .confSteps h3 { min-height:0; margin:0; font-size:14px; }
   .confModeGrid { grid-template-columns:1fr; gap:0; border-top:1px solid #b9b9b5; }
-  .confModeGrid article,.confModeGrid article:last-child { min-height:0; padding:18px 4px; display:grid; grid-template-columns:34px 1fr; column-gap:10px; border-bottom:1px solid #b9b9b5; background:transparent; color:#111; }
+  .confModeGrid article,.confModeGrid article:last-child,.confModesSplit .confModeGrid article,.confModesSplit .confModeGrid article:nth-child(2n),.confModesSplit .confModeGrid article:last-child { min-height:0; padding:15px 4px; display:grid; grid-template-columns:30px 1fr; column-gap:8px; border-bottom:1px solid #b9b9b5; background:transparent; color:#111; }
   .confModeGrid article > span { grid-row:1/3; }
   .confModeGrid h3 { margin:0 0 5px; font-size:16px; }
   .confModeGrid p,.confModeGrid article:last-child p { grid-column:2; margin:0; color:#66676a; }
@@ -1859,6 +1950,15 @@ a:hover > .navArrow.down { transform:rotate(90deg) translate(2px,-2px); }
   .confExperienceDetails { margin-bottom:30px; }
   .confExperienceDetails .confFeatureList { grid-template-columns:1fr 1fr; }
   .confExperienceDetails .confFeatureList span { min-height:62px; padding-right:10px; }
+  .confExperienceMediaSplit { margin-top:48px; }
+  .confExperienceMediaSplit .confExperienceDetails { margin:0; padding:36px 20px 44px; }
+  .confModesSplit { margin-top:56px; gap:28px; }
+  .confModesSplit .confModeGrid p { grid-column:2; }
+  .confFnb ul { grid-template-columns:1fr; }
+  .confFnb li:nth-child(2n) { padding-left:0; border-left:0; }
+  .confAccessFormula span { min-height:78px; padding:18px; font-size:16px; }
+  .confEventUsesRail { margin-top:40px; }
+  .confCityMessage blockquote { margin-inline:0; padding:22px 18px; font-size:18px; }
 }
 
 @media (prefers-reduced-motion:reduce) {
