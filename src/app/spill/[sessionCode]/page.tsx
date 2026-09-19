@@ -1,4 +1,3 @@
-// src/app/spill/[sessionCode]/page.tsx
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
@@ -23,7 +22,7 @@ type CurrentSpillResponse = {
 
 const CONNECTION_OPTIONS: { value: ConnectionType; label: string }[] = [
   { value: "FRIENDS_ONLY", label: "Friends Only" },
-  { value: "FRIENDS", label: "Friends" },
+  // { value: "FRIENDS", label: "Friends" },
   { value: "MAYBE_MORE", label: "Maybe More" },
   { value: "ALREADY_TOGETHER", label: "Already Together" },
 ];

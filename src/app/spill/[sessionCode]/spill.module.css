@@ -132,10 +132,11 @@
 }
 
 .optionGrid {
-  width: 100%;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 12px;
+  width: 100%;
+  max-width: 320px;
 }
 
 .optionButton {
