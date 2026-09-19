@@ -29,8 +29,8 @@ export default function HomePage() {
       <video className="masterHeroMedia" autoPlay muted loop playsInline preload="metadata" poster="/assets/spill/home/hero-v2-poster.jpg" aria-hidden="true"><source src="/assets/spill/home/hero-v2.mp4" type="video/mp4" />Your browser does not support background video.</video>
       <div className="masterHeroVeil" /><GlobalHeader />
       <div className="masterHeroContent">
-        <p className="eyebrow">A café bar. A social experience. A media platform.</p>
-        <h1>First we danced<br />Then we sang<br /><em>Now we <SpillWordmark /></em></h1>
+        <p className="eyebrow heroEyebrow"><span>A café bar.</span><span>A social experience.</span><span>A media platform.</span></p>
+        <h1><span>First we danced</span><span>Then we sang</span><em>Now we <SpillWordmark /></em></h1>
         <div className="masterHeroBottom"><p>Come for coffee, drinks and connection. Stay for the experiences. Become part of something that can travel far beyond the room.</p></div>
         <div className="actions"><Link className="button primary" href="#locations">Choose your SPILL <NavArrow direction="down" /></Link><Link className="button secondary" href="#journey">Explore the experience</Link></div>
       </div>
