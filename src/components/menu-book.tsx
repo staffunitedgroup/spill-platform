@@ -25,14 +25,12 @@ export function MenuBook() {
   };
 
   return <section className="menuBook" aria-label="Full SPILL Saigon menu">
-    <div className="menuBookTop"><div><p className="eyebrow">The full menu</p><h2>Eight pages.<br />One menu.</h2></div><p>Hover a category, use the arrows, or swipe the menu like a real book.</p></div>
+    <div className="menuBookTop"><div><p className="eyebrow">The full menu</p><h2>Swipe the<br />menu.</h2></div><p>Drag or swipe naturally through the complete menu. One page appears on smaller screens and an open two-page spread on larger screens.</p></div>
     <nav className="menuBookTabs" aria-label="Choose a menu page">{menuPages.map((page, index) => <button className={active === index ? "active" : ""} onClick={() => goTo(index)} onMouseEnter={() => goTo(index)} aria-current={active === index ? "page" : undefined} key={page.slug}><span>{String(index + 1).padStart(2, "0")}</span>{page.label}</button>)}</nav>
     <div className="menuBookStage">
-      <button className="menuBookArrow previous" onClick={() => goTo(active - 1)} disabled={active === 0} aria-label="Previous menu page">←</button>
-      <div className="menuBookTrack" ref={track} onScroll={(event) => { const element = event.currentTarget; const next = Math.round(element.scrollLeft / element.clientWidth); if (next !== active) setActive(next); }}>
+      <div className="menuBookTrack" ref={track} onScroll={(event) => { const element = event.currentTarget; const pages = Array.from(element.children) as HTMLElement[]; const center = element.scrollLeft + (element.clientWidth / 2); let next = 0; let distance = Number.POSITIVE_INFINITY; pages.forEach((page, index) => { const pageCenter = page.offsetLeft + (page.offsetWidth / 2); const currentDistance = Math.abs(pageCenter - center); if (currentDistance < distance) { distance = currentDistance; next = index; } }); if (next !== active) setActive(next); }}>
         {menuPages.map((page, index) => <article id={page.slug} className="menuBookPage" key={page.slug}><div><span>{String(index + 1).padStart(2, "0")}</span><strong>{page.label}</strong><small>{index + 1} / {menuPages.length}</small></div><Image src={page.src} alt={`SPILL Saigon ${page.label} menu`} width={940} height={1670} priority={index === 0} sizes="(max-width: 900px) 92vw, 62vw" /></article>)}
       </div>
-      <button className="menuBookArrow next" onClick={() => goTo(active + 1)} disabled={active === menuPages.length - 1} aria-label="Next menu page">→</button>
     </div>
     <div className="menuBookProgress" aria-hidden="true"><span style={{ width: `${((active + 1) / menuPages.length) * 100}%` }} /></div>
   </section>;

@@ -1,0 +1,22 @@
+import Image from "next/image";
+import Link from "next/link";
+import { cookies } from "next/headers";
+import { GlobalHeader } from "@/components/global-header";
+import { investorCookieName, validInvestorAccessToken } from "@/lib/investor-access";
+import { unlockInvestorOverview } from "./actions";
+
+export default async function InvestorOverview({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
+  const store = await cookies();
+  const authorized = validInvestorAccessToken(store.get(investorCookieName)?.value);
+  const { error } = await searchParams;
+  if (!authorized) return <main className="investorGate"><div className="portalHeaderWrap"><GlobalHeader /></div><section><p className="eyebrow">Restricted investor materials</p><h1>Investor<br /><em>overview.</em></h1><p>This overview contains confidential concept and commercial information. Enter the access password supplied by the SPILL team.</p><form action={unlockInvestorOverview}><label htmlFor="investor-password">Access password</label><input id="investor-password" name="password" type="password" autoComplete="current-password" required /><button className="button primary" type="submit">Open overview <span>→</span></button>{error === "invalid" && <p className="gateError">That password is not correct.</p>}{error === "configuration" && <p className="gateError">Secure access has not yet been configured. Please contact hello@spillcafebar.com.</p>}</form><Link href="/partner/investors">← Back to investor enquiry</Link></section></main>;
+
+  const sections = [
+    { number: "01", title: "A new kind of social venue", text: "SPILL combines a hospitality destination with experiences, content creation, audience growth, and media distribution. The venue is the physical front door to a much larger ecosystem." },
+    { number: "02", title: "The physical-to-digital loop", text: "Real-world encounters can become livestreams, podcast conversations, short-form stories, and original formats. Digital discovery then creates another reason to visit the venue." },
+    { number: "03", title: "A diversified revenue model", text: "Hospitality is reinforced by signature experiences, production formats, event programming, content, sponsorship, brand partnerships, and expansion opportunities." },
+    { number: "04", title: "A repeatable city platform", text: "Each SPILL can share the same operating and media ecosystem while remaining rooted in local people, culture, creators, partnerships, and programming." },
+  ];
+
+  return <main className="investorOverview"><section className="investorOverviewHero"><Image src="/assets/spill/home/ecosystem-back-to-spill.png" alt="The SPILL physical and digital ecosystem" fill priority sizes="100vw" /><div /><GlobalHeader /><article><p className="eyebrow">Confidential · Investor overview</p><h1>A venue.<br /><em>A platform.</em></h1><p>SPILL is designed to create value across the room, the audience, the content, and the network.</p></article></section><nav aria-label="Investor overview sections">{sections.map((section) => <a href={`#investor-${section.number}`} key={section.number}><span>{section.number}</span>{section.title}</a>)}</nav><section className="investorOverviewGrid">{sections.map((section, index) => <article id={`investor-${section.number}`} key={section.number}><span>{section.number}</span><div><h2>{section.title}</h2><p>{section.text}</p>{index === 2 && <div className="revenueTags">{["Food + beverage", "Experiences", "Events", "Media + content", "Sponsorships", "Brand partnerships", "Expansion"].map((tag) => <small key={tag}>{tag}</small>)}</div>}</div></article>)}</section><section className="investorOverviewCta"><p className="eyebrow">Continue the conversation</p><h2>Build the next<br /><em>SPILL chapter.</em></h2><p>Detailed financial information, unit economics, terms, and data-room materials are shared through a managed investor process.</p><Link className="button primary" href="/partner/investors#investor-enquiry">Make an investor enquiry →</Link></section></main>;
+}
