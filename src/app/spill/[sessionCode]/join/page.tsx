@@ -1,153 +1,207 @@
-// src/app/spill/[sessionCode]/join/page.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import styles from "../spill.module.css";
+import { SpillWordmark } from "@/components/brand-text";
 
-/**
- * /spill/[sessionCode]/join
- *
- * LƯU Ý CHO NGƯỜI CHỈNH UI: phần logic (fetch/state) không nên đổi.
- * Muốn chỉnh giao diện thêm, sửa trong file spill.module.css cùng thư mục,
- * hoặc thay className bên dưới bằng component khác — miễn giữ nguyên các
- * hàm xử lý (handleSubmit, useEffect...) không đổi.
- */
+type StoredParticipant = { name: string; token: string };
+type StoredSession = { sessionId: string; participants: StoredParticipant[] };
+
+function loadStored(sessionCode: string): StoredSession | null {
+  try {
+    const raw = localStorage.getItem(`spill:${sessionCode}`);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    // Guard against leftover data from an older version of this app that
+    // used a different shape ({ sessionId, participantToken }).
+    if (
+      !parsed ||
+      typeof parsed !== "object" ||
+      !Array.isArray(parsed.participants)
+    ) {
+      localStorage.removeItem(`spill:${sessionCode}`);
+      return null;
+    }
+    return parsed as StoredSession;
+  } catch {
+    return null;
+  }
+}
+
+function saveStored(sessionCode: string, data: StoredSession) {
+  localStorage.setItem(`spill:${sessionCode}`, JSON.stringify(data));
+}
+
 export default function JoinPage() {
   const params = useParams<{ sessionCode: string }>();
   const router = useRouter();
   const sessionCode = params.sessionCode;
 
-  const [displayName, setDisplayName] = useState("");
-  const [status, setStatus] = useState<
-    "idle" | "checking" | "submitting" | "error"
-  >("checking");
-  const [errorMessage, setErrorMessage] = useState("");
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [participants, setParticipants] = useState<StoredParticipant[]>([]);
+  const [name, setName] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  // "entry" = someone is about to type their name and join
+  // "handoff" = participant 1 has joined, waiting to pass the phone to participant 2
+  const [step, setStep] = useState<"entry" | "handoff">("entry");
 
   useEffect(() => {
-    async function lookupSession() {
+    async function init() {
+      const stored = loadStored(sessionCode);
+      if (stored && stored.participants.length >= 2) {
+        router.replace(`/spill/${sessionCode}`);
+        return;
+      }
+      if (stored) {
+        setSessionId(stored.sessionId);
+        setParticipants(stored.participants);
+        setStep(stored.participants.length === 1 ? "handoff" : "entry");
+        setLoading(false);
+        return;
+      }
+
       try {
         const res = await fetch(`/api/sessions/by-code/${sessionCode}`);
-        const data = await res.json();
-
         if (!res.ok) {
-          setErrorMessage(
-            data.error?.message ??
-              "Something went wrong. Please ask staff to help you start.",
+          setError(
+            "We couldn't find this table's SPILL. Ask a staff member for help.",
           );
-          setStatus("error");
+          setLoading(false);
           return;
         }
-
-        if (
-          data.session.status !== "WAITING" &&
-          data.session.status !== "READY"
-        ) {
-          setErrorMessage(
-            "This SPILL has ended. Scan again to start a new one, or ask staff for help",
-          );
-          setStatus("error");
-          return;
-        }
-
-        setSessionId(data.session.id);
-        setStatus("idle");
+        const json = await res.json();
+        const id = json.session?.id ?? json.id;
+        setSessionId(id);
       } catch {
-        setErrorMessage("Connection issue - Please try again.");
-        setStatus("error");
+        setError("Something went wrong. Please try again.");
       }
+      setLoading(false);
     }
-
-    lookupSession();
+    init();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionCode]);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!sessionId || !displayName.trim()) return;
-
-    setStatus("submitting");
-    setErrorMessage("");
-
+  async function joinSession() {
+    if (!sessionId || !name.trim()) return;
+    setSubmitting(true);
+    setError(null);
     try {
       const res = await fetch(`/api/sessions/${sessionId}/participants`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ displayName: displayName.trim() }),
+        body: JSON.stringify({ displayName: name.trim() }),
       });
-      const data = await res.json();
-
+      const json = await res.json();
       if (!res.ok) {
-        setErrorMessage(data.error?.message ?? "Could not join this session.");
-        setStatus("error");
+        setError(json.error?.message ?? "Couldn't join this SPILL.");
+        setSubmitting(false);
         return;
       }
 
-      localStorage.setItem(
-        `spill:${sessionCode}`,
-        JSON.stringify({
-          sessionId,
-          participantToken: data.participant.participantToken,
-        }),
-      );
+      const updated = [
+        ...participants,
+        { name: name.trim(), token: json.participant.participantToken },
+      ];
+      setParticipants(updated);
+      saveStored(sessionCode, { sessionId, participants: updated });
+      setName("");
+      setSubmitting(false);
 
-      router.push(`/spill/${sessionCode}`);
+      if (json.session.status === "READY" || updated.length >= 2) {
+        router.replace(`/spill/${sessionCode}`);
+      } else {
+        setStep("handoff");
+      }
     } catch {
-      setErrorMessage("Connection issue - Please try again.");
-      setStatus("error");
+      setError("Something went wrong. Please try again.");
+      setSubmitting(false);
     }
   }
 
-  if (status === "checking") {
+  if (loading) {
     return (
-      <div className={styles.screen}>
-        <div className={styles.card}>
-          <span className={styles.pulse} />
-          <p className={styles.subtitle}>Loading...</p>
-        </div>
-      </div>
+      <main className="s42App">
+        <section className="s42Intro">
+          <div className="s42IntroContent">
+            <span>Loading…</span>
+          </div>
+        </section>
+      </main>
     );
   }
 
-  if (status === "error" && !sessionId) {
+  if (error && !sessionId) {
     return (
-      <div className={styles.screen}>
-        <div className={styles.card}>
-          <span className={styles.logo}>SPILL</span>
-          <p className={styles.errorText}>{errorMessage}</p>
-        </div>
-      </div>
+      <main className="s42App">
+        <section className="s42Intro">
+          <div className="s42IntroContent">
+            <h1>Something went wrong</h1>
+            <span>{error}</span>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
+  if (step === "handoff") {
+    return (
+      <main className="s42App">
+        <section className="s42Setup">
+          <div className="s42Handoff">
+            <span>{participants[0]?.name} is in</span>
+            <h1>Pass the phone</h1>
+            <p>Participant 2, tap below when the screen is yours.</p>
+            <button
+              className="s42Primary"
+              type="button"
+              onClick={() => setStep("entry")}
+            >
+              I&apos;m Participant 2 <span>→</span>
+            </button>
+          </div>
+        </section>
+      </main>
     );
   }
 
   return (
-    <div className={styles.screen}>
-      <div className={styles.card}>
-        <span className={styles.logo}>SPILL</span>
-        <h1 className={styles.title}>What&apos;s your name?</h1>
-        <form className={styles.form} onSubmit={handleSubmit}>
-          <input
-            className={styles.input}
-            type="text"
-            placeholder="Your name"
-            value={displayName}
-            onChange={(e) => setDisplayName(e.target.value)}
-            maxLength={40}
-            required
-            autoFocus
-          />
+    <main className="s42App">
+      <section className="s42Setup">
+        <div className="s42SetupPanel">
+          <div className="s42SetupHeading">
+            <span>
+              {participants.length === 0 ? "Participant 1" : "Participant 2"}
+            </span>
+            <h1>
+              Want to <SpillWordmark />?
+            </h1>
+            <p>Enter your name to join this table&apos;s SPILL.</p>
+          </div>
+          <label className="s42TableField">
+            <span>Your name</span>
+            <input
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              placeholder="e.g. Uyên"
+              maxLength={40}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") joinSession();
+              }}
+            />
+          </label>
+          {error && <p className="s42Permission">{error}</p>}
           <button
-            className={styles.button}
-            type="submit"
-            disabled={status === "submitting"}
+            className="s42Primary"
+            type="button"
+            disabled={!name.trim() || submitting}
+            onClick={joinSession}
           >
-            {status === "submitting" ? "Joining..." : "Join"}
+            {submitting ? "Joining…" : "Continue"} <span>→</span>
           </button>
-        </form>
-        {errorMessage && status === "error" && (
-          <p className={styles.errorText}>{errorMessage}</p>
-        )}
-      </div>
-    </div>
+        </div>
+      </section>
+    </main>
   );
 }

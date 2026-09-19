@@ -1,266 +1,369 @@
 import { config } from "dotenv";
 config({ path: ".env.local" });
 
+// The 42 SPILL prompts used in the SPILL 42 UI (src/components/spill-42-app.tsx).
+// Reused here as the real database content instead of a separate placeholder set,
+// since these already match the product doc's mix of ASK / DO / NOTICE / DARE / PREDICT / IMAGINE.
+//
+// Mapping from the UI's prompt categories to the Prisma `SpillType` enum:
+//   ASK -> QUESTION, DO -> INSTRUCTION, NOTICE -> OBSERVATION,
+//   DARE -> CHALLENGE, PREDICT -> SCENARIO, IMAGINE -> VISION
+//
+// `content` packs the main text and the short "follow" line together as
+// `text|||follow`, split again in the UI — the schema has no separate field
+// for it and this keeps the original pacing intact without a migration.
+
+type PromptType = "ASK" | "DO" | "NOTICE" | "DARE" | "PREDICT" | "IMAGINE";
+
+const TYPE_MAP: Record<
+  PromptType,
+  | "QUESTION"
+  | "INSTRUCTION"
+  | "OBSERVATION"
+  | "CHALLENGE"
+  | "SCENARIO"
+  | "VISION"
+> = {
+  ASK: "QUESTION",
+  DO: "INSTRUCTION",
+  NOTICE: "OBSERVATION",
+  DARE: "CHALLENGE",
+  PREDICT: "SCENARIO",
+  IMAGINE: "VISION",
+};
+
+const RAW_SPILLS: {
+  id: number;
+  type: PromptType;
+  title: string;
+  text: string;
+  follow: string;
+}[] = [
+  {
+    id: 1,
+    type: "NOTICE",
+    title: "The look",
+    text: "Look at each other for five seconds. No talking.",
+    follow: "Well…?",
+  },
+  {
+    id: 2,
+    type: "ASK",
+    title: "The detour",
+    text: "What is one small decision that quietly changed your life?",
+    follow: "Take your time.",
+  },
+  {
+    id: 3,
+    type: "DO",
+    title: "The toast",
+    text: "Create a five-word toast to this exact moment.",
+    follow: "Glasses up.",
+  },
+  {
+    id: 4,
+    type: "PREDICT",
+    title: "First instinct",
+    text: "What did you first assume about someone here—and what do you think now?",
+    follow: "Be honest.",
+  },
+  {
+    id: 5,
+    type: "ASK",
+    title: "Worth it",
+    text: "What is something difficult you would happily do all over again?",
+    follow: "Tell the story.",
+  },
+  {
+    id: 6,
+    type: "NOTICE",
+    title: "The room",
+    text: "Look around. Choose one object that matches your mood and explain why.",
+    follow: "There are no wrong objects.",
+  },
+  {
+    id: 7,
+    type: "DARE",
+    title: "Say it",
+    text: "Give someone here a sincere compliment you have never said aloud.",
+    follow: "Mean it.",
+  },
+  {
+    id: 8,
+    type: "IMAGINE",
+    title: "One extra day",
+    text: "You get one completely free day in this city. What happens?",
+    follow: "Plan it together.",
+  },
+  {
+    id: 9,
+    type: "ASK",
+    title: "The soundtrack",
+    text: "Which song belongs in the opening scene of your life right now?",
+    follow: "What makes it fit?",
+  },
+  {
+    id: 10,
+    type: "DO",
+    title: "Switch seats",
+    text: "Change seats. What feels different from here?",
+    follow: "A new angle changes things.",
+  },
+  {
+    id: 11,
+    type: "PREDICT",
+    title: "Order for me",
+    text: "Choose the next drink or snack you think someone else would enjoy.",
+    follow: "Defend your choice.",
+  },
+  {
+    id: 12,
+    type: "ASK",
+    title: "Unexpected skill",
+    text: "What are you strangely good at that most people would never guess?",
+    follow: "Proof is welcome.",
+  },
+  {
+    id: 13,
+    type: "NOTICE",
+    title: "Same thing",
+    text: "Find one detail in the room that everybody noticed independently.",
+    follow: "Compare notes.",
+  },
+  {
+    id: 14,
+    type: "IMAGINE",
+    title: "New tradition",
+    text: "Invent a tradition worth repeating every year.",
+    follow: "Name it.",
+  },
+  {
+    id: 15,
+    type: "ASK",
+    title: "Changed mind",
+    text: "What is something important you changed your mind about recently?",
+    follow: "What changed it?",
+  },
+  {
+    id: 16,
+    type: "DO",
+    title: "The headline",
+    text: "Write today's imaginary headline in seven words or fewer.",
+    follow: "Breaking news.",
+  },
+  {
+    id: 17,
+    type: "PREDICT",
+    title: "Next chapter",
+    text: "Predict one good thing that will happen for someone here this year.",
+    follow: "Make it specific.",
+  },
+  {
+    id: 18,
+    type: "DARE",
+    title: "No filter",
+    text: "Say the first kind thought that comes to mind about this table.",
+    follow: "Do not edit it.",
+  },
+  {
+    id: 19,
+    type: "ASK",
+    title: "Alive",
+    text: "When do you feel most awake, most present, most yourself?",
+    follow: "Take us there.",
+  },
+  {
+    id: 20,
+    type: "NOTICE",
+    title: "The pause",
+    text: "Take ten silent seconds. What thought arrived first?",
+    follow: "Share only what feels right.",
+  },
+  {
+    id: 21,
+    type: "IMAGINE",
+    title: "Start again",
+    text: "If you could begin one part of life again with what you know now, what would it be?",
+    follow: "What would you keep?",
+  },
+  {
+    id: 22,
+    type: "ASK",
+    title: "Home",
+    text: "What place feels like home even though you were not born there?",
+    follow: "Why that place?",
+  },
+  {
+    id: 23,
+    type: "DO",
+    title: "The pitch",
+    text: "Pitch a completely unnecessary invention that everybody suddenly needs.",
+    follow: "You have thirty seconds.",
+  },
+  {
+    id: 24,
+    type: "PREDICT",
+    title: "Two truths",
+    text: "Predict which person here would stay calmest in a crisis—and explain why.",
+    follow: "They may respond.",
+  },
+  {
+    id: 25,
+    type: "ASK",
+    title: "Kept promise",
+    text: "What promise to yourself are you proud you kept?",
+    follow: "Small promises count.",
+  },
+  {
+    id: 26,
+    type: "DARE",
+    title: "Ask better",
+    text: "Ask the question you wish people asked you more often.",
+    follow: "Then answer it.",
+  },
+  {
+    id: 27,
+    type: "NOTICE",
+    title: "The energy",
+    text: "Describe the energy at this table using only three words.",
+    follow: "Compare your words.",
+  },
+  {
+    id: 28,
+    type: "IMAGINE",
+    title: "Perfect ordinary",
+    text: "Describe a perfectly ordinary day you would never get tired of.",
+    follow: "Start in the morning.",
+  },
+  {
+    id: 29,
+    type: "ASK",
+    title: "Good mistake",
+    text: "Which mistake taught you something you could not have learned any other way?",
+    follow: "What did it change?",
+  },
+  {
+    id: 30,
+    type: "DO",
+    title: "Make a rule",
+    text: "Create one rule everyone in the world must follow for a day.",
+    follow: "What happens next?",
+  },
+  {
+    id: 31,
+    type: "PREDICT",
+    title: "Future story",
+    text: "What story from tonight do you think will still be told in five years?",
+    follow: "Give it a title.",
+  },
+  {
+    id: 32,
+    type: "ASK",
+    title: "The brave thing",
+    text: "What is one brave thing you did before you felt ready?",
+    follow: "How did it end?",
+  },
+  {
+    id: 33,
+    type: "NOTICE",
+    title: "Shared signal",
+    text: "Without speaking, agree on who at the table should answer next.",
+    follow: "Did you choose the same person?",
+  },
+  {
+    id: 34,
+    type: "IMAGINE",
+    title: "Open door",
+    text: "A door appears and leads anywhere for one hour. Where does it go?",
+    follow: "Who comes with you?",
+  },
+  {
+    id: 35,
+    type: "ASK",
+    title: "More of this",
+    text: "What do you want more of in the next twelve months?",
+    follow: "What is the first step?",
+  },
+  {
+    id: 36,
+    type: "DARE",
+    title: "Thank you",
+    text: "Thank someone here for something they may not know mattered.",
+    follow: "Let the moment land.",
+  },
+  {
+    id: 37,
+    type: "DO",
+    title: "The challenge",
+    text: "Choose one tiny challenge everyone here can complete before tomorrow.",
+    follow: "Make it real.",
+  },
+  {
+    id: 38,
+    type: "PREDICT",
+    title: "Best host",
+    text: "Who here would host the most unforgettable dinner—and what would they serve?",
+    follow: "Build the guest list.",
+  },
+  {
+    id: 39,
+    type: "ASK",
+    title: "Unsaid",
+    text: "What is something people often misunderstand about you?",
+    follow: "What should they know?",
+  },
+  {
+    id: 40,
+    type: "NOTICE",
+    title: "The change",
+    text: "What feels different now compared with the beginning of this SPILL?",
+    follow: "Notice the small things.",
+  },
+  {
+    id: 41,
+    type: "IMAGINE",
+    title: "Again",
+    text: "If this conversation continued somewhere else, where would you go?",
+    follow: "Picture the next hour.",
+  },
+  {
+    id: 42,
+    type: "DARE",
+    title: "Last SPILL",
+    text: "Say one thing you hope everyone here remembers from this conversation.",
+    follow: "You SPILLed all 42.",
+  },
+];
+
 async function main() {
   const { prisma } = await import("../src/lib/prisma");
-
-  // 42 real SPILL questions — replaces the old 13 test/placeholder questions.
-  // Split 14/14/14 across difficulty levels 1 (light) -> 3 (deep),
-  // each level cycling through Fun / Story / Hypothetical / Value categories
-  // so the pacing doesn't feel repetitive as it goes deeper.
-  const spills = [
-    // LEVEL 1 — Light / Icebreaker
-    {
-      content: "What's a small thing that made you smile this week?",
-      category: "Fun",
-      difficulty: 1,
-    },
-    {
-      content: "What's the last spontaneous thing you did?",
-      category: "Story",
-      difficulty: 1,
-    },
-    {
-      content:
-        "If tonight had a soundtrack, what song would be playing right now?",
-      category: "Hypothetical",
-      difficulty: 1,
-    },
-    {
-      content: "What's your go-to order at a coffee shop, and why that one?",
-      category: "Value",
-      difficulty: 1,
-    },
-    {
-      content: "What's a place in Saigon you never get tired of?",
-      category: "Fun",
-      difficulty: 1,
-    },
-    {
-      content:
-        "What's something you're weirdly good at — and how did you find out?",
-      category: "Story",
-      difficulty: 1,
-    },
-    {
-      content: "If you could teleport anywhere right now, where would you go?",
-      category: "Hypothetical",
-      difficulty: 1,
-    },
-    {
-      content:
-        "What's a show or movie you could rewatch forever — what does it give you?",
-      category: "Value",
-      difficulty: 1,
-    },
-    {
-      content: "What's the best meal you've had this month?",
-      category: "Fun",
-      difficulty: 1,
-    },
-    {
-      content: "Tell me about a time a stranger made your day better.",
-      category: "Story",
-      difficulty: 1,
-    },
-    {
-      content: "What's a skill you wish you had?",
-      category: "Hypothetical",
-      difficulty: 1,
-    },
-    {
-      content: "Coffee person or tea person — and why?",
-      category: "Value",
-      difficulty: 1,
-    },
-    {
-      content: "What's a word or phrase you say way too often?",
-      category: "Fun",
-      difficulty: 1,
-    },
-    {
-      content: 'What\'s the most "you" thing you did this week?',
-      category: "Story",
-      difficulty: 1,
-    },
-
-    // LEVEL 2 — Medium / Getting to know you
-    {
-      content:
-        "What's something you believed as a kid that turned out to be totally wrong?",
-      category: "Value",
-      difficulty: 2,
-    },
-    {
-      content: "What's a habit you're proud of building — how did it start?",
-      category: "Story",
-      difficulty: 2,
-    },
-    {
-      content:
-        "What's the best advice someone ever gave you, that you actually use?",
-      category: "Fun",
-      difficulty: 2,
-    },
-    {
-      content: "What does a perfect ordinary day look like for you?",
-      category: "Hypothetical",
-      difficulty: 2,
-    },
-    {
-      content: "What's something you changed your mind about recently?",
-      category: "Value",
-      difficulty: 2,
-    },
-    {
-      content: "What's a risk you took that paid off?",
-      category: "Story",
-      difficulty: 2,
-    },
-    {
-      content: "Who's someone who shaped who you are today?",
-      category: "Value",
-      difficulty: 2,
-    },
-    {
-      content: "What's something people usually get wrong about you at first?",
-      category: "Fun",
-      difficulty: 2,
-    },
-    {
-      content: "What's a small win this year that meant a lot to you?",
-      category: "Story",
-      difficulty: 2,
-    },
-    {
-      content: "If you could master one thing overnight, what would it be?",
-      category: "Hypothetical",
-      difficulty: 2,
-    },
-    {
-      content: "What's something you do differently than most people your age?",
-      category: "Value",
-      difficulty: 2,
-    },
-    {
-      content: "What's a compliment that stuck with you?",
-      category: "Story",
-      difficulty: 2,
-    },
-    {
-      content:
-        "If you had a free year with no obligations, what would you do with it?",
-      category: "Hypothetical",
-      difficulty: 2,
-    },
-    {
-      content:
-        "What's a \"guilty pleasure\" you don't actually feel guilty about?",
-      category: "Fun",
-      difficulty: 2,
-    },
-
-    // LEVEL 3 — Deep / Go deeper
-    {
-      content: "What's something you're currently figuring out about yourself?",
-      category: "Value",
-      difficulty: 3,
-    },
-    {
-      content: "When do you feel most like yourself?",
-      category: "Story",
-      difficulty: 3,
-    },
-    {
-      content: "What's a fear you've slowly stopped letting control you?",
-      category: "Value",
-      difficulty: 3,
-    },
-    {
-      content: "What's something you needed to hear but nobody told you?",
-      category: "Story",
-      difficulty: 3,
-    },
-    {
-      content: 'What does "being truly seen" by someone mean to you?',
-      category: "Hypothetical",
-      difficulty: 3,
-    },
-    {
-      content: "What's a moment that quietly changed how you see life?",
-      category: "Story",
-      difficulty: 3,
-    },
-    {
-      content: "What do you want people to remember about you?",
-      category: "Value",
-      difficulty: 3,
-    },
-    {
-      content:
-        "What's something you're still learning to forgive — in yourself or someone else?",
-      category: "Value",
-      difficulty: 3,
-    },
-    {
-      content: "What connection are you hoping to find tonight?",
-      category: "Hypothetical",
-      difficulty: 3,
-    },
-    {
-      content:
-        "What's a moment you felt truly proud of yourself, even if no one noticed?",
-      category: "Story",
-      difficulty: 3,
-    },
-    {
-      content: "What's something you've stopped apologizing for?",
-      category: "Value",
-      difficulty: 3,
-    },
-    {
-      content:
-        "What's a conversation that changed how you think about someone?",
-      category: "Story",
-      difficulty: 3,
-    },
-    {
-      content: "What does home mean to you right now?",
-      category: "Value",
-      difficulty: 3,
-    },
-    {
-      content:
-        "If this was the last SPILL of the night, what's one true thing you'd want to say?",
-      category: "Hypothetical",
-      difficulty: 3,
-    },
-  ];
 
   console.log(
     `Clearing old session history that references old SPILL questions...`,
   );
-  // These reference spill.id via a foreign key, so they must go first.
   await prisma.sessionSpill.deleteMany({});
 
   console.log(`Clearing old SPILL questions...`);
   await prisma.spill.deleteMany({});
 
-  console.log(`Seeding ${spills.length} SPILL questions...`);
-  for (const spill of spills) {
+  console.log(`Seeding ${RAW_SPILLS.length} SPILL prompts (MEL's content)...`);
+  for (const spill of RAW_SPILLS) {
+    const difficulty = spill.id <= 14 ? 1 : spill.id <= 28 ? 2 : 3;
     await prisma.spill.create({
       data: {
-        type: "QUESTION",
-        content: spill.content,
-        category: spill.category,
-        difficulty: spill.difficulty,
+        type: TYPE_MAP[spill.type],
+        content: `${spill.text}|||${spill.follow}`,
+        category: spill.title,
+        difficulty,
         active: true,
         eligibleTypes: ["FRIENDS_ONLY", "MAYBE_MORE", "ALREADY_TOGETHER"],
       },
     });
   }
 
-  console.log("Done. 42 real SPILL questions are now in the database.");
+  console.log(
+    "Done. 42 real SPILL prompts (MEL's content) are now in the database.",
+  );
 }
 
 main()

@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import styles from "../../[sessionCode]/spill.module.css";
 
 export default function TableEntryPage() {
   const params = useParams<{ tableCode: string }>();
@@ -36,18 +35,20 @@ export default function TableEntryPage() {
   }, [params.tableCode, router]);
 
   return (
-    <div className={styles.screen}>
-      <div className={styles.card}>
-        <span className={styles.logo}>SPILL</span>
-        {errorMessage ? (
-          <p className={styles.errorText}>{errorMessage}</p>
-        ) : (
-          <>
-            <span className={styles.pulse} />
-            <p className={styles.subtitle}>Getting your table ready...</p>
-          </>
-        )}
-      </div>
-    </div>
+    <main className="s42App">
+      <section className="s42Intro">
+        <div className="s42IntroContent">
+          <p>Real conversation. Real connection.</p>
+          {errorMessage ? (
+            <h1>{errorMessage}</h1>
+          ) : (
+            <>
+              <h1>Getting your table ready…</h1>
+              <span>Just a moment.</span>
+            </>
+          )}
+        </div>
+      </section>
+    </main>
   );
 }
