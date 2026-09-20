@@ -28,8 +28,6 @@ const pricing = [
 ];
 const consentChoices = [["Private", "Only they receive the recording."], ["Shareable", "Prepared for them to post."], ["SPILL Eligible", "SPILL may publish with permission."], ["Anonymous", "Identity can be protected."]];
 const sponsorIdeas = ["Question of the Week", "Themed series", "Free public sessions", "Content activations"];
-const contentOutputs = ["TikToks", "Reels", "YouTube Shorts", "Facebook clips", "Quote cards", "Compilations"];
-const recurringFormats = ["The Saigon Confession", "Unpopular Opinion", "Why I Came to Saigon", "Confession of the Week"];
 const eventUses = ["Weddings", "Corporate events", "Conferences", "Festivals", "Product launches", "Nightlife activations"];
 const productCustomers = ["Hotels", "Malls", "Event companies", "Agencies", "Universities", "Entertainment venues"];
 const software = ["Recording + prompts", "QR delivery + storage", "Consent management", "Branding + analytics", "Automated editing", "Captions + updates"];
@@ -56,7 +54,7 @@ export default function ConfessionalPage() {
       <div className="confExperienceIntro" data-conf-reveal><p className="confKicker">01 / The Experience</p><h2>Designed to feel<br /><em>simple and private.</em></h2><p>The booth is designed for one person comfortably, two people maximum.</p></div>
       <div className="confSteps">{[["01", "Step in"], ["02", "Sit down"], ["03", "Choose a mode"], ["04", "Press record"], ["05", "SPILL"]].map(([number, label]) => <article key={label} data-conf-reveal><span>{number}</span><h3><BrandedText text={label} tone="dark" /></h3></article>)}</div>
       <div className="confExperienceMediaSplit" data-conf-reveal><div className="confExperienceVideo"><video autoPlay muted loop playsInline preload="metadata" poster="/assets/spill/confessional/promotion-poster.jpg" aria-label="SPILL Confessional experience"><source src="/assets/spill/confessional/promotion.mp4" type="video/mp4" />Your browser does not support embedded video.</video></div><div className="confExperienceDetails"><p className="confKicker">Inside</p><div className="confFeatureList">{boothFeatures.map((feature, index) => <span key={feature}><b>{String(index + 1).padStart(2, "0")}</b>{feature}</span>)}</div></div></div>
-      <div className="confModesSplit"><div className="confModesImage" data-conf-reveal><Image src="/assets/spill/confessional/modes.png" alt="Seven SPILL Confessional recording modes" fill sizes="(max-width: 900px) 100vw, 58vw" /></div><div className="confModeGrid">{modes.map(([title, copy], index) => <article key={title} data-conf-reveal><span>{String(index + 1).padStart(2, "0")}</span><h3>{title}</h3><p>{copy}</p></article>)}</div></div>
+      <div className="confModesSplit"><div className="confModeGrid">{modes.map(([title, copy], index) => <article key={title} data-conf-reveal><span>{String(index + 1).padStart(2, "0")}</span><h3>{title}</h3><p>{copy}</p></article>)}</div><div className="confModesImage" data-conf-reveal><Image src="/assets/spill/confessional/modes-7.png" alt="Seven SPILL Confessional recording modes" fill sizes="(max-width: 900px) 100vw, 58vw" /></div></div>
     </section>
 
     <section className="confEcosystem">
@@ -67,10 +65,8 @@ export default function ConfessionalPage() {
     </section>
 
     <section className="confLaunch">
-      <div className="confLaunchIntro" data-conf-reveal><p className="confKicker">03 / Start Inside SPILL Saigon</p><h2>Start with two.<br /><em>Learn. Then expand.</em></h2><p>The first phase focuses entirely on the venue. Start with two self-contained booths, then expand to approximately four once demand is proven. Each relocatable unit can move with events, traffic, seating, sponsorships, and operational needs.</p></div>
-      <div className="confLaunchNumbers" data-conf-reveal><div><strong>02</strong><span>Units at launch</span></div><b>→</b><div><strong>~04</strong><span>After demand is proven</span></div></div>
-      <p className="confLabLine" data-conf-reveal>The first booths become SPILL’s live R&amp;D lab.</p>
-      <div className="confMetricGrid">{launchMetrics.map((metric, index) => <article key={metric} data-conf-reveal><span>{String(index + 1).padStart(2, "0")}</span><h3>{metric}</h3></article>)}</div>
+      <div className="confLaunchIntro" data-conf-reveal><p className="confKicker">03 / Start Inside SPILL Saigon</p><h2>Start with two.<br /><em>Learn. Then expand.</em></h2></div>
+      <div className="confLaunchColumns"><div className="confLaunchLeft" data-conf-reveal><p>The first phase focuses entirely on the venue. Start with two self-contained booths, then expand to approximately four once demand is proven. Each relocatable unit can move with events, traffic, seating, sponsorships, and operational needs.</p><div className="confLaunchNumbers"><div><strong>02</strong><span>Units at launch</span></div><b>→</b><div><strong>~04</strong><span>After demand is proven</span></div></div></div><div className="confLaunchRight"><p className="confLabLine" data-conf-reveal>The first booths become SPILL’s live R&amp;D lab.</p><div className="confMetricGrid">{launchMetrics.map((metric, index) => <article key={metric} data-conf-reveal><span>{String(index + 1).padStart(2, "0")}</span><h3>{metric}</h3></article>)}</div></div></div>
     </section>
 
     <section className="confRevenue">
@@ -78,33 +74,26 @@ export default function ConfessionalPage() {
       <div className="confPriceTable">{pricing.map(([product, price, detail], index) => <article key={product} data-conf-reveal><span>0{index + 1}</span><h3><BrandedText text={product} /></h3><strong>{price}</strong><p>{detail}</p></article>)}</div>
     </section>
 
-    <section className="confFnbSection"><div className="confFnb" data-conf-reveal><div><p className="confKicker">05 / F&amp;B Integration</p><h2>The booth should grow<br /><em>the whole visit.</em></h2><p>The true value of each customer becomes:</p><h3>Booth revenue + F&amp;B spend + content value + future customer value</h3></div><ul><li>Spend 300k VND and unlock a Confessional session</li><li>Confessional + Cocktail package</li><li>Preferred drink pricing after a session</li><li>Sponsored free sessions during selected periods</li></ul></div></section>
+    <section className="confFnbSection"><div className="confFnb" data-conf-reveal><div><p className="confKicker">05 / F&amp;B Integration</p><h2>The booth should grow<br /><em>the whole visit.</em></h2><p>Booth revenue, F&amp;B spend, content value, and future customer value become one connected experience.</p></div></div><div className="confSectionVisual" data-conf-reveal><Image src="/assets/spill/confessional/fnb-integration.png" alt="SPILL Confessional food and beverage integration journey" fill sizes="100vw" /></div></section>
 
-    <section className="confAccess">
-      <div className="confAccessHeading" data-conf-reveal><p className="confKicker">06 / Free Editorial Confessionals</p><h2>Not every strong story<br /><em>should be paid.</em></h2><p>SPILL should invite interesting people to participate for free: creators, musicians, artists, founders, travelers, performers, local personalities, and compelling regular customers.</p></div>
-      <div className="confAccessFormula" data-conf-reveal><span>Customers can pay</span><b>+</b><span>Interesting people can be invited</span><b>+</b><span>Sponsors can fund access</span></div>
-    </section>
+    <section className="confAccess"><div className="confAccessHeading" data-conf-reveal><p className="confKicker">06 / Free Editorial Confessionals</p><h2>Not every strong story<br /><em>should be paid.</em></h2><p>Customers can pay. Interesting people can be invited. Sponsors can fund participation.</p></div><div className="confSectionVisual" data-conf-reveal><Image src="/assets/spill/confessional/free-editorial.png" alt="Customers, invited voices, and sponsors creating access to SPILL Confessional" fill sizes="100vw" /></div></section>
 
     <section className="confSponsors">
       <div className="confSponsorsIntro" data-conf-reveal><p className="confKicker">07 / Sponsorship</p><h2>Support the conversation.<br /><em>Never control it.</em></h2><p>Sponsorship can become one of the strongest revenue streams. SPILL owns the experience. The sponsor supports the conversation.</p></div>
       <div className="confSponsorIdeas">{sponsorIdeas.map((idea, index) => <article key={idea} data-conf-reveal><span>{String(index + 1).padStart(2, "0")}</span><h3>{idea}</h3></article>)}</div>
     </section>
 
-    <section className="confContent">
-      <div className="confContentHeading" data-conf-reveal><p className="confKicker">08 / Content Engine</p><h2>One honest moment.<br /><em>Many ways to travel.</em></h2><p>With participant permission, selected recordings become a continuous stream of authentic content without requiring SPILL to produce every piece from scratch.</p></div>
-      <div className="confOutputRail" data-conf-reveal>{contentOutputs.map((item, index) => <span key={item}><b>0{index + 1}</b>{item}</span>)}</div>
-      <div className="confSeries" data-conf-reveal><h3>Recurring formats</h3><div>{recurringFormats.map((format) => <span key={format}>{format}</span>)}</div></div>
-    </section>
+    <section className="confContent"><div className="confContentHeading" data-conf-reveal><p className="confKicker">08 / Content Engine</p><h2>One honest moment.<br /><em>Many ways to travel.</em></h2><p>With participant permission, selected recordings can become clips, recurring formats, and stories that travel far beyond the booth.</p></div><div className="confSectionVisual" data-conf-reveal><Image src="/assets/spill/confessional/content-engine.png" alt="How one SPILL Confessional recording becomes social content and recurring formats" fill sizes="100vw" /></div></section>
 
     <section className="confPrivacy">
       <div className="confPrivacyIntro" data-conf-reveal><p className="confKicker">09 / Privacy and Consent</p><h2>Say something real.<br /><em>Keep the choice.</em></h2><p>Privacy is central to the concept. Trust is essential if people are expected to say anything meaningful.</p></div>
-      <div className="confConsentGrid">{consentChoices.map(([title, copy], index) => <article key={title} data-conf-reveal><span>0{index + 1}</span><h3><BrandedText text={title} /></h3><p>{copy}</p></article>)}</div>
+      <div className="confConsentGrid">{consentChoices.map(([title, copy], index) => <article key={title} data-conf-reveal><span>0{index + 1}</span><h3><BrandedText text={title} tone="dark" /></h3><p>{copy}</p></article>)}</div>
       <strong className="confTrustLine" data-conf-reveal>Private by default. Published only with permission.</strong>
     </section>
 
     <section className="confBoothSection">
       <div className="confBooth"><div className="confBoothMedia" data-conf-reveal><Image src="/assets/spill/confessional/hero.png" alt="Self-contained SPILL Confessional booth in the café-bar" fill sizes="(max-width: 900px) 100vw, 58vw" /></div><div className="confBoothCopy" data-conf-reveal><p className="confKicker">10 / The Booth</p><h2>Architecture.<br /><em>Not a studio.</em></h2><p>One side holds a two-person sofa. Opposite it, a flush-mounted display, discreet camera, and professional light face the speakers. A small table sits in the centre, with one hanging microphone and two recessed lights overhead. Table controls handle record, stop, lighting, retake, and end session.</p><p>No technical clutter. The unit should feel like a premium piece of furniture or architecture rather than a studio.</p></div></div>
-      <div className="confRelocatable"><div className="confRelocatableCopy" data-conf-reveal><p className="confKicker">Self-contained and relocatable</p><h2>Power + internet.<br /><em><SpillWordmark /> anywhere.</em></h2><p>Each booth is a complete unit. Move it around SPILL, take it to events, relocate it between properties, or eventually install it in other venues.</p></div><div className="confRequirements" data-conf-reveal><span>Requires little more than</span><div><strong>01</strong><h3>Power</h3></div><b>+</b><div><strong>02</strong><h3>Internet</h3></div></div></div>
+      <div className="confRelocatable"><div className="confRelocatableCopy" data-conf-reveal><p className="confKicker">Self-contained and relocatable</p><h2>Power + internet.<br /><em><SpillWordmark /> anywhere.</em></h2><p>Each booth is a complete unit. Move it around SPILL, take it to events, relocate it between properties, or eventually install it in other venues.</p></div><div className="confRelocatableMedia" data-conf-reveal><Image src="/assets/spill/confessional/self-contained-relocatable.png" alt="A self-contained SPILL Confessional booth moving between locations and events" fill sizes="(max-width: 820px) 100vw, 52vw" /></div></div>
       <div className="confExternal"><div className="confExternalHeading" data-conf-reveal><p className="confKicker">Phase Two / Outside SPILL</p><h2>Prove it inside.<br /><em>Then test one outside.</em></h2><p>Only after the internal model is proven should SPILL test one external unit at an event, hotel, university, mall, or partner venue.</p></div><div className="confBigQuestion" data-conf-reveal><span>The key question</span><p>Does the Confessional work because it is inside SPILL, or can it attract demand independently?</p></div></div>
     </section>
 
