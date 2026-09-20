@@ -89,7 +89,7 @@ export default function LivestreamPage() {
     </section>
 
     <section className="liveProgramming">
-      <div className="liveProgrammingIntro" data-live-reveal><p className="liveKicker">05 / Building the SPILL audience</p><h2>Different people.<br />Different energy.<br /><em>One live platform.</em></h2><p>Not every livestream needs the same audience. Every participant can introduce SPILL to a different one. Over time, those audiences overlap and accumulate.</p></div>
+      <div className="liveProgrammingIntro" data-live-reveal><p className="liveKicker">05 / Building the SPILL audience</p><h2>Different people. Different energy.<br /><em>One live platform.</em></h2><p>Not every livestream needs the same audience. Every participant can introduce SPILL to a different one. Over time, those audiences overlap and accumulate.</p></div>
       <div className="liveProgrammingGrid">{programming.map(([title, copy], index) => <article key={title} data-live-reveal><span>0{index + 1}</span><h3>{title}</h3><p>{copy}</p></article>)}</div>
     </section>
 
@@ -116,7 +116,7 @@ export default function LivestreamPage() {
     </section>
 
     <section className="liveNetwork">
-      <div className="liveNetworkStatement" data-live-reveal><p className="liveKicker">10 / A network effect</p><h2>50 people.<br />Then 100.<br /><em>Then 500.</em></h2><p>Every appearance produces content, introduces viewers, connects a community, and creates the chance of an unexpected hit. Some participants return. Some become podcast guests. Some launch shows. Some introduce sponsors. Some bring audiences into the venue.</p></div>
+      <div className="liveNetworkStatement" data-live-reveal><p className="liveKicker">10 / A network effect</p><h2>50 people. Then 100.<br /><em>Then 500.</em></h2><p>Every appearance produces content, introduces viewers, connects a community, and creates the chance of an unexpected hit. Some participants return. Some become podcast guests. Some launch shows. Some introduce sponsors. Some bring audiences into the venue.</p></div>
       <div className="liveSocialCurrency" data-live-reveal><span>Participation becomes social currency.</span><blockquote>“I was on SPILL.”</blockquote><p>The stronger the SPILL brand becomes, the more valuable participation becomes—and the easier it becomes to attract stronger guests, brands, and sponsors.</p></div>
     </section>
 

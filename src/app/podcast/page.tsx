@@ -97,29 +97,30 @@ export default function PodcastPage() {
     </section>
 
     <section className="podProduction">
-      <div className="podProductionHeading" data-pod-reveal><SectionLabel>04 / Professional production</SectionLabel><h2>You talk.<br /><em><SpillWordmark /> handles the production.</em></h2><p>Walk in ready to talk. Leave the technical workflow to SPILL.</p></div>
+      <div className="podProductionHeading" data-pod-reveal><SectionLabel>04 / Professional production</SectionLabel><h2>You talk.<br /><em><SpillWordmark /> produces.</em></h2></div>
       <div className="podProductionGrid">{production.map((item, index) => <div key={item} data-pod-reveal><span>{String(index + 1).padStart(2, "0")}</span><p>{item}</p></div>)}</div>
       <div className="podPost" data-pod-reveal><div><SectionLabel>05 / Full post-production</SectionLabel><h3>From recording to finished episode.</h3><p>SPILL can manage the complete post-production process. Established internal teams can also receive professionally recorded media for their own workflow.</p><a className="podArrowLink" href="#inquiry">Discuss your production <b>→</b></a></div><ul>{postProduction.map((item) => <li key={item}>{item}</li>)}</ul></div>
     </section>
 
     <section className="podContentEngine">
-      <div className="podContentIntro" data-pod-reveal><SectionLabel>06 / Content engine</SectionLabel><h2>One conversation.<br /><em>More content.</em></h2><p>A SPILL Podcast recording can become an entire library of long-form and short-form content designed for different audiences and platforms.</p></div>
+      <div className="podContentIntro" data-pod-reveal><SectionLabel>06 / Content engine</SectionLabel><h2>One conversation.<br /><em>More content.</em></h2></div>
       <div className="podContentFlow">{contentEngine.map((item, index) => <div key={item} data-pod-reveal><span>{String(index + 1).padStart(2, "0")}</span><strong>{item}</strong>{index < contentEngine.length - 1 && <b>→</b>}</div>)}</div>
       <p className="podEngineLine" data-pod-reveal>More than one published episode. <span>A repeatable content engine.</span></p>
     </section>
 
     <section className="podSection podSeries">
       <div className="podSeriesIntro" data-pod-reveal><SectionLabel>07 / Recurring + batch production</SectionLabel><h2>Build something<br /><em>people come back to.</em></h2><p>Weekly, biweekly, monthly, limited, seasonal, interview, and branded shows—with stronger consistency, scheduling, audience habits, and a more efficient production rhythm.</p><a className="button primary" href="#inquiry">Build a series</a></div>
-      <div className="podBatch" data-pod-reveal><span>Batch production</span><h3>Create more<br />in less time.</h3><p>Record multiple episodes in one planned production block. Ideal for founders, executives, international guests, recurring creators, and seasonal shows.</p><strong>One production session can create weeks of finished content.</strong></div>
+      <div className="podBatchMedia" data-pod-reveal><Image src="/assets/spill/podcast/batch-production.png" alt="Batch production turns one recording session into weeks of finished podcast content" fill sizes="(max-width: 820px) 100vw, 42vw" /></div>
     </section>
 
     <section className="podBrandSeries">
-      <div className="podBrandSeriesCopy" data-pod-reveal><SectionLabel>08 / Brands + businesses</SectionLabel><h2>Your business can have<br /><em>a media platform of its own.</em></h2><p>SPILL develops professionally produced podcast and video series for companies and organizations—from founder conversations and executive interviews to customer stories, educational programs, company culture, and branded entertainment.</p><a className="button primary" href="#inquiry">Create a branded series</a></div>
+      <div className="podBrandSeriesHeading" data-pod-reveal><SectionLabel>08 / Brands + businesses</SectionLabel><h2>Your business.<br /><em>Your platform.</em></h2></div>
+      <div className="podBrandSeriesCopy" data-pod-reveal><p>SPILL develops professionally produced podcast and video series for companies and organizations—from founder conversations and executive interviews to customer stories, educational programs, company culture, and branded entertainment.</p><a className="button primary" href="#inquiry">Create a branded series</a></div>
       <div className="podBrandFormats" data-pod-reveal>{["Founder conversations", "Thought leadership", "Industry discussions", "Customer stories", "Recruitment content", "Branded entertainment"].map((format, index) => <span key={format}><b>0{index + 1}</b>{format}</span>)}</div>
     </section>
 
     <section className="podSection podBenefits">
-      <div className="podSectionIntro" data-pod-reveal><SectionLabel>09 / More than production</SectionLabel><h2>Produce at <SpillWordmark tone="dark" />.<br /><em>Become part of something bigger.</em></h2></div>
+      <div className="podSectionIntro" data-pod-reveal><SectionLabel>09 / More than production</SectionLabel><h2>At <SpillWordmark tone="dark" />.<br /><em>Build bigger.</em></h2></div>
       <div className="podBenefitsGrid">{benefits.map(([title, copy], index) => <article key={title} data-pod-reveal><span>{String(index + 1).padStart(2, "0")}</span><h3><BrandedText text={title} tone="dark" /></h3><p>{copy}</p></article>)}</div>
     </section>
 
@@ -134,7 +135,7 @@ export default function PodcastPage() {
     </section>
 
     <section className="podSection podNetwork">
-      <div data-pod-reveal><SectionLabel>12 / Creator + guest network</SectionLabel><h2>Better conversations start with <em>interesting people.</em></h2><p>SPILL brings together creators, founders, entrepreneurs, artists, chefs, musicians, executives, investors, designers, professionals, travelers, and interesting everyday people. Suitable shows can benefit from creator introductions, guest connections, crossover episodes, collaborations, and shared events.</p></div>
+      <div data-pod-reveal><SectionLabel>12 / Creator + guest network</SectionLabel><h2>Meet people.<br /><em>Talk deeper.</em></h2></div>
       <div className="podCommercialRows">
         <article data-pod-reveal><span>Sponsorship + partnerships</span><h3>Build value around the show.</h3><p>Episode and series sponsorship, presenting partners, branded segments, sponsored clips, audience-event partnerships, hospitality integration, and in-venue activation.</p><strong>Content + Creator + Audience + Venue + Hospitality</strong></article>
         <article data-pod-reveal><span>Launches + special events</span><h3>Launch the show at <SpillWordmark tone="dark" />.</h3><p>Turn a new podcast or important episode into a physical experience with premieres, Q&A sessions, sponsor receptions, creator gatherings, and networking.</p><strong>A digital show can begin with a real room full of people.</strong></article>
@@ -142,7 +143,7 @@ export default function PodcastPage() {
     </section>
 
     <section className="podSection podJourneySection">
-      <div className="podSectionIntro" data-pod-reveal><SectionLabel>13 / Where Podcast fits</SectionLabel><h2>Go deeper.<br /><em>Then build bigger.</em></h2><p>A standout person or story can move naturally through the ecosystem. Professional clients can also come directly to SPILL Podcast.</p></div>
+      <div className="podSectionIntro" data-pod-reveal><SectionLabel>13 / Where Podcast fits</SectionLabel><h2>Go deeper.<br /><em>Then build bigger.</em></h2></div>
       <div className="podJourney">{journey.map(([number, title, copy], index) => <article className={`podJourneyStep${index === 3 ? " active" : ""}`} key={title}><span>{number}</span><div><h3><BrandedText text={title} /></h3><p>{copy}</p></div>{index < journey.length - 1 && <b>↓</b>}</article>)}</div>
     </section>
 
