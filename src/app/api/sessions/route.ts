@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
 
   // 1. Tìm bàn theo tableCode
   const table = await prisma.table.findFirst({
-    where: { tableCode, status: "ACTIVE" },
+    where: { tableCode: tableCode.toUpperCase(), status: "ACTIVE" },
   });
 
   if (!table) {
