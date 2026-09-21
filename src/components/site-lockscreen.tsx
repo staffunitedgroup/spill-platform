@@ -13,19 +13,16 @@ export function SiteLockscreen() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    // Focus password input on mount
     inputRef.current?.focus();
   }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isPending) return;
-
     setError(null);
     startTransition(async () => {
       const res = await unlockSite(password);
       if (res.success) {
-        // Successful unlock — reload to render full site
         window.location.reload();
       } else {
         setError(res.error || "Incorrect password. Access denied.");
@@ -38,34 +35,40 @@ export function SiteLockscreen() {
 
   return (
     <div className="lockscreen">
-      {/* Background ambient lighting */}
-      <div className="lockscreenBackdrop" aria-hidden="true">
-        <div className="lockscreenGlow" />
-        <div className="lockscreenGrid" />
-      </div>
+      {/* Full-screen hero video background */}
+      <video
+        className="lockscreenVideo"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        poster="/assets/spill/home/hero-v2-poster.jpg"
+        aria-hidden="true"
+      >
+        <source src="/assets/spill/home/hero-v2.mp4" type="video/mp4" />
+      </video>
 
+      {/* Dark overlay */}
+      <div className="lockscreenOverlay" aria-hidden="true" />
+
+      {/* Glassmorphism card */}
       <div className={`lockscreenCard ${isShaking ? "lockscreenCard--shake" : ""}`}>
-        {/* Status pill badge */}
-        <div className="lockscreenBadge">
-          <span className="lockscreenBadgeDot" />
-          <span>SPILL · PRIVATE ACCESS</span>
-        </div>
-
-        {/* Brand Logo */}
+        {/* Icon logo */}
         <div className="lockscreenLogoWrap">
           <Image
-            src="/assets/spill/brand/wordmark-bright.png"
+            src="/assets/spill/brand/logo-icon.png"
             alt="SPILL"
-            width={1580}
-            height={250}
+            width={360}
+            height={360}
             priority
             className="lockscreenLogo"
           />
         </div>
 
-        {/* Header copy */}
+        {/* Header */}
         <div className="lockscreenText">
-          <h1 className="lockscreenTitle">ENTER PASSWORD</h1>
+          <h1 className="lockscreenTitle">PRIVATE ACCESS</h1>
           <p className="lockscreenSubtitle">
             This platform is currently private. Please enter your access password to continue.
           </p>
@@ -131,16 +134,12 @@ export function SiteLockscreen() {
               <span className="lockscreenSpinner" />
             ) : (
               <>
-                <span>Enter Venue</span>
+                <span>ENTER</span>
                 <span className="lockscreenArrow">→</span>
               </>
             )}
           </button>
         </form>
-
-        <footer className="lockscreenFooter">
-          <span>SPILL Hospitality & Media Platform</span>
-        </footer>
       </div>
     </div>
   );
