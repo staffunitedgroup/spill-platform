@@ -2413,3 +2413,256 @@ body:has(.s42App) .siteFooter { display:none; }
   .s42Summary div:last-child { border-bottom:0; }
   .s42ResultActions { width:100%; flex-direction:column; }
 }
+
+/* ==========================================================================
+   Site Password Lockscreen
+   ========================================================================== */
+
+/* Root container — fullscreen, stacking context */
+.lockscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  padding: 24px;
+  overflow-y: auto;
+  font-family: var(--font-space-grotesk), sans-serif;
+  box-sizing: border-box;
+}
+
+/* Background hero video */
+.lockscreenVideo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
+}
+
+/* Dark vignette over the background video */
+.lockscreenOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    radial-gradient(ellipse at center, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.82) 100%),
+    linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.25) 45%, rgba(0,0,0,0.7) 100%);
+  pointer-events: none;
+}
+
+/* Card — increased dark opacity for strong contrast and premium focus */
+.lockscreenCard {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 440px;
+  padding: clamp(34px, 5vw, 48px) clamp(24px, 4vw, 38px);
+  background: rgba(7, 8, 10, 0.93);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  box-shadow:
+    0 36px 90px rgba(0,0,0,0.88),
+    0 0 50px rgba(255,24,56,0.1),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+  text-align: center;
+  animation: lockscreenEntry 0.85s cubic-bezier(0.16, 1, 0.3, 1) both;
+  box-sizing: border-box;
+}
+
+/* Logo — enlarged icon */
+.lockscreenLogoWrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+.lockscreenLogo {
+  width: clamp(160px, 40vw, 210px);
+  height: clamp(160px, 40vw, 210px);
+  display: block;
+  object-fit: contain;
+  border-radius: 18px;
+  mix-blend-mode: lighten;
+  filter: drop-shadow(0 8px 30px rgba(255,24,56,0.42));
+}
+
+/* Text block */
+.lockscreenText { margin-bottom: 24px; }
+
+.lockscreenTitle {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 3vw, 27px);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin: 0 0 10px;
+  line-height: 1.1;
+  text-shadow: 0 0 28px rgba(255,24,56,0.55);
+}
+
+.lockscreenSubtitle {
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.5);
+  margin: 0;
+}
+
+/* Form */
+.lockscreenForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.lockscreenField {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.lockscreenInput {
+  width: 100%;
+  height: 52px;
+  padding: 0 46px 0 18px;
+  background: rgba(5,6,8,0.85);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 10px;
+  color: #fff;
+  font-size: 15px;
+  font-family: inherit;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.lockscreenInput:focus {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(255,24,56,0.2), 0 0 22px rgba(255,24,56,0.14);
+}
+
+.lockscreenInput::placeholder { color: rgba(255,255,255,0.28); }
+
+.lockscreenToggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.38);
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.lockscreenToggle:hover {
+  color: #fff;
+  background: rgba(255,255,255,0.08);
+}
+
+.lockscreenError {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 14px;
+  background: rgba(255,24,56,0.1);
+  border: 1px solid rgba(255,24,56,0.4);
+  border-radius: 8px;
+  color: #ff6678;
+  font-size: 15px;
+  text-align: center;
+  animation: lockscreenFadeUp 0.3s ease;
+}
+
+.lockscreenError svg { flex-shrink: 0; }
+
+.lockscreenButton {
+  width: 100%;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-top: 2px;
+  transition: background-color 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
+}
+
+.lockscreenButton:hover:not(:disabled) {
+  background: #ff2846;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 34px rgba(255,24,56,0.5);
+}
+
+.lockscreenButton:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.lockscreenArrow {
+  font-size: 18px;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.lockscreenButton:hover:not(:disabled) .lockscreenArrow { transform: translateX(5px); }
+
+.lockscreenSpinner {
+  width: 20px;
+  height: 20px;
+  border: 2.5px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+
+/* Shake on wrong password */
+.lockscreenCard--shake {
+  animation: lockscreenShake 0.55s cubic-bezier(0.36, 0.07, 0.19, 0.97) both !important;
+  border-color: rgba(255,24,56,0.55) !important;
+}
+
+/* ---- Keyframes ---- */
+
+@keyframes lockscreenEntry {
+  from { opacity: 0; transform: translateY(30px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+
+@keyframes lockscreenShake {
+  0%,100%       { transform: translateX(0); }
+  15%,45%,75%   { transform: translateX(-9px); }
+  30%,60%,85%   { transform: translateX(9px); }
+}
+
+@keyframes lockscreenFadeUp {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+
+
+
