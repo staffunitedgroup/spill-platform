@@ -2,12 +2,15 @@ import "server-only";
 import { createHmac, timingSafeEqual } from "node:crypto";
 
 export const SITE_ACCESS_COOKIE = "spill_site_access";
-export const DEFAULT_SITE_PASSWORD = "spill";
+export const DEFAULT_SITE_PASSWORD = "SpillSaigon@$";
 
 function secureEqual(left: string, right: string) {
   const leftBuffer = Buffer.from(left);
   const rightBuffer = Buffer.from(right);
-  return leftBuffer.length === rightBuffer.length && timingSafeEqual(leftBuffer, rightBuffer);
+  return (
+    leftBuffer.length === rightBuffer.length &&
+    timingSafeEqual(leftBuffer, rightBuffer)
+  );
 }
 
 export function getExpectedSitePassword(): string {
@@ -22,9 +25,13 @@ export function validSitePassword(candidate: string): boolean {
 export function siteAccessToken(): string {
   const password = getExpectedSitePassword();
   const secret = process.env.SITE_ACCESS_SECRET || password;
-  return createHmac("sha256", secret).update("spill-site-access-v1").digest("hex");
+  return createHmac("sha256", secret)
+    .update("spill-site-access-v1")
+    .digest("hex");
 }
 
 export function hasValidSiteAccess(candidate?: string): boolean {
-  return Boolean(candidate) && secureEqual(candidate as string, siteAccessToken());
+  return (
+    Boolean(candidate) && secureEqual(candidate as string, siteAccessToken())
+  );
 }
