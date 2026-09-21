@@ -12,8 +12,6 @@ function loadStored(sessionCode: string): StoredSession | null {
     const raw = localStorage.getItem(`spill:${sessionCode}`);
     if (!raw) return null;
     const parsed = JSON.parse(raw);
-    // Guard against leftover data from an older version of this app that
-    // used a different shape ({ sessionId, participantToken }).
     if (
       !parsed ||
       typeof parsed !== "object" ||
@@ -39,12 +37,9 @@ export default function JoinPage() {
 
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [participants, setParticipants] = useState<StoredParticipant[]>([]);
-  const [name, setName] = useState("");
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  // "entry" = someone is about to type their name and join
-  // "handoff" = participant 1 has joined, waiting to pass the phone to participant 2
   const [step, setStep] = useState<"entry" | "handoff">("entry");
 
   useEffect(() => {
@@ -84,14 +79,15 @@ export default function JoinPage() {
   }, [sessionCode]);
 
   async function joinSession() {
-    if (!sessionId || !name.trim()) return;
+    if (!sessionId) return;
+    const label = `Participant ${participants.length + 1}`;
     setSubmitting(true);
     setError(null);
     try {
       const res = await fetch(`/api/sessions/${sessionId}/participants`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ displayName: name.trim() }),
+        body: JSON.stringify({ displayName: label }),
       });
       const json = await res.json();
       if (!res.ok) {
@@ -102,11 +98,10 @@ export default function JoinPage() {
 
       const updated = [
         ...participants,
-        { name: name.trim(), token: json.participant.participantToken },
+        { name: label, token: json.participant.participantToken },
       ];
       setParticipants(updated);
       saveStored(sessionCode, { sessionId, participants: updated });
-      setName("");
       setSubmitting(false);
 
       if (json.session.status === "READY" || updated.length >= 2) {
@@ -150,7 +145,7 @@ export default function JoinPage() {
       <main className="s42App">
         <section className="s42Setup">
           <div className="s42Handoff">
-            <span>{participants[0]?.name} is in</span>
+            <span>Participant 1 is in</span>
             <h1>Pass the phone</h1>
             <p>Participant 2, tap below when the screen is yours.</p>
             <button
@@ -177,28 +172,16 @@ export default function JoinPage() {
             <h1>
               Want to <SpillWordmark />?
             </h1>
-            <p>Enter your name to join this table&apos;s SPILL.</p>
+            <p>Tap below to join this table&apos;s SPILL.</p>
           </div>
-          <label className="s42TableField">
-            <span>Your name</span>
-            <input
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-              placeholder="e.g. Uyên"
-              maxLength={40}
-              onKeyDown={(event) => {
-                if (event.key === "Enter") joinSession();
-              }}
-            />
-          </label>
           {error && <p className="s42Permission">{error}</p>}
           <button
             className="s42Primary"
             type="button"
-            disabled={!name.trim() || submitting}
+            disabled={submitting}
             onClick={joinSession}
           >
-            {submitting ? "Joining…" : "Continue"} <span>→</span>
+            {submitting ? "Joining…" : "Tap to join"} <span>→</span>
           </button>
         </div>
       </section>
