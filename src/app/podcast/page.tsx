@@ -70,7 +70,18 @@ export default function PodcastPage() {
     <PodcastAnimations />
 
     <section className="podHero">
-      <Image className="podHeroImage" src="/assets/spill/podcast/hero.png" alt="Two people having a professionally recorded conversation in the SPILL Podcast café bar" fill preload sizes="100vw" />
+      <video
+        className="podHeroMedia"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        poster="/assets/spill/home/podcast-poster.jpg"
+        aria-hidden="true"
+      >
+        <source src="/assets/spill/home/podcast.mp4" type="video/mp4" />
+      </video>
       <div className="podHeroVeil" />
       <GlobalHeader />
       <div className="podHeroContent">
@@ -99,7 +110,30 @@ export default function PodcastPage() {
     <section className="podProduction">
       <div className="podProductionHeading" data-pod-reveal><SectionLabel>04 / Professional production</SectionLabel><h2>You talk.<br /><em><SpillWordmark /> produces.</em></h2></div>
       <div className="podProductionGrid">{production.map((item, index) => <div key={item} data-pod-reveal><span>{String(index + 1).padStart(2, "0")}</span><p>{item}</p></div>)}</div>
-      <div className="podPost" data-pod-reveal><div><SectionLabel>05 / Full post-production</SectionLabel><h3>From recording to finished episode.</h3><p>SPILL can manage the complete post-production process. Established internal teams can also receive professionally recorded media for their own workflow.</p><a className="podArrowLink" href="#inquiry">Discuss your production <b>→</b></a></div><ul>{postProduction.map((item) => <li key={item}>{item}</li>)}</ul></div>
+      <div className="podPost" data-pod-reveal>
+        <div className="podPostCopy">
+          <SectionLabel>05 / Full post-production</SectionLabel>
+          <h3>From recording to finished episode.</h3>
+          <p>SPILL can manage the complete post-production process. Established internal teams can also receive professionally recorded media for their own workflow.</p>
+          <ul className="podPostList">
+            {postProduction.map((item) => <li key={item}>{item}</li>)}
+          </ul>
+          <a className="podArrowLink" href="#inquiry">Discuss your production <b>→</b></a>
+        </div>
+        <div className="podPostMedia">
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            poster="/assets/spill/home/podcast-poster.jpg"
+            aria-label="Professional podcast production at SPILL"
+          >
+            <source src="/assets/spill/home/podcast.mp4" type="video/mp4" />
+          </video>
+        </div>
+      </div>
     </section>
 
     <section className="podContentEngine">
@@ -114,9 +148,28 @@ export default function PodcastPage() {
     </section>
 
     <section className="podBrandSeries">
-      <div className="podBrandSeriesHeading" data-pod-reveal><SectionLabel>08 / Brands + businesses</SectionLabel><h2>Your business.<br /><em>Your platform.</em></h2></div>
-      <div className="podBrandSeriesCopy" data-pod-reveal><p>SPILL develops professionally produced podcast and video series for companies and organizations—from founder conversations and executive interviews to customer stories, educational programs, company culture, and branded entertainment.</p><a className="button primary" href="#inquiry">Create a branded series</a></div>
-      <div className="podBrandFormats" data-pod-reveal>{["Founder conversations", "Thought leadership", "Industry discussions", "Customer stories", "Recruitment content", "Branded entertainment"].map((format, index) => <span key={format}><b>0{index + 1}</b>{format}</span>)}</div>
+      <div className="podBrandCopy" data-pod-reveal>
+        <SectionLabel>08 / Brands + businesses</SectionLabel>
+        <h2>Your business.<br /><em>Your platform.</em></h2>
+        <p>SPILL develops professionally produced podcast and video series for companies and organizations—from founder conversations and executive interviews to customer stories, educational programs, company culture, and branded entertainment.</p>
+        <div className="podBrandFormats">
+          {["Founder conversations", "Thought leadership", "Industry discussions", "Customer stories", "Recruitment content", "Branded entertainment"].map((format, index) => (
+            <span key={format}>
+              <b>0{index + 1}</b>
+              {format}
+            </span>
+          ))}
+        </div>
+        <a className="button primary" href="#inquiry">Create a branded series</a>
+      </div>
+      <div className="podBrandMedia" data-pod-reveal>
+        <Image
+          src="/assets/spill/podcast/brand-formats.jpg"
+          alt="SPILL branded podcast and video production formats"
+          fill
+          sizes="(max-width: 900px) 100vw, 55vw"
+        />
+      </div>
     </section>
 
     <section className="podSection podBenefits">
@@ -154,7 +207,20 @@ export default function PodcastPage() {
     <section className="podSection podWatch" id="watch">
       <div className="podWatchHeading" data-pod-reveal><div><SectionLabel>15 / Featured SPILL Podcast</SectionLabel><h2>Watch<br /><em><SpillWordmark /> Podcast.</em></h2></div><a className="podArrowLink" href="https://www.youtube.com/@spillsaigon" target="_blank" rel="noreferrer">Watch all episodes <b>↗</b></a></div>
       <div className="podEpisodeGrid">
-        {["Founders at SPILL", "Culture in conversation", "People worth knowing"].map((title, index) => <a key={title} href="https://www.youtube.com/@spillsaigon" target="_blank" rel="noreferrer" data-pod-reveal><Image src={index === 1 ? "/assets/spill/podcast/hero.png" : "/assets/spill/home/podcast-poster.jpg"} alt="" fill sizes="(max-width: 760px) 100vw, 33vw" /><div><span>{index === 0 ? "Coming soon" : "SPILL Podcast"}</span><h3><BrandedText text={title} /></h3><b>Play ↗</b></div></a>)}
+        {[
+          { title: "Founders at SPILL", tag: "Coming soon", img: "/assets/spill/podcast/featured-founders.jpg" },
+          { title: "Culture in conversation", tag: "SPILL Podcast", img: "/assets/spill/podcast/featured-culture.jpg" },
+          { title: "People worth knowing", tag: "SPILL Podcast", img: "/assets/spill/podcast/featured-people.jpg" },
+        ].map((ep) => (
+          <a key={ep.title} href="https://www.youtube.com/@spillsaigon" target="_blank" rel="noreferrer" data-pod-reveal>
+            <Image src={ep.img} alt={ep.title} fill sizes="(max-width: 760px) 100vw, 33vw" />
+            <div>
+              <span>{ep.tag}</span>
+              <h3><BrandedText text={ep.title} /></h3>
+              <b>Play ↗</b>
+            </div>
+          </a>
+        ))}
       </div>
     </section>
 
