@@ -24,7 +24,7 @@ export function GlobalHeader() {
         <Link href="/">SPILL Global<NavArrow /></Link>
         <Link href="/#locations">Locations<NavArrow direction="down" /></Link>
         {globalNavigation.map((item) => <Link key={item.href} href={item.href}>{item.label}<NavArrow /></Link>)}
-        {corporateNavigation.map((item) => <Link key={item.href} href={item.href}>{item.label}<NavArrow /></Link>)}
+        {corporateNavigation.map((item) => <Link key={item.href} href={item.href} className="mobileCorpLink">{item.label}<NavArrow /></Link>)}
       </nav>
     </details>
   </header>;

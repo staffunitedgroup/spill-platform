@@ -130,6 +130,8 @@ export default function PodcastPage() {
             poster="/assets/spill/home/podcast-poster.jpg"
             aria-label="Professional podcast production at SPILL"
           >
+            <source src="/assets/spill/podcast/production.mp4" type="video/mp4" />
+            <source src="/assets/spill/podcast/post-production.mp4" type="video/mp4" />
             <source src="/assets/spill/home/podcast.mp4" type="video/mp4" />
           </video>
         </div>
@@ -144,7 +146,7 @@ export default function PodcastPage() {
 
     <section className="podSection podSeries">
       <div className="podSeriesIntro" data-pod-reveal><SectionLabel>07 / Recurring + batch production</SectionLabel><h2>Build something<br /><em>people come back to.</em></h2><p>Weekly, biweekly, monthly, limited, seasonal, interview, and branded shows—with stronger consistency, scheduling, audience habits, and a more efficient production rhythm.</p><a className="button primary" href="#inquiry">Build a series</a></div>
-      <div className="podBatchMedia" data-pod-reveal><Image src="/assets/spill/podcast/batch-production.png" alt="Batch production turns one recording session into weeks of finished podcast content" fill sizes="(max-width: 820px) 100vw, 42vw" /></div>
+      <div className="podBatchMedia" data-pod-reveal><Image src="/assets/spill/podcast/batch-production.png" alt="Batch production turns one recording session into weeks of finished podcast content" fill sizes="(max-width: 820px) 100vw, 55vw" /></div>
     </section>
 
     <section className="podBrandSeries">
@@ -178,7 +180,7 @@ export default function PodcastPage() {
     </section>
 
     <section className="podHospitality">
-      <div className="podHospitalityMedia" data-pod-reveal><Image src="/assets/spill/home/podcast-poster.jpg" alt="A SPILL Podcast conversation inside the café bar" fill sizes="(max-width: 900px) 100vw, 55vw" /></div>
+      <div className="podHospitalityMedia" data-pod-reveal><Image src="/assets/spill/podcast/hero.png" alt="A SPILL Podcast conversation inside the café bar" fill sizes="(max-width: 900px) 100vw, 55vw" /></div>
       <div className="podHospitalityCopy" data-pod-reveal><SectionLabel>10 / SPILL hospitality</SectionLabel><h2>Record. Meet.<br /><em>Stay a while.</em></h2><p>Meet a guest over coffee, prepare for the recording, produce the episode, continue the conversation over food or drinks, meet collaborators, or entertain sponsors—without moving to another location.</p><p>Eligible recurring creators and production partners can receive preferred SPILL café and bar benefits.</p><strong>SPILL can become more than where you record. It can become the home around your show.</strong></div>
     </section>
 
