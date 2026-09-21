@@ -1775,31 +1775,43 @@ a:hover > .navArrow.down { transform:rotate(90deg) translate(2px,-2px); }
 }
 .confExperienceMediaSplit .confFeatureList { grid-template-columns:1fr; }
 .confExperienceMediaSplit .confFeatureList span { min-height:44px; }
-.confModesSplit {
-  margin:clamp(75px,9vw,130px) calc(clamp(22px,6vw,96px) * -1) 0 0;
-  display:grid;
-  grid-template-columns:minmax(360px,.68fr) minmax(0,1.32fr);
-  gap:0;
-  align-items:center;
+.confModesSection {
+  padding:clamp(90px,11vw,170px) 0 0;
+  overflow:hidden;
+  background:var(--red);
+  color:#111;
 }
-.confModesImage { min-height:0; position:relative; overflow:hidden; aspect-ratio:16/9; background:#0b0807; }
-.confModesImage img { object-fit:cover; }
-.confModesImage::after { content:""; position:absolute; inset:0; background:linear-gradient(90deg,var(--conf-paper) 0%,transparent 18%); pointer-events:none; }
-.confModesSplit .confModeGrid { padding-right:clamp(28px,5vw,72px); grid-template-columns:1fr; gap:0; }
-.confModesSplit .confModeGrid article,.confModesSplit .confModeGrid article:nth-child(2n),.confModesSplit .confModeGrid article:last-child {
+.confModesSection .confKicker { color:#111; opacity:.72; }
+.confModesHeading { padding-inline:clamp(22px,6vw,96px); }
+.confModesHeading h2 { width:100%; margin:34px 0 0; }
+.confModesHeading h2 em { color:#fff; font-style:normal; }
+.confModesHeading > p:last-child { margin:30px 0 0; }
+.confModesLayout {
+  margin-top:clamp(65px,8vw,115px);
+  display:grid;
+  grid-template-columns:minmax(390px,.82fr) minmax(0,1.18fr);
+  gap:0;
+  align-items:stretch;
+}
+.confModesImage { min-height:clamp(680px,58vw,880px); position:relative; overflow:hidden; background:#0b0807; }
+.confModesImage img { object-fit:cover; object-position:left center; }
+.confModesImage::after { content:""; position:absolute; inset:0; background:linear-gradient(90deg,var(--red) 0%,transparent 16%); pointer-events:none; }
+.confModesLayout .confModeGrid { padding:0 clamp(28px,5vw,72px) clamp(70px,8vw,120px) clamp(22px,6vw,96px); grid-template-columns:1fr; gap:0; align-content:center; }
+.confModesLayout .confModeGrid article,.confModesLayout .confModeGrid article:nth-child(2n),.confModesLayout .confModeGrid article:last-child {
   min-height:0;
   padding:18px 0;
   display:grid;
   grid-template-columns:34px minmax(145px,.8fr) 1.2fr;
   gap:14px;
   align-items:start;
-  border-bottom:1px solid #b9b9b5;
+  border-bottom:1px solid rgba(17,17,17,.35);
   background:transparent;
   color:#111;
 }
-.confModesSplit .confModeGrid h3,.confModesSplit .confModeGrid p { margin:0; }
-.confModesSplit .confModeGrid h3 { font-size:16px; }
-.confModesSplit .confModeGrid p { color:#55565a; font-size:14px; line-height:1.45; }
+.confModesLayout .confModeGrid h3,.confModesLayout .confModeGrid p { margin:0; }
+.confModesLayout .confModeGrid h3 { font-size:16px; }
+.confModesLayout .confModeGrid span { color:#111; opacity:.65; }
+.confModesLayout .confModeGrid p,.confModesLayout .confModeGrid article:last-child p { color:rgba(17,17,17,.72); line-height:1.45; }
 .confFormatCompare article:nth-child(1),.confFormatCompare article:nth-child(2),.confFormatCompare article:nth-child(3) {
   min-height:clamp(420px,43vw,610px);
 }
@@ -1877,6 +1889,70 @@ a:hover > .navArrow.down { transform:rotate(90deg) translate(2px,-2px); }
 .confBigger > div:last-child,.confBigger > div > p:not(.confKicker) { width:100%; max-width:none; }
 .localHomeSections > a > i { background:linear-gradient(0deg,rgba(4,4,5,.98) 0%,rgba(4,4,5,.82) 52%,rgba(4,4,5,.48) 100%); }
 
+/* Confessional sections that mirror the homepage People of SPILL composition. */
+.confEcosystem,.confRevenue { padding:clamp(80px,10vw,150px) clamp(22px,6vw,96px); }
+.confEcosystemHeading,.confRevenueHeading { display:block; }
+.confEcosystemHeading h2,.confRevenueHeading h2 { width:100%; margin:34px 0 0; }
+.confSectionLead,.confRevenueHeading > p:last-child { width:100%; max-width:none; margin:34px 0 0; }
+.confSectionLead { color:#aaa; font-family:var(--font-display); line-height:1.45; text-transform:uppercase; }
+.confFormatCompare,.confPriceTable {
+  margin-top:clamp(55px,7vw,95px);
+  display:grid;
+  grid-template-columns:1.2fr 1fr 1fr;
+  gap:12px;
+  border:0;
+}
+.confFormatCompare article,.confFormatCompare article.active {
+  min-height:520px;
+  padding:20px;
+  overflow:visible;
+  border:0!important;
+  transition:transform .8s ease,box-shadow .8s ease;
+}
+.confFormatCompare article:hover { z-index:2; transform:translateY(-6px); box-shadow:0 24px 65px rgba(0,0,0,.34); }
+.confFormatCompare article:nth-child(1),.confFormatCompare article:nth-child(2),.confFormatCompare article:nth-child(3) { background-position:center!important; background-size:cover!important; }
+.confFormatCompare h3 { margin:auto 0 12px; }
+.confFormatCompare a { position:relative; z-index:2; }
+.confFormatArrow {
+  width:46px;
+  height:46px;
+  position:absolute;
+  z-index:5;
+  top:50%;
+  right:-29px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:var(--red);
+  color:#fff;
+  font-size:22px;
+  font-weight:400;
+  transform:translateY(-50%);
+}
+.confRevenue { position:relative; overflow:hidden; }
+.confRevenue::before { content:""; width:62vw; height:62vw; position:absolute; right:-36vw; top:-31vw; border:1px solid rgba(232,71,47,.24); border-radius:50%; box-shadow:0 0 120px rgba(232,71,47,.13); pointer-events:none; }
+.confRevenueHeading,.confPriceTable { position:relative; z-index:1; }
+.confPriceTable article {
+  min-height:520px;
+  padding:20px;
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  border:1px solid #313134!important;
+  background:radial-gradient(circle at 18% 12%,rgba(232,71,47,.34),transparent 42%),linear-gradient(145deg,#18181b 0%,#0b0b0c 62%,#181114 100%)!important;
+  transition:transform .8s ease,border-color .8s ease,box-shadow .8s ease;
+}
+.confPriceTable article:nth-child(2) { background:radial-gradient(circle at 82% 18%,rgba(255,255,255,.16),transparent 38%),linear-gradient(155deg,#0d0d0f 0%,#18181b 58%,#2b1411 100%)!important; }
+.confPriceTable article:nth-child(3) { background:radial-gradient(circle at 50% 82%,rgba(232,71,47,.3),transparent 42%),linear-gradient(135deg,#1a1010 0%,#0b0b0c 70%)!important; }
+.confPriceTable article::before { content:""; width:72%; aspect-ratio:1; position:absolute; z-index:-1; top:14%; right:-30%; border:1px solid rgba(255,255,255,.14); border-radius:50%; box-shadow:0 0 0 38px rgba(255,255,255,.025),0 0 0 76px rgba(232,71,47,.035); }
+.confPriceTable article::after { content:""; position:absolute; z-index:-1; inset:0; background:repeating-linear-gradient(115deg,transparent 0 34px,rgba(255,255,255,.025) 35px); opacity:.7; }
+.confPriceTable article:hover { transform:translateY(-6px); border-color:rgba(232,71,47,.7)!important; box-shadow:0 28px 75px rgba(0,0,0,.42),0 0 45px rgba(232,71,47,.12); }
+.confPriceTable h3 { margin:auto 0 0; }
+.confPriceTable strong { margin:18px 0 14px; }
+
+.confPage p:not(.confKicker) { width:100%; max-width:none!important; font-size:20px!important; }
+.confPage p.confKicker { width:auto; font-size:12px!important; }
+
 @media (max-height:800px) and (min-width:901px) {
   .confHeroContent { padding:35px 0; }
   .confHeroContent h1 { margin:18px 0 22px; font-size:clamp(55px,6.5vw,90px); }
@@ -1919,14 +1995,14 @@ a:hover > .navArrow.down { transform:rotate(90deg) translate(2px,-2px); }
   .confEventPricing > div { border-left:1px solid #403a36; }
   .confCities b { right:calc(50% - 17px); bottom:-17px; transform:rotate(90deg); }
   .confCities > div:nth-child(2n) b { display:none; }
-  .confExperienceMediaSplit,.confModesSplit { grid-template-columns:1fr; }
+  .confExperienceMediaSplit,.confModesLayout { grid-template-columns:1fr; }
   .confExperienceMediaSplit .confExperienceVideo { min-height:0; aspect-ratio:16/9; }
   .confExperienceMediaSplit .confExperienceVideo::after { background:linear-gradient(180deg,var(--conf-paper) 0%,transparent 14%,transparent 84%,var(--conf-paper) 100%); }
   .confExperienceMediaSplit .confExperienceDetails { padding-top:42px; }
-  .confModesSplit { margin-right:0; }
-  .confModesSplit .confModeGrid { padding-right:0; }
-  .confModesImage { width:calc(100% + (clamp(22px,6vw,96px) * 2)); min-height:0; margin-inline:calc(clamp(22px,6vw,96px) * -1); aspect-ratio:3/2; }
-  .confModesImage::after { background:linear-gradient(180deg,var(--conf-paper) 0%,transparent 14%); }
+  .confModesLayout .confModeGrid { padding:0 clamp(22px,6vw,96px) clamp(65px,8vw,115px); }
+  .confModesImage { width:100%; min-height:0; margin:0; aspect-ratio:3/2; }
+  .confModesImage::after { background:linear-gradient(180deg,var(--red) 0%,transparent 14%); }
+  .confFormatArrow { top:auto; right:50%; bottom:-29px; transform:translateX(50%) rotate(90deg); }
   .confAccessFormula { grid-template-columns:1fr; }
   .confAccessFormula span { min-height:92px; }
   .confAccessFormula b { height:0; position:relative; z-index:2; text-align:center; transform:translateY(-15px); }
@@ -1970,7 +2046,7 @@ a:hover > .navArrow.down { transform:rotate(90deg) translate(2px,-2px); }
   .confSteps article:last-child { grid-column:auto; border-right:0; }
   .confSteps h3 { min-height:0; margin:0; font-size:14px; }
   .confModeGrid { grid-template-columns:1fr; gap:0; border-top:1px solid #b9b9b5; }
-  .confModeGrid article,.confModeGrid article:last-child,.confModesSplit .confModeGrid article,.confModesSplit .confModeGrid article:nth-child(2n),.confModesSplit .confModeGrid article:last-child { min-height:0; padding:15px 4px; display:grid; grid-template-columns:30px 1fr; column-gap:8px; border-bottom:1px solid #b9b9b5; background:transparent; color:#111; }
+  .confModeGrid article,.confModeGrid article:last-child,.confModesLayout .confModeGrid article,.confModesLayout .confModeGrid article:nth-child(2n),.confModesLayout .confModeGrid article:last-child { min-height:0; padding:15px 4px; display:grid; grid-template-columns:30px 1fr; column-gap:8px; border-bottom:1px solid #b9b9b5; background:transparent; color:#111; }
   .confModeGrid article > span { grid-row:1/3; }
   .confModeGrid h3 { margin:0 0 5px; font-size:16px; }
   .confModeGrid p,.confModeGrid article:last-child p { grid-column:2; margin:0; color:#66676a; }
@@ -2012,8 +2088,9 @@ a:hover > .navArrow.down { transform:rotate(90deg) translate(2px,-2px); }
   .confExperienceDetails .confFeatureList span { min-height:62px; padding-right:10px; }
   .confExperienceMediaSplit { margin-top:48px; }
   .confExperienceMediaSplit .confExperienceDetails { margin:0; padding:36px 20px 44px; }
-  .confModesSplit { margin-top:56px; gap:28px; }
-  .confModesSplit .confModeGrid p { grid-column:2; }
+  .confModesSection { padding-top:68px; }
+  .confModesLayout { margin-top:56px; }
+  .confModesLayout .confModeGrid p { grid-column:2; }
   .confFnb ul { grid-template-columns:1fr; }
   .confFnb li:nth-child(2n) { padding-left:0; border-left:0; }
   .confAccessFormula span { min-height:78px; padding:18px; font-size:16px; }
@@ -2027,6 +2104,8 @@ a:hover > .navArrow.down { transform:rotate(90deg) translate(2px,-2px); }
   .confFnb h2,.confAccessHeading h2,.confContentHeading h2,.confExternalHeading h2,.confFutureIntro h2,.confBigger h2 { font-size:7.3vw; }
   .confProductHeading h2,.confNetworkIntro h2 { font-size:clamp(18px,5vw,22px); line-height:.98; }
   .confSponsorsIntro h2,.confCityNetwork h2 { font-size:clamp(22px,6vw,26px); }
+  .confFormatCompare article,.confFormatCompare article.active { min-height:380px; }
+  .confPriceTable article { min-height:340px; }
 }
 
 @media (prefers-reduced-motion:reduce) {
