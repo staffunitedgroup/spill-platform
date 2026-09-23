@@ -48,17 +48,17 @@ const SPILL_PHRASES = [
   "You can't make an omelet without SPILLing a few secrets.",
 ];
 
+function pickRandomPhrase() {
+  return SPILL_PHRASES[Math.floor(Math.random() * SPILL_PHRASES.length)];
+}
+
 export default function TableEntryPage() {
   const params = useParams<{ tableCode: string }>();
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState("");
-  const [loadingPhrase, setLoadingPhrase] = useState("Just a moment.");
+  const [loadingPhrase] = useState(pickRandomPhrase);
 
   useEffect(() => {
-    setLoadingPhrase(
-      SPILL_PHRASES[Math.floor(Math.random() * SPILL_PHRASES.length)],
-    );
-
     async function createOrFindSession() {
       try {
         const res = await fetch("/api/sessions", {
@@ -94,7 +94,7 @@ export default function TableEntryPage() {
           ) : (
             <>
               <h1>Getting your table ready…</h1>
-              <span>{loadingPhrase}</span>
+              <span suppressHydrationWarning>{loadingPhrase}</span>
             </>
           )}
         </div>
