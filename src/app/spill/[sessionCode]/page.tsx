@@ -206,7 +206,7 @@ export default function SpillSessionPage() {
       setPhase("connectionHandoff");
     } else {
       if (json.session?.status === "ACTIVE") {
-        setResolvedConnection(json.resolvecType ?? value);
+        setResolvedConnection(json.resolvedType ?? value);
       }
       setPhase("spill");
       fetchState();
