@@ -44,7 +44,7 @@ export const globalNavigation = [
     href: "/whats-on",
     items: [
       { label: "Events", href: "/whats-on#events" },
-      { label: "SPILL 42", href: "/spill-42" },
+      { label: "SPILL 42", href: "/spill/table/TEST01" },
       { label: "Live", href: "/livestream" },
       { label: "This Week", href: "/whats-on#this-week" },
       { label: "Upcoming", href: "/whats-on#upcoming" },
