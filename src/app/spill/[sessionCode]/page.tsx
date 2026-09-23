@@ -206,7 +206,7 @@ export default function SpillSessionPage() {
       setPhase("connectionHandoff");
     } else {
       if (json.session?.status === "ACTIVE") {
-        setResolvedConnection(value); // best-effort local label; real resolution happened server-side
+        setResolvedConnection(json.resolvecType ?? value);
       }
       setPhase("spill");
       fetchState();
