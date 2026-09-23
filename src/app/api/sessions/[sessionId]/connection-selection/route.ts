@@ -157,6 +157,7 @@ export async function POST(
     {
       yourSelection: result.yourSelection,
       bothSubmitted: result.bothSubmitted,
+      resolvedType: result.resolvedType,
       session: result.session,
     },
     { status: 200 },
