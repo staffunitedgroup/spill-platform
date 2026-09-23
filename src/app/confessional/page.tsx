@@ -11,15 +11,14 @@ export const metadata: Metadata = {
 };
 
 const modes = [
-  ["Free Confession", "Say whatever is on your mind."],
-  ["Answer a Question", "Choose from curated prompts."],
-  ["Hot Take", "Share an opinion."],
-  ["Tell a Story", "Respond to a theme."],
-  ["Two-Person Mode", "Prompts for couples, friends, dates, family, or colleagues."],
-  ["Private Mode", "Recording delivered only to the participant."],
-  ["Shareable Mode", "Content prepared for social media."],
+  "Free Confession",
+  "Answer a Question",
+  "Hot Take",
+  "Tell a Story",
+  "Two-Person Mode",
+  "Private Mode",
+  "Shareable Mode",
 ];
-const boothFeatures = ["Compact two-person sofa", "Small table", "Ceiling-mounted microphone", "Two recessed ceiling lights", "Front-facing integrated key light", "Flat built-in display", "Discreet front-facing camera", "Table controls", "Acoustic treatment", "Quiet ventilation", "Privacy door", "Digital delivery"];
 const launchMetrics = ["Sessions + peak times", "Solo vs two-person use", "Session length + pricing", "Prompted vs free-form", "Private, shared + repeat use", "F&B impact + reliability"];
 const pricing = [
   ["SPILL Confessional", "129k–159k VND", "Recording + digital delivery"],
@@ -51,14 +50,21 @@ export default function ConfessionalPage() {
     </section>
 
     <section className="confExperience" id="experience">
-      <div className="confExperienceIntro" data-conf-reveal><p className="confKicker">01 / The Experience</p><h2>Designed to feel<br /><em>simple and private.</em></h2><p>The booth is designed for one person comfortably, two people maximum.</p></div>
-      <div className="confSteps">{[["01", "Step in"], ["02", "Sit down"], ["03", "Choose a mode"], ["04", "Press record"], ["05", "SPILL"]].map(([number, label]) => <article key={label} data-conf-reveal><span>{number}</span><h3><BrandedText text={label} tone="dark" /></h3></article>)}</div>
-      <div className="confExperienceMediaSplit" data-conf-reveal><div className="confExperienceVideo"><video autoPlay muted loop playsInline preload="metadata" poster="/assets/spill/confessional/promotion-poster.jpg" aria-label="SPILL Confessional experience"><source src="/assets/spill/confessional/promotion.mp4" type="video/mp4" />Your browser does not support embedded video.</video></div><div className="confExperienceDetails"><p className="confKicker">Inside</p><div className="confFeatureList">{boothFeatures.map((feature, index) => <span key={feature}><b>{String(index + 1).padStart(2, "0")}</b>{feature}</span>)}</div></div></div>
+      <div className="confExperienceContent">
+        <div className="confExperienceIntro" data-conf-reveal><p className="confKicker">01 / The Experience</p><h2>Designed to feel<br /><em>simple and private.</em></h2><p>The booth is designed for one person comfortably, two people maximum.</p></div>
+        <div className="confSteps">{[["01", "Step in"], ["02", "Sit down"], ["03", "Choose a mode"], ["04", "Press record"], ["05", "SPILL"]].map(([number, label]) => <article key={label} data-conf-reveal><span>{number}</span><h3><BrandedText text={label} tone="dark" /></h3></article>)}</div>
+      </div>
+      <div className="confExperienceVideo" data-conf-reveal><video autoPlay muted loop playsInline preload="metadata" poster="/assets/spill/confessional/promotion-poster.jpg" aria-label="SPILL Confessional experience"><source src="/assets/spill/confessional/promotion.mp4" type="video/mp4" />Your browser does not support embedded video.</video></div>
     </section>
 
     <section className="confModesSection" id="modes" aria-labelledby="conf-modes-heading">
-      <div className="confModesHeading" data-conf-reveal><p className="confKicker">7 Modes</p><h2 id="conf-modes-heading">Choose how<br /><em>you want to SPILL.</em></h2><p>Start with a prompt, bring someone with you, keep the recording private, or prepare it to share.</p></div>
-      <div className="confModesLayout"><div className="confModeGrid">{modes.map(([title, copy], index) => <article key={title} data-conf-reveal><span>{String(index + 1).padStart(2, "0")}</span><h3>{title}</h3><p>{copy}</p></article>)}</div><div className="confModesImage" data-conf-reveal><Image src="/assets/spill/confessional/modes-7.png" alt="Seven SPILL Confessional recording modes" fill sizes="(max-width: 820px) 100vw, 58vw" /></div></div>
+      <div className="confModesLayout">
+        <div className="confModesContent">
+          <div className="confModesHeading" data-conf-reveal><p className="confKicker">7 Modes</p><h2 id="conf-modes-heading">Choose how<br /><em>you want to <SpillWordmark tone="dark" />.</em></h2><p>Start with a prompt, bring someone with you, keep the recording private, or prepare it to share.</p></div>
+          <div className="confModeGrid">{modes.map((title, index) => <article key={title} data-conf-reveal><span>{String(index + 1).padStart(2, "0")}</span><h3>{title}</h3></article>)}</div>
+        </div>
+        <div className="confModesImage" data-conf-reveal><Image src="/assets/spill/confessional/modes-7.png" alt="Seven SPILL Confessional recording modes" fill sizes="(max-width: 900px) 100vw, 58vw" style={{ objectPosition: 'right center' }} /></div>
+      </div>
     </section>
 
     <section className="confEcosystem" id="why-it-works">
@@ -96,7 +102,7 @@ export default function ConfessionalPage() {
 
     <section className="confBoothSection">
       <div className="confBooth"><div className="confBoothMedia" data-conf-reveal><Image src="/assets/spill/confessional/hero.png" alt="Self-contained SPILL Confessional booth in the café-bar" fill sizes="(max-width: 900px) 100vw, 58vw" /></div><div className="confBoothCopy" data-conf-reveal><p className="confKicker">10 / The Booth</p><h2>Architecture.<br /><em>Not a studio.</em></h2><p>One side holds a two-person sofa. Opposite it, a flush-mounted display, discreet camera, and professional light face the speakers. A small table sits in the centre, with one hanging microphone and two recessed lights overhead. Table controls handle record, stop, lighting, retake, and end session.</p><p>No technical clutter. The unit should feel like a premium piece of furniture or architecture rather than a studio.</p></div></div>
-      <div className="confRelocatable"><div className="confRelocatableCopy" data-conf-reveal><p className="confKicker">Self-contained and relocatable</p><h2>Power + internet.<br /><em><SpillWordmark /> anywhere.</em></h2><p>Each booth is a complete unit. Move it around SPILL, take it to events, relocate it between properties, or eventually install it in other venues.</p></div><div className="confRelocatableMedia" data-conf-reveal><Image src="/assets/spill/confessional/self-contained-relocatable.png" alt="A self-contained SPILL Confessional booth moving between locations and events" fill sizes="(max-width: 820px) 100vw, 52vw" /></div></div>
+      <div className="confRelocatable"><div className="confRelocatableCopy" data-conf-reveal><p className="confKicker">Self-contained and relocatable</p><h2>Power + internet.<br /><em><SpillWordmark tone="dark" /> anywhere.</em></h2><p>Each booth is a complete unit. Move it around SPILL, take it to events, relocate it between properties, or eventually install it in other venues.</p></div><div className="confRelocatableMedia" data-conf-reveal><Image src="/assets/spill/confessional/self-contained-relocatable.png" alt="A self-contained SPILL Confessional booth moving between locations and events" fill sizes="(max-width: 820px) 100vw, 52vw" /></div></div>
       <div className="confExternal"><div className="confExternalHeading" data-conf-reveal><p className="confKicker">Phase Two / Outside SPILL</p><h2>Prove it inside.<br /><em>Then test one outside.</em></h2><p>Only after the internal model is proven should SPILL test one external unit at an event, hotel, university, mall, or partner venue.</p></div><div className="confBigQuestion" data-conf-reveal><span>The key question</span><p>Does the Confessional work because it is inside SPILL, or can it attract demand independently?</p></div></div>
     </section>
 

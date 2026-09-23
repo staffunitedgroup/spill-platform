@@ -5,6 +5,9 @@ import { SiteFooter } from "@/components/site-footer";
 import { SectionNavigator } from "@/components/section-navigator";
 import { FloatingContact } from "@/components/floating-contact";
 import { PageTransition } from "@/components/page-transition";
+import { cookies } from "next/headers";
+import { SITE_ACCESS_COOKIE, hasValidSiteAccess } from "@/lib/site-access";
+import { SiteLockscreen } from "@/components/site-lockscreen";
 import "lenis/dist/lenis.css";
 import "./globals.css";
 
@@ -25,10 +28,26 @@ export const viewport: Viewport = {
   colorScheme: "dark",
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const cookieStore = await cookies();
+  const authorized = hasValidSiteAccess(cookieStore.get(SITE_ACCESS_COOKIE)?.value);
+
   return (
     <html lang="en">
-      <body className={spaceGrotesk.variable}><SmoothScroll><PageTransition>{children}</PageTransition><SiteFooter /></SmoothScroll><SectionNavigator /><FloatingContact phone={process.env.NEXT_PUBLIC_CONTACT_PHONE} /></body>
+      <body className={spaceGrotesk.variable}>
+        {authorized ? (
+          <>
+            <SmoothScroll>
+              <PageTransition>{children}</PageTransition>
+              <SiteFooter />
+            </SmoothScroll>
+            <SectionNavigator />
+            <FloatingContact phone={process.env.NEXT_PUBLIC_CONTACT_PHONE} />
+          </>
+        ) : (
+          <SiteLockscreen />
+        )}
+      </body>
     </html>
   );
 }
