@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { tableCode } = parsed.data;
+  const { tableCode, mode, groupSize } = parsed.data;
 
   // 1. Tìm bàn theo tableCode
   const table = await prisma.table.findFirst({
@@ -102,7 +102,8 @@ export async function POST(req: NextRequest) {
         data: {
           tableId: table.id,
           sessionCode,
-          mode: "TWO_PERSON",
+          mode,
+          groupSize: mode === "GROUP" ? groupSize : null,
           status: "WAITING",
         },
       });

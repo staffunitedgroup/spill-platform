@@ -85,22 +85,27 @@ export async function POST(
     );
   }
 
-  if (session.connectionSelections.length < 2) {
-    return NextResponse.json(
-      {
-        error: {
-          code: "CONNECTION_NOT_RESOLVED",
-          message: "Both participants must submit connection selection first.",
+  let resolvedType: ReturnType<typeof resolveConnectionType> | null = null;
+
+  if (session.mode === "TWO_PERSON") {
+    if (session.connectionSelections.length < 2) {
+      return NextResponse.json(
+        {
+          error: {
+            code: "CONNECTION_NOT_RESOLVED",
+            message:
+              "Both participants must submit connection selection first.",
+          },
         },
-      },
-      { status: 409 },
+        { status: 409 },
+      );
+    }
+
+    resolvedType = resolveConnectionType(
+      session.connectionSelections[0].connectionType,
+      session.connectionSelections[1].connectionType,
     );
   }
-
-  const resolvedType = resolveConnectionType(
-    session.connectionSelections[0].connectionType,
-    session.connectionSelections[1].connectionType,
-  );
 
   const result = await prisma.$transaction(async (tx) => {
     await tx.sessionSpill.updateMany({

@@ -4,8 +4,6 @@ import { joinSessionSchema } from "@/lib/validation/participant";
 import { generateParticipantToken } from "@/lib/participant-token";
 import type { SessionStatus } from "@/generated/prisma/enums";
 
-const MAX_PARTICIPANTS = 2;
-
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ sessionId: string }> },
@@ -42,7 +40,6 @@ export async function POST(
 
   const { displayName } = parsed.data;
 
-  // Dùng transaction để tránh race condition khi 2 người bấm Join gần như cùng lúc
   const result = await prisma.$transaction(async (tx) => {
     const session = await tx.session.findUnique({
       where: { id: sessionId },
@@ -57,11 +54,14 @@ export async function POST(
       return { error: "SESSION_UNAVAILABLE" as const };
     }
 
+    const maxParticipants =
+      session.mode === "GROUP" ? (session.groupSize ?? 6) : 2;
+
     const activeParticipants = session.participants.filter(
       (p) => p.status !== "COMPLETED",
     );
 
-    if (activeParticipants.length >= MAX_PARTICIPANTS) {
+    if (activeParticipants.length >= maxParticipants) {
       return { error: "SESSION_FULL" as const };
     }
 
@@ -74,13 +74,17 @@ export async function POST(
       },
     });
 
-    const isNowFull = activeParticipants.length + 1 >= MAX_PARTICIPANTS;
+    const isNowFull = activeParticipants.length + 1 >= maxParticipants;
 
     let sessionStatus: SessionStatus = session.status;
     if (isNowFull) {
+      const nextStatus = session.mode === "GROUP" ? "ACTIVE" : "READY";
       const updated = await tx.session.update({
         where: { id: session.id },
-        data: { status: "READY" },
+        data:
+          nextStatus === "ACTIVE"
+            ? { status: "ACTIVE", startedAt: new Date() }
+            : { status: "READY" },
       });
       sessionStatus = updated.status;
     }
