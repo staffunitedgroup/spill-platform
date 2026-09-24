@@ -2,7 +2,7 @@ import "server-only";
 import { createHmac, timingSafeEqual } from "node:crypto";
 
 export const SITE_ACCESS_COOKIE = "spill_site_access";
-export const DEFAULT_SITE_PASSWORD = "SpillSaigon@$";
+export const DEFAULT_SITE_PASSWORD = "Prit-thiy-weew-cef";
 
 function secureEqual(left: string, right: string) {
   const leftBuffer = Buffer.from(left);
