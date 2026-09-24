@@ -3,7 +3,7 @@ import type { ConnectionType } from "@/generated/prisma/enums";
 
 export async function selectNextSpill(
   sessionId: string,
-  resolvedConnectionType: ConnectionType,
+  resolvedConnectionType: ConnectionType | null,
 ) {
   const usedSpillIds = (
     await prisma.sessionSpill.findMany({
@@ -16,10 +16,14 @@ export async function selectNextSpill(
     where: {
       active: true,
       id: { notIn: usedSpillIds },
-      OR: [
-        { eligibleTypes: { isEmpty: true } },
-        { eligibleTypes: { has: resolvedConnectionType } },
-      ],
+      ...(resolvedConnectionType
+        ? {
+            OR: [
+              { eligibleTypes: { isEmpty: true } },
+              { eligibleTypes: { has: resolvedConnectionType } },
+            ],
+          }
+        : {}),
     },
     orderBy: [{ difficulty: "asc" }],
   });

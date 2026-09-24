@@ -23,6 +23,7 @@ enum TableStatus {
 
 enum SessionMode {
   TWO_PERSON
+  GROUP
 }
 
 enum SessionStatus {
@@ -98,6 +99,7 @@ model Session {
   tableId     String        @map("table_id")
   sessionCode String        @unique @map("session_code")
   mode        SessionMode   @default(TWO_PERSON)
+  groupSize   Int?          @map("group_size")
   status      SessionStatus @default(WAITING)
   startedAt   DateTime?     @map("started_at")
   endedAt     DateTime?     @map("ended_at")
