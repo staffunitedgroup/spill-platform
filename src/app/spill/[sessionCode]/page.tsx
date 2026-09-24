@@ -247,7 +247,6 @@ export default function SpillSessionPage() {
   async function submitEnding(wantsStayConnected: boolean) {
     if (!stored) return;
     const participant = participants[endingIndex];
-    const isLast = endingIndex === participants.length - 1;
     setActionLoading(true);
     const res = await fetch(`/api/sessions/${stored.sessionId}/ending`, {
       method: "POST",
@@ -261,18 +260,18 @@ export default function SpillSessionPage() {
     setActionLoading(false);
     if (!res.ok) return;
 
-    if (!isLast) {
-      setEndingIndex((i) => i + 1);
-      setPhase("endingHandoff");
-    } else {
+    if (json.bothSubmitted) {
       setMutual(json.mutual ?? false);
       setPhase("result");
+    } else {
+      setEndingIndex((i) => i + 1);
+      setPhase("endingHandoff");
     }
   }
 
   const index = data?.currentSpill?.sequence ?? 0;
   const currentEndingParticipant = participants[endingIndex];
-  const nextEndingParticipant = participants[endingIndex + 1];
+  const nextEndingParticipant = participants[endingIndex];
 
   return (
     <main className="s42App">
