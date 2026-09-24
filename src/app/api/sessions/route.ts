@@ -53,7 +53,6 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // 2. Nếu bàn đã có session chưa kết thúc → trả về session đó (idempotent)
   const existingSession = await prisma.session.findFirst({
     where: {
       tableId: table.id,
@@ -63,7 +62,31 @@ export async function POST(req: NextRequest) {
   });
 
   if (existingSession) {
-    return NextResponse.json({ session: existingSession }, { status: 200 });
+    const WAITING_READY_TIMEOUT_MIN = 15;
+    const ACTIVE_TIMEOUT_MIN = 90;
+
+    const referenceTime =
+      existingSession.status === "ACTIVE" && existingSession.startedAt
+        ? existingSession.startedAt
+        : existingSession.createdAt;
+
+    const timeoutMin =
+      existingSession.status === "ACTIVE"
+        ? ACTIVE_TIMEOUT_MIN
+        : WAITING_READY_TIMEOUT_MIN;
+
+    const ageMs = Date.now() - referenceTime.getTime();
+    const isStale = ageMs > timeoutMin * 60 * 1000;
+
+    if (!isStale) {
+      return NextResponse.json({ session: existingSession }, { status: 200 });
+    }
+
+    // Session bị bỏ dở quá lâu → đóng lại để nhường chỗ cho session mới
+    await prisma.session.update({
+      where: { id: existingSession.id },
+      data: { status: "ENDED" },
+    });
   }
 
   // 3. Tạo session mới, đảm bảo sessionCode không trùng
