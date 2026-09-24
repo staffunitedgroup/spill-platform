@@ -5,7 +5,12 @@ import { useParams, useRouter } from "next/navigation";
 import { SpillWordmark } from "@/components/brand-text";
 
 type StoredParticipant = { name: string; token: string };
-type StoredSession = { sessionId: string; participants: StoredParticipant[] };
+type StoredSession = {
+  sessionId: string;
+  mode: "TWO_PERSON" | "GROUP";
+  maxParticipants: number;
+  participants: StoredParticipant[];
+};
 
 function loadStored(sessionCode: string): StoredSession | null {
   try {
@@ -15,7 +20,8 @@ function loadStored(sessionCode: string): StoredSession | null {
     if (
       !parsed ||
       typeof parsed !== "object" ||
-      !Array.isArray(parsed.participants)
+      !Array.isArray(parsed.participants) ||
+      typeof parsed.maxParticipants !== "number"
     ) {
       localStorage.removeItem(`spill:${sessionCode}`);
       return null;
@@ -36,6 +42,8 @@ export default function JoinPage() {
   const sessionCode = params.sessionCode;
 
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [mode, setMode] = useState<"TWO_PERSON" | "GROUP">("TWO_PERSON");
+  const [maxParticipants, setMaxParticipants] = useState<number>(2);
   const [participants, setParticipants] = useState<StoredParticipant[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -45,14 +53,16 @@ export default function JoinPage() {
   useEffect(() => {
     async function init() {
       const stored = loadStored(sessionCode);
-      if (stored && stored.participants.length >= 2) {
+      if (stored && stored.participants.length >= stored.maxParticipants) {
         router.replace(`/spill/${sessionCode}`);
         return;
       }
       if (stored) {
         setSessionId(stored.sessionId);
+        setMode(stored.mode);
+        setMaxParticipants(stored.maxParticipants);
         setParticipants(stored.participants);
-        setStep(stored.participants.length === 1 ? "handoff" : "entry");
+        setStep(stored.participants.length >= 1 ? "handoff" : "entry");
         setLoading(false);
         return;
       }
@@ -67,8 +77,21 @@ export default function JoinPage() {
           return;
         }
         const json = await res.json();
-        const id = json.session?.id ?? json.id;
+        const fetchedSession = json.session ?? json;
+        const id = fetchedSession.id;
+        const fetchedMode: "TWO_PERSON" | "GROUP" =
+          fetchedSession.mode === "GROUP" ? "GROUP" : "TWO_PERSON";
+        const computedMax =
+          fetchedMode === "GROUP" ? (fetchedSession.groupSize ?? 6) : 2;
         setSessionId(id);
+        setMode(fetchedMode);
+        setMaxParticipants(computedMax);
+        saveStored(sessionCode, {
+          sessionId: id,
+          mode: fetchedMode,
+          maxParticipants: computedMax,
+          participants: [],
+        });
       } catch {
         setError("Something went wrong. Please try again.");
       }
@@ -101,10 +124,17 @@ export default function JoinPage() {
         { name: label, token: json.participant.participantToken },
       ];
       setParticipants(updated);
-      saveStored(sessionCode, { sessionId, participants: updated });
+      saveStored(sessionCode, {
+        sessionId,
+        mode,
+        maxParticipants,
+        participants: updated,
+      });
       setSubmitting(false);
 
-      if (json.session.status === "READY" || updated.length >= 2) {
+      const sessionIsReady =
+        json.session.status === "READY" || json.session.status === "ACTIVE";
+      if (sessionIsReady || updated.length >= maxParticipants) {
         router.replace(`/spill/${sessionCode}`);
       } else {
         setStep("handoff");
@@ -141,19 +171,23 @@ export default function JoinPage() {
   }
 
   if (step === "handoff") {
+    const joinedCount = participants.length;
+    const nextNumber = joinedCount + 1;
     return (
       <main className="s42App">
         <section className="s42Setup">
           <div className="s42Handoff">
-            <span>Participant 1 is in</span>
+            <span>
+              {joinedCount} of {maxParticipants} joined
+            </span>
             <h1>Pass the phone</h1>
-            <p>Participant 2, tap below when the screen is yours.</p>
+            <p>Participant {nextNumber}, tap below when the screen is yours.</p>
             <button
               className="s42Primary"
               type="button"
               onClick={() => setStep("entry")}
             >
-              I&apos;m Participant 2 <span>→</span>
+              I&apos;m Participant {nextNumber} <span>→</span>
             </button>
           </div>
         </section>
@@ -166,9 +200,7 @@ export default function JoinPage() {
       <section className="s42Setup">
         <div className="s42SetupPanel">
           <div className="s42SetupHeading">
-            <span>
-              {participants.length === 0 ? "Participant 1" : "Participant 2"}
-            </span>
+            <span>Participant {participants.length + 1}</span>
             <h1>
               Want to <SpillWordmark />?
             </h1>
