@@ -13,6 +13,7 @@ export async function GET(
       id: true,
       sessionCode: true,
       mode: true,
+      groupSize: true,
       status: true,
       startedAt: true,
       endedAt: true,

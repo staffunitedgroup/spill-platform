@@ -8,6 +8,7 @@ import { BrandedText, SpillWordmark } from "@/components/brand-text";
 
 type ConnectionType = "FRIENDS_ONLY" | "MAYBE_MORE" | "ALREADY_TOGETHER";
 type SessionStatus = "WAITING" | "READY" | "ACTIVE" | "ENDING" | "ENDED";
+type SessionMode = "TWO_PERSON" | "GROUP";
 type SpillType =
   | "QUESTION"
   | "INSTRUCTION"
@@ -17,7 +18,12 @@ type SpillType =
   | "VISION";
 
 type StoredParticipant = { name: string; token: string };
-type StoredSession = { sessionId: string; participants: StoredParticipant[] };
+type StoredSession = {
+  sessionId: string;
+  mode: SessionMode;
+  maxParticipants: number;
+  participants: StoredParticipant[];
+};
 
 type CurrentSpillResponse = {
   session: { id: string; status: SessionStatus };
@@ -28,9 +34,9 @@ type CurrentSpillResponse = {
 };
 
 // Local UI phase — layered on top of the real session.status from the backend.
-// Because both participants share ONE phone (per the SPILL 42 spec: "the phone
-// facilitates, people connect"), each private step is taken in turn on this
-// same device, with a "pass the phone" handoff screen in between.
+// Everyone shares ONE phone (per the SPILL 42 spec: "the phone facilitates,
+// people connect"), so each private step is taken in turn on this same
+// device, with a "pass the phone" handoff screen in between.
 type Phase =
   | "loading"
   | "connectionOne"
@@ -38,9 +44,8 @@ type Phase =
   | "connectionTwo"
   | "spill"
   | "poolExhausted"
-  | "endingOne"
+  | "ending"
   | "endingHandoff"
-  | "endingTwo"
   | "result";
 
 const CONNECTION_OPTIONS: {
@@ -93,12 +98,11 @@ function loadStored(sessionCode: string): StoredSession | null {
     const raw = localStorage.getItem(`spill:${sessionCode}`);
     if (!raw) return null;
     const parsed = JSON.parse(raw);
-    // Guard against leftover data from an older version of this app that
-    // used a different shape ({ sessionId, participantToken }).
     if (
       !parsed ||
       typeof parsed !== "object" ||
-      !Array.isArray(parsed.participants)
+      !Array.isArray(parsed.participants) ||
+      typeof parsed.maxParticipants !== "number"
     ) {
       return null;
     }
@@ -120,6 +124,7 @@ export default function SpillSessionPage() {
   const [resolvedConnection, setResolvedConnection] =
     useState<ConnectionType | null>(null);
   const [mutual, setMutual] = useState<boolean | null>(null);
+  const [endingIndex, setEndingIndex] = useState(0);
   const [savedIds, setSavedIds] = useState<number[]>([]);
   const [phrase] = useState(
     () => SPILL_PHRASES[Math.floor(Math.random() * SPILL_PHRASES.length)],
@@ -128,7 +133,7 @@ export default function SpillSessionPage() {
   // Load who's on this device for this session.
   useEffect(() => {
     const saved = loadStored(sessionCode);
-    if (!saved || saved.participants.length < 2) {
+    if (!saved || saved.participants.length < saved.maxParticipants) {
       router.replace(`/spill/${sessionCode}/join`);
       return;
     }
@@ -160,14 +165,14 @@ export default function SpillSessionPage() {
   // not already mid-way through a private, on-device step (connection pick,
   // ending pick) that the backend can't see happening in between.
   useEffect(() => {
-    if (!data) return;
+    if (!data || !stored) return;
     if (phase === "loading") {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       if (data.session.status === "READY") setPhase("connectionOne");
       else if (data.session.status === "ACTIVE") setPhase("spill");
       else if (data.session.status === "ENDED") setPhase("result");
     }
-  }, [data, phase]);
+  }, [data, phase, stored]);
 
   if (!stored || (phase === "loading" && !data)) {
     return (
@@ -181,7 +186,9 @@ export default function SpillSessionPage() {
     );
   }
 
-  const [p1, p2] = stored.participants;
+  const participants = stored.participants;
+  const p1 = participants[0];
+  const p2 = participants[1];
 
   async function submitConnection(
     participant: StoredParticipant,
@@ -232,12 +239,15 @@ export default function SpillSessionPage() {
     fetchState();
   }
 
-  async function submitEnding(
-    participant: StoredParticipant,
-    wantsStayConnected: boolean,
-    isSecond: boolean,
-  ) {
+  function startEnding() {
+    setEndingIndex(0);
+    setPhase("ending");
+  }
+
+  async function submitEnding(wantsStayConnected: boolean) {
     if (!stored) return;
+    const participant = participants[endingIndex];
+    const isLast = endingIndex === participants.length - 1;
     setActionLoading(true);
     const res = await fetch(`/api/sessions/${stored.sessionId}/ending`, {
       method: "POST",
@@ -251,7 +261,8 @@ export default function SpillSessionPage() {
     setActionLoading(false);
     if (!res.ok) return;
 
-    if (!isSecond) {
+    if (!isLast) {
+      setEndingIndex((i) => i + 1);
       setPhase("endingHandoff");
     } else {
       setMutual(json.mutual ?? false);
@@ -260,6 +271,8 @@ export default function SpillSessionPage() {
   }
 
   const index = data?.currentSpill?.sequence ?? 0;
+  const currentEndingParticipant = participants[endingIndex];
+  const nextEndingParticipant = participants[endingIndex + 1];
 
   return (
     <main className="s42App">
@@ -276,7 +289,7 @@ export default function SpillSessionPage() {
         <span />
       </header>
 
-      {(phase === "connectionOne" || phase === "connectionTwo") && (
+      {(phase === "connectionOne" || phase === "connectionTwo") && p1 && p2 && (
         <section className="s42Setup">
           <div className="s42SetupPanel private">
             <div className="s42PrivateBadge">
@@ -314,7 +327,7 @@ export default function SpillSessionPage() {
         </section>
       )}
 
-      {phase === "connectionHandoff" && (
+      {phase === "connectionHandoff" && p2 && (
         <section className="s42Setup">
           <div className="s42Handoff">
             <span>Choice saved privately</span>
@@ -338,7 +351,9 @@ export default function SpillSessionPage() {
               <span>
                 {resolvedConnection
                   ? connectionLabels[resolvedConnection]
-                  : `${p1.name} & ${p2.name}`}
+                  : stored.mode === "GROUP"
+                    ? `${participants.length} people`
+                    : `${p1.name} & ${p2?.name ?? ""}`}
               </span>
               <b>
                 {index || "…"} / {TOTAL_SPILLS}
@@ -394,7 +409,7 @@ export default function SpillSessionPage() {
               <button
                 type="button"
                 disabled={actionLoading}
-                onClick={() => setPhase("endingOne")}
+                onClick={startEnding}
               >
                 End SPILL
               </button>
@@ -421,22 +436,18 @@ export default function SpillSessionPage() {
           <span>You&apos;ve SPILLed all 42!</span>
           <h1>That&apos;s every SPILL we have for now.</h1>
           <div className="s42ResultActions">
-            <button
-              className="s42Primary"
-              type="button"
-              onClick={() => setPhase("endingOne")}
-            >
+            <button className="s42Primary" type="button" onClick={startEnding}>
               Wrap up <span>→</span>
             </button>
           </div>
         </section>
       )}
 
-      {(phase === "endingOne" || phase === "endingTwo") && (
+      {phase === "ending" && currentEndingParticipant && (
         <section className="s42Ending">
           <div className="s42EndPanel">
             <div className="s42PrivateBadge">
-              Private choice · {phase === "endingOne" ? p1.name : p2.name}
+              Private choice · {currentEndingParticipant.name}
             </div>
             <span>End on a positive note</span>
             <h1>What happens next?</h1>
@@ -447,13 +458,7 @@ export default function SpillSessionPage() {
               <button
                 type="button"
                 disabled={actionLoading}
-                onClick={() =>
-                  submitEnding(
-                    phase === "endingOne" ? p1 : p2,
-                    false,
-                    phase === "endingTwo",
-                  )
-                }
+                onClick={() => submitEnding(false)}
               >
                 <b>SPILL Again</b>
                 <small>
@@ -464,13 +469,7 @@ export default function SpillSessionPage() {
               <button
                 type="button"
                 disabled={actionLoading}
-                onClick={() =>
-                  submitEnding(
-                    phase === "endingOne" ? p1 : p2,
-                    true,
-                    phase === "endingTwo",
-                  )
-                }
+                onClick={() => submitEnding(true)}
               >
                 <b>Stay Connected</b>
                 <small>I&apos;d like to exchange contact information.</small>
@@ -480,18 +479,20 @@ export default function SpillSessionPage() {
         </section>
       )}
 
-      {phase === "endingHandoff" && (
+      {phase === "endingHandoff" && nextEndingParticipant && (
         <section className="s42Ending">
           <div className="s42Handoff">
             <span>Choice saved privately</span>
             <h1>Pass the phone</h1>
-            <p>{p2.name}, tap below when the screen is yours.</p>
+            <p>
+              {nextEndingParticipant.name}, tap below when the screen is yours.
+            </p>
             <button
               className="s42Primary"
               type="button"
-              onClick={() => setPhase("endingTwo")}
+              onClick={() => setPhase("ending")}
             >
-              I&apos;m {p2.name} <span>→</span>
+              I&apos;m {nextEndingParticipant.name} <span>→</span>
             </button>
           </div>
         </section>
@@ -504,7 +505,7 @@ export default function SpillSessionPage() {
           <h1>
             {mutual ? (
               <>
-                You both chose
+                Everyone chose
                 <br />
                 <em>Stay Connected</em>
               </>
