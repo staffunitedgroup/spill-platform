@@ -138,7 +138,10 @@ export default function SpillSessionPage() {
 
   const fetchState = useCallback(async () => {
     if (!stored) return;
-    const res = await fetch(`/api/sessions/${stored.sessionId}/current-spill`);
+    const token = stored.participants[0]?.token;
+    const res = await fetch(
+      `/api/sessions/${stored.sessionId}/current-spill?participantToken=${encodeURIComponent(token ?? "")}`,
+    );
     if (res.ok) {
       const json = await res.json();
       setData(json);
