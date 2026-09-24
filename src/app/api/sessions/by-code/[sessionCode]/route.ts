@@ -9,7 +9,22 @@ export async function GET(
 
   const session = await prisma.session.findUnique({
     where: { sessionCode },
-    include: { participants: true },
+    select: {
+      id: true,
+      sessionCode: true,
+      mode: true,
+      status: true,
+      startedAt: true,
+      endedAt: true,
+      createdAt: true,
+      participants: {
+        select: {
+          id: true,
+          displayName: true,
+          status: true,
+        },
+      },
+    },
   });
 
   if (!session) {
