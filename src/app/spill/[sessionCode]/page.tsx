@@ -125,7 +125,7 @@ export default function SpillSessionPage() {
     useState<ConnectionType | null>(null);
   const [mutual, setMutual] = useState<boolean | null>(null);
   const [endingIndex, setEndingIndex] = useState(0);
-  const [handoffReady, setHandoffReady] = useState(false);
+  const [readyForPhase, setReadyForPhase] = useState<Phase | null>(null);
   const [savedIds, setSavedIds] = useState<number[]>([]);
   const [phrase] = useState(
     () => SPILL_PHRASES[Math.floor(Math.random() * SPILL_PHRASES.length)],
@@ -177,8 +177,7 @@ export default function SpillSessionPage() {
 
   useEffect(() => {
     if (phase === "connectionHandoff" || phase === "endingHandoff") {
-      setHandoffReady(false);
-      const timer = setTimeout(() => setHandoffReady(true), 1000);
+      const timer = setTimeout(() => setReadyForPhase(phase), 1000);
       return () => clearTimeout(timer);
     }
   }, [phase]);
@@ -196,6 +195,7 @@ export default function SpillSessionPage() {
   }
 
   const participants = stored.participants;
+  const handoffReady = readyForPhase === phase;
   const p1 = participants[0];
   const p2 = participants[1];
 
