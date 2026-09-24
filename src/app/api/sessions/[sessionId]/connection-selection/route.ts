@@ -50,6 +50,10 @@ export async function POST(
       return { error: "SESSION_NOT_FOUND" as const };
     }
 
+    if (session.mode === "GROUP") {
+      return { error: "NOT_APPLICABLE_FOR_GROUP" as const };
+    }
+
     const participant = session.participants.find(
       (p) => p.participantToken === participantToken,
     );
@@ -129,6 +133,16 @@ export async function POST(
             },
           },
           { status: 404 },
+        );
+      case "NOT_APPLICABLE_FOR_GROUP":
+        return NextResponse.json(
+          {
+            error: {
+              code: result.error,
+              message: "Group sessions don't use connection selection.",
+            },
+          },
+          { status: 409 },
         );
       case "PARTICIPANT_NOT_FOUND":
         return NextResponse.json(

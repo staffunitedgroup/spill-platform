@@ -125,6 +125,7 @@ export default function SpillSessionPage() {
     useState<ConnectionType | null>(null);
   const [mutual, setMutual] = useState<boolean | null>(null);
   const [endingIndex, setEndingIndex] = useState(0);
+  const [handoffReady, setHandoffReady] = useState(false);
   const [savedIds, setSavedIds] = useState<number[]>([]);
   const [phrase] = useState(
     () => SPILL_PHRASES[Math.floor(Math.random() * SPILL_PHRASES.length)],
@@ -173,6 +174,14 @@ export default function SpillSessionPage() {
       else if (data.session.status === "ENDED") setPhase("result");
     }
   }, [data, phase, stored]);
+
+  useEffect(() => {
+    if (phase === "connectionHandoff" || phase === "endingHandoff") {
+      setHandoffReady(false);
+      const timer = setTimeout(() => setHandoffReady(true), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [phase]);
 
   if (!stored || (phase === "loading" && !data)) {
     return (
@@ -335,9 +344,16 @@ export default function SpillSessionPage() {
             <button
               className="s42Primary"
               type="button"
+              disabled={!handoffReady}
               onClick={() => setPhase("connectionTwo")}
             >
-              I&apos;m {p2.name} <span>→</span>
+              {handoffReady ? (
+                <>
+                  I&apos;m {p2.name} <span>→</span>
+                </>
+              ) : (
+                "One moment…"
+              )}
             </button>
           </div>
         </section>
@@ -489,9 +505,16 @@ export default function SpillSessionPage() {
             <button
               className="s42Primary"
               type="button"
+              disabled={!handoffReady}
               onClick={() => setPhase("ending")}
             >
-              I&apos;m {nextEndingParticipant.name} <span>→</span>
+              {handoffReady ? (
+                <>
+                  I&apos;m {nextEndingParticipant.name} <span>→</span>
+                </>
+              ) : (
+                "One moment…"
+              )}
             </button>
           </div>
         </section>
