@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { SpillWordmark } from "@/components/brand-text";
+import "../../spill-game.css";
 
 type StoredParticipant = { name: string; token: string };
 type StoredSession = {
@@ -49,6 +50,7 @@ export default function JoinPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [step, setStep] = useState<"entry" | "handoff">("entry");
+  const [nickname, setNickname] = useState("");
 
   useEffect(() => {
     async function init() {
@@ -103,7 +105,15 @@ export default function JoinPage() {
 
   async function joinSession() {
     if (!sessionId) return;
-    const label = `Participant ${participants.length + 1}`;
+    const trimmed = nickname.trim().slice(0, 20);
+    const taken = participants.some(
+      (p) => p.name.toLowerCase() === trimmed.toLowerCase(),
+    );
+    if (taken) {
+      setError("Someone already took that name. Try a nickname.");
+      return;
+    }
+    const label = trimmed || `Player ${participants.length + 1}`;
     setSubmitting(true);
     setError(null);
     try {
@@ -124,6 +134,7 @@ export default function JoinPage() {
         { name: label, token: json.participant.participantToken },
       ];
       setParticipants(updated);
+      setNickname("");
       saveStored(sessionCode, {
         sessionId,
         mode,
@@ -181,13 +192,13 @@ export default function JoinPage() {
               {joinedCount} of {maxParticipants} joined
             </span>
             <h1>Pass the phone</h1>
-            <p>Participant {nextNumber}, tap below when the screen is yours.</p>
+            <p>Player {nextNumber}, tap below when the screen is yours.</p>
             <button
               className="s42Primary"
               type="button"
               onClick={() => setStep("entry")}
             >
-              I&apos;m Participant {nextNumber} <span>→</span>
+              I&apos;m Player {nextNumber} <span>→</span>
             </button>
           </div>
         </section>
@@ -200,12 +211,39 @@ export default function JoinPage() {
       <section className="s42Setup">
         <div className="s42SetupPanel">
           <div className="s42SetupHeading">
-            <span>Participant {participants.length + 1}</span>
+            <span>
+              Player {participants.length + 1} of {maxParticipants}
+            </span>
             <h1>
               Want to <SpillWordmark />?
             </h1>
-            <p>Tap below to join this table&apos;s SPILL.</p>
+            <p>What should the table call you?</p>
           </div>
+          <form
+            className="s42NameForm"
+            onSubmit={(event) => {
+              event.preventDefault();
+              if (!submitting) joinSession();
+            }}
+          >
+            <input
+              type="text"
+              value={nickname}
+              maxLength={20}
+              autoComplete="nickname"
+              autoFocus
+              placeholder={`Player ${participants.length + 1}`}
+              aria-label="Your name or nickname"
+              onChange={(event) => setNickname(event.target.value)}
+            />
+            {participants.length > 0 && (
+              <div className="s42JoinedList" aria-label="Already joined">
+                {participants.map((p) => (
+                  <span key={p.token}>{p.name}</span>
+                ))}
+              </div>
+            )}
+          </form>
           {error && <p className="s42Permission">{error}</p>}
           <button
             className="s42Primary"
@@ -213,7 +251,12 @@ export default function JoinPage() {
             disabled={submitting}
             onClick={joinSession}
           >
-            {submitting ? "Joining…" : "Tap to join"} <span>→</span>
+            {submitting
+              ? "Joining…"
+              : nickname.trim()
+                ? `Join as ${nickname.trim()}`
+                : "Tap to join"}{" "}
+            <span>→</span>
           </button>
         </div>
       </section>

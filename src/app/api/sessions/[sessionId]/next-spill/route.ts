@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { nextSpillSchema } from "@/lib/validation/next-spill";
 import { selectNextSpill } from "@/lib/spill-engine/select-next-spill";
 import { resolveConnectionType } from "@/lib/spill-engine/resolve-connection";
+import { TOTAL_SPILLS } from "@/lib/spill-engine/game-rules";
 
 export async function POST(
   req: NextRequest,
@@ -38,7 +39,7 @@ export async function POST(
     );
   }
 
-  const { participantToken } = parsed.data;
+  const { participantToken, currentSequence } = parsed.data;
 
   const session = await prisma.session.findUnique({
     where: { id: sessionId },
@@ -107,32 +108,70 @@ export async function POST(
     );
   }
 
-  const result = await prisma.$transaction(async (tx) => {
-    await tx.sessionSpill.updateMany({
-      where: { sessionId, completedAt: null },
-      data: { completedAt: new Date() },
+  let result;
+  try {
+    result = await prisma.$transaction(async (tx) => {
+      const latest = await tx.sessionSpill.findFirst({
+        where: { sessionId },
+        orderBy: { sequence: "desc" },
+        include: { spill: true },
+      });
+      const latestSequence = latest?.sequence ?? 0;
+
+      if (
+        typeof currentSequence === "number" &&
+        currentSequence !== latestSequence &&
+        latest &&
+        !latest.completedAt
+      ) {
+        return { exhausted: false as const, sessionSpill: latest };
+      }
+
+      await tx.sessionSpill.updateMany({
+        where: { sessionId, completedAt: null },
+        data: { completedAt: new Date() },
+      });
+
+      if (latestSequence >= TOTAL_SPILLS) {
+        return { exhausted: true as const };
+      }
+
+      const nextSpill = await selectNextSpill(sessionId, resolvedType, tx);
+
+      if (!nextSpill) {
+        return { exhausted: true as const };
+      }
+
+      const sessionSpill = await tx.sessionSpill.create({
+        data: {
+          sessionId,
+          spillId: nextSpill.id,
+          sequence: latestSequence + 1,
+          presentedAt: new Date(),
+        },
+        include: { spill: true },
+      });
+
+      return { exhausted: false as const, sessionSpill };
     });
-
-    const nextSpill = await selectNextSpill(sessionId, resolvedType);
-
-    if (!nextSpill) {
-      return { exhausted: true as const };
-    }
-
-    const currentCount = await tx.sessionSpill.count({ where: { sessionId } });
-
-    const sessionSpill = await tx.sessionSpill.create({
-      data: {
-        sessionId,
-        spillId: nextSpill.id,
-        sequence: currentCount + 1,
-        presentedAt: new Date(),
+  } catch (err: unknown) {
+    // Two requests raced for the same sequence → the other one won.
+    const isUniqueConflict =
+      typeof err === "object" &&
+      err !== null &&
+      "code" in err &&
+      (err as { code?: string }).code === "P2002";
+    if (!isUniqueConflict) throw err;
+    return NextResponse.json(
+      {
+        error: {
+          code: "ALREADY_ADVANCED",
+          message: "The next SPILL is already on its way.",
+        },
       },
-      include: { spill: true },
-    });
-
-    return { exhausted: false as const, sessionSpill };
-  });
+      { status: 409 },
+    );
+  }
 
   if (result.exhausted) {
     return NextResponse.json(
