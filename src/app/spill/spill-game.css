@@ -1,4 +1,3 @@
-
 .sgApp {
   --spill-red: #e8472f;
   --spill-neon: #ff5638;
@@ -113,7 +112,24 @@
   transform-origin: 50% 60%;
 }
 .sgCard > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  line-height: 1;
   color: var(--lvl);
+}
+/* Type icon: SVG centred in the circle (no text-glyph offset). */
+.sgCard > span b {
+  width: 30px;
+  height: 30px;
+  margin: 0;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  line-height: 0;
+}
+.sgCard > span b svg {
+  display: block;
 }
 .sgCard.hasTwist {
   border-color: var(--spill-neon);

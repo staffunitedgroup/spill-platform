@@ -18,6 +18,7 @@ import {
   SpotlightRoulette,
   Toast,
   TwistReveal,
+  TypeIcon,
   buzz,
 } from "@/components/spill-game-ui";
 import {
@@ -103,15 +104,6 @@ const connectionLabels: Record<ConnectionType, string> = {
   FRIENDS_ONLY: "Friends only",
   MAYBE_MORE: "Friends, maybe more",
   ALREADY_TOGETHER: "Already together",
-};
-
-const typeMarks: Record<SpillType, string> = {
-  QUESTION: "?",
-  INSTRUCTION: "↯",
-  CHALLENGE: "◆",
-  OBSERVATION: "◉",
-  SCENARIO: "↗",
-  VISION: "…",
 };
 
 const typeLabels: Record<SpillType, string> = {
@@ -712,7 +704,9 @@ export default function SpillSessionPage() {
                       </div>
                     )}
                     <span>
-                      <b>{typeMarks[currentSpill.spill.type]}</b>
+                      <b>
+                        <TypeIcon type={currentSpill.spill.type} />
+                      </b>
                       {typeLabels[currentSpill.spill.type]}
                     </span>
                     <h1>
