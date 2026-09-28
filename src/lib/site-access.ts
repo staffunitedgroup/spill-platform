@@ -2,7 +2,8 @@ import "server-only";
 import { createHmac, timingSafeEqual } from "node:crypto";
 
 export const SITE_ACCESS_COOKIE = "spill_site_access";
-export const DEFAULT_SITE_PASSWORD = "Prit-thiy-weew-cef";
+
+let warnedMissing = false;
 
 function secureEqual(left: string, right: string) {
   const leftBuffer = Buffer.from(left);
@@ -13,25 +14,39 @@ function secureEqual(left: string, right: string) {
   );
 }
 
-export function getExpectedSitePassword(): string {
-  return process.env.SITE_ACCESS_PASSWORD || DEFAULT_SITE_PASSWORD;
+export function getExpectedSitePassword(): string | null {
+  const password = process.env.SITE_ACCESS_PASSWORD?.trim();
+  if (!password) {
+    if (!warnedMissing) {
+      warnedMissing = true;
+      console.error(
+        "[site-access] SITE_ACCESS_PASSWORD is not set — the site stays locked for everyone.",
+      );
+    }
+    return null;
+  }
+  return password;
+}
+
+export function siteAccessConfigured(): boolean {
+  return getExpectedSitePassword() !== null;
 }
 
 export function validSitePassword(candidate: string): boolean {
   const expected = getExpectedSitePassword();
-  return Boolean(expected) && secureEqual(candidate, expected);
+  return expected !== null && secureEqual(candidate, expected);
 }
 
-export function siteAccessToken(): string {
+export function siteAccessToken(): string | null {
   const password = getExpectedSitePassword();
-  const secret = process.env.SITE_ACCESS_SECRET || password;
+  if (!password) return null;
+  const secret = process.env.SITE_ACCESS_SECRET?.trim() || password;
   return createHmac("sha256", secret)
     .update("spill-site-access-v1")
     .digest("hex");
 }
 
 export function hasValidSiteAccess(candidate?: string): boolean {
-  return (
-    Boolean(candidate) && secureEqual(candidate as string, siteAccessToken())
-  );
+  const token = siteAccessToken();
+  return Boolean(candidate && token) && secureEqual(candidate!, token!);
 }

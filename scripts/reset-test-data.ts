@@ -1,8 +1,12 @@
-// scripts/reset-test-data.ts
-// Chạy: npx tsx scripts/reset-test-data.ts
+
 
 import { config } from "dotenv";
 config({ path: ".env.local" });
+
+const TEST_TABLES = [
+  { tableCode: "TEST01", displayName: "Table 1" },
+  { tableCode: "TEST02", displayName: "Table 2" },
+];
 
 async function main() {
   // Dynamic import: đảm bảo prisma.ts chỉ được nạp SAU khi config() đã
@@ -13,47 +17,43 @@ async function main() {
   const { prisma } = await import("../src/lib/prisma");
 
   try {
-    console.log("Cleaning up in dependency order...");
-
-    await prisma.sessionSpill.deleteMany({});
-    await prisma.connection.deleteMany({});
-    await prisma.connectionSelection.deleteMany({});
-    await prisma.participant.deleteMany({});
-    await prisma.session.deleteMany({});
-    await prisma.table.deleteMany({});
-    await prisma.venue.deleteMany({});
-
-    console.log("All test data wiped clean.");
-
-    const venue = await prisma.venue.create({
-      data: {
-        name: "SPILL Saigon",
-        city: "Saigon",
-        status: "ACTIVE",
-      },
+    const codes = TEST_TABLES.map((t) => t.tableCode);
+    const testSessions = await prisma.session.findMany({
+      where: { table: { tableCode: { in: codes } } },
+      select: { id: true },
     });
+    const sessionIds = testSessions.map((s) => s.id);
 
-    const table1 = await prisma.table.create({
-      data: {
-        venueId: venue.id,
-        tableCode: "TEST01",
-        displayName: "Table 1",
-        status: "ACTIVE",
-      },
+    console.log(`Cleaning ${sessionIds.length} test session(s)...`);
+    const bySession = { where: { sessionId: { in: sessionIds } } };
+    await prisma.sessionSpill.deleteMany(bySession);
+    await prisma.connection.deleteMany(bySession);
+    await prisma.connectionSelection.deleteMany(bySession);
+    await prisma.participant.deleteMany(bySession);
+    await prisma.session.deleteMany({ where: { id: { in: sessionIds } } });
+
+    let venue = await prisma.venue.findFirst({
+      where: { name: "SPILL Saigon", city: "Saigon" },
     });
+    if (!venue) {
+      venue = await prisma.venue.create({
+        data: { name: "SPILL Saigon", city: "Saigon", status: "ACTIVE" },
+      });
+      console.log("Created venue:", venue.name);
+    }
 
-    const table2 = await prisma.table.create({
-      data: {
-        venueId: venue.id,
-        tableCode: "TEST02",
-        displayName: "Table 2",
-        status: "ACTIVE",
-      },
-    });
+    for (const t of TEST_TABLES) {
+      const table = await prisma.table.upsert({
+        where: {
+          venueId_tableCode: { venueId: venue.id, tableCode: t.tableCode },
+        },
+        create: { venueId: venue.id, ...t, status: "ACTIVE" },
+        update: { status: "ACTIVE" },
+      });
+      console.log(`Ready: ${table.tableCode} (${table.displayName})`);
+    }
 
-    console.log("Created venue:", venue);
-    console.log("Created table1:", table1);
-    console.log("Created table2:", table2);
+    console.log("Test tables reset. Real tables untouched.");
   } finally {
     await prisma.$disconnect();
   }

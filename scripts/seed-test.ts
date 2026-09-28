@@ -1,5 +1,4 @@
-// scripts/seed-test.ts
-// Chạy: npx tsx scripts/seed-test.ts
+
 
 import { config } from "dotenv";
 config({ path: ".env.local" });
@@ -7,7 +6,6 @@ config({ path: ".env.local" });
 import { prisma } from "../src/lib/prisma";
 
 async function main() {
-  // Xoá dữ liệu test cũ (nếu có) để chạy lại nhiều lần không lỗi trùng
   await prisma.session.deleteMany({});
   await prisma.table.deleteMany({ where: { tableCode: "TEST01" } });
   await prisma.venue.deleteMany({ where: { name: "SPILL Saigon" } });

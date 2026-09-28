@@ -10,3 +10,8 @@
 
 /src/generated/prisma
 .vercel
+
+# Printable table QR codes (npm run tables:qr)
+
+/qr-codes
+
