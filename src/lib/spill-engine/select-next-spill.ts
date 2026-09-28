@@ -1,18 +1,27 @@
 import { prisma } from "@/lib/prisma";
 import type { ConnectionType } from "@/generated/prisma/enums";
 
+type Db = Pick<typeof prisma, "sessionSpill" | "spill">;
+
+
 export async function selectNextSpill(
   sessionId: string,
   resolvedConnectionType: ConnectionType | null,
+  db: Db = prisma,
 ) {
-  const usedSpillIds = (
-    await prisma.sessionSpill.findMany({
-      where: { sessionId },
-      select: { spillId: true },
-    })
-  ).map((s) => s.spillId);
+  const used = await db.sessionSpill.findMany({
+    where: { sessionId },
+    select: {
+      spillId: true,
+      sequence: true,
+      spill: { select: { type: true } },
+    },
+    orderBy: { sequence: "desc" },
+  });
+  const usedSpillIds = used.map((s) => s.spillId);
+  const lastType = used[0]?.spill.type ?? null;
 
-  const candidates = await prisma.spill.findMany({
+  const candidates = await db.spill.findMany({
     where: {
       active: true,
       id: { notIn: usedSpillIds },
@@ -37,6 +46,10 @@ export async function selectNextSpill(
     (c) => (c.difficulty ?? 0) === lowestDifficulty,
   );
 
-  const randomIndex = Math.floor(Math.random() * lowestTier.length);
-  return lowestTier[randomIndex];
+  const varied = lastType
+    ? lowestTier.filter((c) => c.type !== lastType)
+    : lowestTier;
+  const pool = varied.length > 0 ? varied : lowestTier;
+
+  return pool[Math.floor(Math.random() * pool.length)];
 }
