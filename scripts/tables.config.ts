@@ -33,7 +33,7 @@ export const REAL_TABLES: VenueTables[] = [
   {
     venue: { name: "SPILL Saigon", city: "Saigon" },
     prefix: "SGN",
-    // 👉 Đổi số 20 thành số bàn thật của quán.
+    // Đổi số 20 thành số bàn thật của quán.
     // Muốn đặt tên riêng thì thay bằng danh sách, ví dụ:
     //   tables: [{ tableCode: "SGN01", displayName: "Window 1" }, …]
     tables: numbered("SGN", 20),

@@ -8,14 +8,12 @@ import {
   type Twist,
 } from "@/lib/spill-engine/game-rules";
 
-
 export function buzz(pattern: number | number[]) {
   try {
     if (typeof navigator !== "undefined" && "vibrate" in navigator) {
       navigator.vibrate(pattern);
     }
   } catch {
-    /* ignore */
   }
 }
 
@@ -25,8 +23,6 @@ function prefersReducedMotion() {
     window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
   );
 }
-
-
 
 const ROULETTE_DELAYS = [55, 55, 60, 65, 75, 85, 100, 120, 145, 175, 215, 265];
 
@@ -85,7 +81,6 @@ export function SpotlightRoulette({
     </div>
   );
 }
-
 
 export function LevelUp({
   level,
@@ -178,7 +173,6 @@ export function TwistReveal({
   );
 }
 
-
 export function SpillTimer({ seconds }: { seconds: number }) {
   const [left, setLeft] = useState(seconds);
   const [running, setRunning] = useState(false);
@@ -232,7 +226,6 @@ export function SpillTimer({ seconds }: { seconds: number }) {
   );
 }
 
-
 export function HeatMeter({ heat, streak }: { heat: number; streak: number }) {
   return (
     <div
@@ -250,7 +243,6 @@ export function HeatMeter({ heat, streak }: { heat: number; streak: number }) {
   );
 }
 
-
 export function Toast({ message }: { message: string | null }) {
   if (!message) return null;
   return (
@@ -258,4 +250,73 @@ export function Toast({ message }: { message: string | null }) {
       {message}
     </div>
   );
+}
+
+// ── Card type icon ───────────────────────────────────────────
+// SVG instead of text glyphs (?, ↯, ◆…): text characters sit at different
+// heights in the display font, so they never centred in the circle.
+// Every path is drawn around the exact centre (12,12) of a 24×24 box.
+
+type CardType =
+  | "QUESTION"
+  | "INSTRUCTION"
+  | "CHALLENGE"
+  | "OBSERVATION"
+  | "SCENARIO"
+  | "VISION";
+
+export function TypeIcon({ type }: { type: CardType }) {
+  const common = {
+    width: 16,
+    height: 16,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 2.2,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    "aria-hidden": true,
+  };
+  switch (type) {
+    case "QUESTION":
+      return (
+        <svg {...common}>
+          <path d="M8.6 8.4a3.5 3.5 0 1 1 5.2 3.05c-1.1.62-1.8 1.4-1.8 2.65v.4" />
+          <circle cx="12" cy="19" r="0.6" fill="currentColor" />
+        </svg>
+      );
+    case "INSTRUCTION":
+      return (
+        <svg {...common}>
+          <path d="M13.5 3 6 13.5h6L10.5 21 18 10.5h-6L13.5 3Z" />
+        </svg>
+      );
+    case "CHALLENGE":
+      return (
+        <svg {...common}>
+          <path d="M12 4 20 12 12 20 4 12Z" fill="currentColor" />
+        </svg>
+      );
+    case "OBSERVATION":
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="12" r="7.5" />
+          <circle cx="12" cy="12" r="3" fill="currentColor" />
+        </svg>
+      );
+    case "SCENARIO":
+      return (
+        <svg {...common}>
+          <path d="M7 17 17 7M9 7h8v8" />
+        </svg>
+      );
+    case "VISION":
+      return (
+        <svg {...common}>
+          <circle cx="6" cy="12" r="1.4" fill="currentColor" stroke="none" />
+          <circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none" />
+          <circle cx="18" cy="12" r="1.4" fill="currentColor" stroke="none" />
+        </svg>
+      );
+  }
 }
