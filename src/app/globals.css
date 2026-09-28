@@ -10956,11 +10956,21 @@ a:hover > .navArrow.down {
 }
 
 /* SPILL 42 app */
+/* SPILL 42 uses the official SPILL Saigon palette only:
+   Red #E8472F · Neon #FF5638 · Deep Red #A82E22 · Near Black #111111 · Silver #C0C4C8 */
+.s42App {
+  --red: #e8472f;
+  --neon: #ff5638;
+  --deep-red: #a82e22;
+  --near-black: #111111;
+  --silver: #c0c4c8;
+  --cyan: #c0c4c8;
+}
 .s42App {
   min-height: 100svh;
   position: relative;
   overflow-x: hidden;
-  background: #08090a;
+  background: #111111;
   color: #f7f7f4;
 }
 .s42App button,
@@ -10979,7 +10989,7 @@ a:hover > .navArrow.down {
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);
-  background: rgba(4, 5, 6, 0.82);
+  background: rgba(17, 17, 17, 0.82);
   backdrop-filter: blur(16px);
 }
 .s42Header > a:first-child {
@@ -10995,11 +11005,11 @@ a:hover > .navArrow.down {
   font-family: var(--font-display);
   font-size: 29px;
   font-weight: 400;
-  text-shadow: 0 0 16px rgba(255, 24, 56, 0.7);
+  text-shadow: 0 0 16px rgba(232, 71, 47, 0.7);
 }
 .s42Header > a:last-child {
   justify-self: end;
-  color: #aaa;
+  color: #c0c4c8;
   font-size: 15px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -11021,11 +11031,11 @@ a:hover > .navArrow.down {
   background:
     linear-gradient(
       90deg,
-      rgba(3, 4, 5, 0.97) 0%,
-      rgba(3, 4, 5, 0.82) 42%,
-      rgba(3, 4, 5, 0.22) 78%
+      rgba(17, 17, 17, 0.97) 0%,
+      rgba(17, 17, 17, 0.82) 42%,
+      rgba(17, 17, 17, 0.22) 78%
     ),
-    linear-gradient(0deg, rgba(3, 4, 5, 0.75), transparent 55%);
+    linear-gradient(0deg, rgba(17, 17, 17, 0.75), transparent 55%);
 }
 .s42IntroContent {
   width: min(780px, 60vw);
@@ -11050,12 +11060,12 @@ a:hover > .navArrow.down {
 .s42IntroContent h1 em {
   color: var(--red);
   font-style: normal;
-  text-shadow: 0 0 28px rgba(255, 24, 56, 0.4);
+  text-shadow: 0 0 28px rgba(232, 71, 47, 0.4);
 }
 .s42IntroContent > span {
   max-width: 610px;
   display: block;
-  color: #c1c1c4;
+  color: #c0c4c8;
   font-size: clamp(17px, 1.5vw, 21px);
   line-height: 1.65;
 }
@@ -11090,10 +11100,10 @@ a:hover > .navArrow.down {
   background:
     radial-gradient(
       circle at 75% 20%,
-      rgba(255, 24, 56, 0.17),
+      rgba(232, 71, 47, 0.17),
       transparent 28%
     ),
-    #08090a;
+    #111111;
 }
 .s42SetupPanel {
   width: min(1120px, 100%);
@@ -11107,7 +11117,7 @@ a:hover > .navArrow.down {
   padding: 0;
   border: 0;
   background: none;
-  color: #94969b;
+  color: #c0c4c8;
   font-size: 15px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -11131,7 +11141,7 @@ a:hover > .navArrow.down {
   text-transform: uppercase;
 }
 .s42SetupHeading p {
-  color: #999;
+  color: #c0c4c8;
   font-size: 17px;
 }
 .s42SetupBlock {
@@ -11157,8 +11167,8 @@ a:hover > .navArrow.down {
   align-items: flex-start;
   justify-content: flex-end;
   gap: 8px;
-  border: 1px solid #35383d;
-  background: #111317;
+  border: 1px solid rgba(192, 196, 200, 0.2);
+  background: #171717;
   color: #fff;
   text-align: left;
   cursor: pointer;
@@ -11172,7 +11182,7 @@ a:hover > .navArrow.down {
 }
 .s42ChoiceGrid button.selected {
   border-color: var(--red);
-  background: linear-gradient(145deg, rgba(255, 24, 56, 0.28), #15161a);
+  background: linear-gradient(145deg, rgba(232, 71, 47, 0.28), #171717);
 }
 .s42ChoiceGrid b {
   font-family: var(--font-display);
@@ -11181,7 +11191,7 @@ a:hover > .navArrow.down {
   text-transform: uppercase;
 }
 .s42ChoiceGrid small {
-  color: #95979d;
+  color: #c0c4c8;
   font-size: 15px;
 }
 .s42ChoiceGrid button i {
@@ -11194,8 +11204,8 @@ a:hover > .navArrow.down {
   width: max-content;
   margin-bottom: 35px;
   padding: 10px 13px;
-  border: 1px solid rgba(255, 24, 56, 0.55);
-  color: #ff6678;
+  border: 1px solid rgba(232, 71, 47, 0.55);
+  color: #ff5638;
   font-size: 15px;
   letter-spacing: 0.13em;
   text-transform: uppercase;
@@ -11203,7 +11213,7 @@ a:hover > .navArrow.down {
 .s42PrivateNote {
   max-width: 680px;
   margin: 14px 0 0;
-  color: #8f9196;
+  color: #c0c4c8;
   font-size: 15px;
 }
 .s42GroupSize {
@@ -11214,8 +11224,8 @@ a:hover > .navArrow.down {
 .s42GroupSize button {
   width: 82px;
   height: 82px;
-  border: 1px solid #35383d;
-  background: #111317;
+  border: 1px solid rgba(192, 196, 200, 0.2);
+  background: #171717;
   color: #fff;
   font-family: var(--font-display);
   font-size: 24px;
@@ -11261,7 +11271,7 @@ a:hover > .navArrow.down {
 }
 .s42Handoff p {
   margin: 0;
-  color: #9da0a5;
+  color: #c0c4c8;
   font-size: 18px;
 }
 .s42TableField {
@@ -11272,7 +11282,7 @@ a:hover > .navArrow.down {
 .s42TableField > span {
   display: block;
   margin-bottom: 10px;
-  color: #989ba1;
+  color: #c0c4c8;
   font-size: 15px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -11281,9 +11291,9 @@ a:hover > .navArrow.down {
   width: 100%;
   height: 62px;
   padding: 0 18px;
-  border: 1px solid #3a3d42;
+  border: 1px solid rgba(192, 196, 200, 0.2);
   outline: none;
-  background: #111317;
+  background: #171717;
   color: #fff;
   font-size: 17px;
 }
@@ -11299,8 +11309,8 @@ a:hover > .navArrow.down {
   align-items: center;
   justify-content: space-between;
   gap: 30px;
-  border: 1px solid #34383d;
-  background: #101216;
+  border: 1px solid rgba(192, 196, 200, 0.2);
+  background: #171717;
   cursor: pointer;
 }
 .s42OpenToggle > span {
@@ -11316,7 +11326,7 @@ a:hover > .navArrow.down {
   text-transform: uppercase;
 }
 .s42OpenToggle small {
-  color: #8d9096;
+  color: #c0c4c8;
   font-size: 15px;
   line-height: 1.45;
 }
@@ -11332,7 +11342,7 @@ a:hover > .navArrow.down {
   right: 20px;
   flex: none;
   border-radius: 20px;
-  background: #34373c;
+  background: rgba(192, 196, 200, 0.2);
   transition: background 0.2s ease;
 }
 .s42OpenToggle > i::after {
@@ -11348,13 +11358,13 @@ a:hover > .navArrow.down {
 }
 .s42OpenToggle input:checked + i {
   background: var(--red);
-  box-shadow: 0 0 22px rgba(255, 24, 56, 0.32);
+  box-shadow: 0 0 22px rgba(232, 71, 47, 0.32);
 }
 .s42OpenToggle input:checked + i::after {
   transform: translateX(23px);
 }
 .s42Permission {
-  color: #71747b;
+  color: rgba(192, 196, 200, 0.68);
   font-size: 15px;
 }
 .s42Dashboard {
@@ -11363,10 +11373,10 @@ a:hover > .navArrow.down {
   background:
     radial-gradient(
       circle at 50% 15%,
-      rgba(255, 24, 56, 0.08),
+      rgba(232, 71, 47, 0.08),
       transparent 26%
     ),
-    #08090a;
+    #111111;
 }
 .s42Play {
   width: min(680px, 100%);
@@ -11377,7 +11387,7 @@ a:hover > .navArrow.down {
   flex-direction: column;
   background: radial-gradient(
     circle at 50% 32%,
-    rgba(255, 24, 56, 0.14),
+    rgba(232, 71, 47, 0.14),
     transparent 35%
   );
 }
@@ -11385,7 +11395,7 @@ a:hover > .navArrow.down {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: #8f9197;
+  color: #c0c4c8;
   font-size: 15px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -11403,9 +11413,9 @@ a:hover > .navArrow.down {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 1px solid #3d4249;
+  border: 1px solid rgba(192, 196, 200, 0.2);
   border-radius: 32px;
-  background: linear-gradient(150deg, #1d2025, #0b0c0e);
+  background: linear-gradient(150deg, #1d1d1d, #111111);
   text-align: center;
   box-shadow: 0 30px 90px rgba(0, 0, 0, 0.46);
 }
@@ -11451,7 +11461,7 @@ a:hover > .navArrow.down {
   height: 5px;
   overflow: hidden;
   border-radius: 6px;
-  background: #292d32;
+  background: rgba(192, 196, 200, 0.2);
 }
 .s42Progress span {
   height: 100%;
@@ -11461,7 +11471,7 @@ a:hover > .navArrow.down {
 }
 .s42Rhythm {
   margin: 15px 0 0;
-  color: #72757c;
+  color: rgba(192, 196, 200, 0.68);
   font-size: 15px;
   letter-spacing: 0.11em;
   text-align: center;
@@ -11477,7 +11487,7 @@ a:hover > .navArrow.down {
   padding: 0;
   border: 0;
   background: none;
-  color: #8b8e94;
+  color: rgba(192, 196, 200, 0.68);
   font-size: 15px;
   letter-spacing: 0.05em;
   cursor: pointer;
@@ -11524,9 +11534,9 @@ a:hover > .navArrow.down {
   justify-content: space-between;
 }
 .s42PlayActions button:last-child {
-  border-color: #34373c;
+  border-color: rgba(192, 196, 200, 0.2);
   background: transparent;
-  color: #999;
+  color: #c0c4c8;
 }
 .s42TabPage {
   width: min(880px, calc(100% - 44px));
@@ -11556,7 +11566,7 @@ a:hover > .navArrow.down {
 }
 .s42TabPage > p {
   max-width: 690px;
-  color: #a1a3a8;
+  color: #c0c4c8;
   font-size: 18px;
   line-height: 1.65;
 }
@@ -11568,24 +11578,24 @@ a:hover > .navArrow.down {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #868990;
+  color: rgba(192, 196, 200, 0.68);
   font-size: 15px;
 }
 .s42OpenState i {
   width: 9px;
   height: 9px;
   border-radius: 50%;
-  background: #555960;
+  background: rgba(192, 196, 200, 0.4);
 }
 .s42OpenState i.on {
-  background: #33d587;
-  box-shadow: 0 0 12px rgba(51, 213, 135, 0.8);
+  background: #ff5638;
+  box-shadow: 0 0 12px rgba(255, 86, 56, 0.8);
 }
 .s42EmptyTables {
   margin-top: 45px;
   padding: 28px;
-  border: 1px dashed #33363b;
-  background: #0e1013;
+  border: 1px dashed rgba(192, 196, 200, 0.2);
+  background: #171717;
 }
 .s42EmptyTables strong,
 .s42EmptyMoment strong {
@@ -11599,14 +11609,14 @@ a:hover > .navArrow.down {
 .s42EmptyMoment p {
   max-width: 600px;
   margin: 10px 0 0;
-  color: #777a80;
+  color: rgba(192, 196, 200, 0.68);
   line-height: 1.55;
 }
 .s42MomentStats {
   margin: 45px 0;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  border: 1px solid #32353a;
+  border: 1px solid rgba(192, 196, 200, 0.2);
 }
 .s42MomentStats > div {
   min-height: 145px;
@@ -11614,7 +11624,7 @@ a:hover > .navArrow.down {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  border-right: 1px solid #32353a;
+  border-right: 1px solid rgba(192, 196, 200, 0.2);
 }
 .s42MomentStats > div:last-child {
   border-right: 0;
@@ -11626,7 +11636,7 @@ a:hover > .navArrow.down {
   font-weight: 400;
 }
 .s42MomentStats span {
-  color: #85888e;
+  color: rgba(192, 196, 200, 0.68);
   font-size: 15px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -11640,8 +11650,8 @@ a:hover > .navArrow.down {
 .s42EmptyMoment {
   min-height: 180px;
   padding: 25px;
-  border: 1px solid #32353a;
-  background: #101216;
+  border: 1px solid rgba(192, 196, 200, 0.2);
+  background: #171717;
 }
 .s42SavedList article span {
   color: var(--red);
@@ -11655,7 +11665,7 @@ a:hover > .navArrow.down {
 }
 .s42SavedList article p {
   margin: 0;
-  color: #8e9197;
+  color: #c0c4c8;
 }
 .s42EmptyMoment {
   grid-column: 1/-1;
@@ -11665,17 +11675,17 @@ a:hover > .navArrow.down {
 }
 .s42PrivacyLine {
   margin-top: 25px !important;
-  color: #6e7177 !important;
+  color: rgba(192, 196, 200, 0.68) !important;
   font-size: 15px !important;
 }
 .s42TabPage.more {
   width: min(980px, calc(100% - 44px));
 }
 .s42TabPage details {
-  border-top: 1px solid #33363b;
+  border-top: 1px solid rgba(192, 196, 200, 0.2);
 }
 .s42TabPage details:last-child {
-  border-bottom: 1px solid #33363b;
+  border-bottom: 1px solid rgba(192, 196, 200, 0.2);
 }
 .s42TabPage summary {
   min-height: 78px;
@@ -11704,7 +11714,7 @@ a:hover > .navArrow.down {
 }
 .s42TabPage details > div {
   padding: 0 0 35px;
-  color: #9a9da2;
+  color: #c0c4c8;
   line-height: 1.65;
 }
 .s42TabPage details > div > strong {
@@ -11721,7 +11731,7 @@ a:hover > .navArrow.down {
 }
 .s42Chips span {
   padding: 9px 12px;
-  border: 1px solid #3a3d42;
+  border: 1px solid rgba(192, 196, 200, 0.2);
   font-size: 15px;
   text-transform: uppercase;
 }
@@ -11736,8 +11746,8 @@ a:hover > .navArrow.down {
   display: grid;
   grid-template-columns: 36px 1fr;
   gap: 8px;
-  border-bottom: 1px solid #292c31;
-  color: #bbbfc4;
+  border-bottom: 1px solid rgba(192, 196, 200, 0.2);
+  color: #c0c4c8;
 }
 .s42PhraseList p span {
   color: var(--red);
@@ -11756,14 +11766,14 @@ a:hover > .navArrow.down {
   transform: translateX(-50%);
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 22px;
-  background: rgba(17, 19, 23, 0.94);
+  background: rgba(17, 17, 17, 0.94);
   backdrop-filter: blur(18px);
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5);
 }
 .s42BottomNav button {
   border: 0;
   background: none;
-  color: #686b72;
+  color: rgba(192, 196, 200, 0.68);
   cursor: pointer;
 }
 .s42BottomNav button b,
@@ -11791,10 +11801,10 @@ a:hover > .navArrow.down {
   background:
     radial-gradient(
       circle at 50% 30%,
-      rgba(255, 24, 56, 0.17),
+      rgba(232, 71, 47, 0.17),
       transparent 32%
     ),
-    #08090a;
+    #111111;
 }
 .s42EndPanel {
   width: min(960px, 100%);
@@ -11807,7 +11817,7 @@ a:hover > .navArrow.down {
   text-transform: uppercase;
 }
 .s42EndPanel > p {
-  color: #989ba1;
+  color: #c0c4c8;
   font-size: 18px;
 }
 .s42EndChoices {
@@ -11822,15 +11832,15 @@ a:hover > .navArrow.down {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  border: 1px solid #373a40;
-  background: #111317;
+  border: 1px solid rgba(192, 196, 200, 0.2);
+  background: #171717;
   color: #fff;
   text-align: left;
   cursor: pointer;
 }
 .s42EndChoices button:hover {
   border-color: var(--red);
-  background: linear-gradient(145deg, rgba(255, 24, 56, 0.24), #111317);
+  background: linear-gradient(145deg, rgba(232, 71, 47, 0.24), #171717);
 }
 .s42EndChoices b {
   font-family: var(--font-display);
@@ -11841,7 +11851,7 @@ a:hover > .navArrow.down {
 .s42EndChoices small {
   max-width: 360px;
   margin-top: 15px;
-  color: #95989e;
+  color: #c0c4c8;
   font-size: 15px;
   line-height: 1.55;
 }
@@ -11855,10 +11865,10 @@ a:hover > .navArrow.down {
   background:
     radial-gradient(
       circle at 50% 30%,
-      rgba(255, 24, 56, 0.19),
+      rgba(232, 71, 47, 0.19),
       transparent 34%
     ),
-    #08090a;
+    #111111;
   text-align: center;
 }
 .s42ResultMark {
@@ -11872,7 +11882,7 @@ a:hover > .navArrow.down {
   color: var(--red);
   font-family: var(--font-display);
   font-size: 30px;
-  box-shadow: 0 0 30px rgba(255, 24, 56, 0.2);
+  box-shadow: 0 0 30px rgba(232, 71, 47, 0.2);
 }
 .s42Result h1 {
   margin: 24px 0;
@@ -11883,7 +11893,7 @@ a:hover > .navArrow.down {
 .s42Result > p {
   max-width: 650px;
   margin: 0;
-  color: #9b9ea4;
+  color: #c0c4c8;
   font-size: 18px;
   line-height: 1.6;
 }
@@ -11892,12 +11902,12 @@ a:hover > .navArrow.down {
   margin: 45px 0;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  border-top: 1px solid #34373c;
-  border-bottom: 1px solid #34373c;
+  border-top: 1px solid rgba(192, 196, 200, 0.2);
+  border-bottom: 1px solid rgba(192, 196, 200, 0.2);
 }
 .s42Summary div {
   padding: 24px 12px;
-  border-right: 1px solid #34373c;
+  border-right: 1px solid rgba(192, 196, 200, 0.2);
 }
 .s42Summary div:last-child {
   border-right: 0;
@@ -11913,7 +11923,7 @@ a:hover > .navArrow.down {
   font-weight: 400;
 }
 .s42Summary span {
-  color: #85888e;
+  color: rgba(192, 196, 200, 0.68);
   font-size: 15px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -11936,7 +11946,7 @@ a:hover > .navArrow.down {
   margin-top: 0;
 }
 .s42ResultActions > a {
-  color: #8c8f94;
+  color: rgba(192, 196, 200, 0.68);
   font-size: 15px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -11961,9 +11971,9 @@ body:has(.s42App) .siteFooter {
   .s42IntroVeil {
     background: linear-gradient(
       0deg,
-      rgba(3, 4, 5, 0.98) 0%,
-      rgba(3, 4, 5, 0.64) 65%,
-      rgba(3, 4, 5, 0.2)
+      rgba(17, 17, 17, 0.98) 0%,
+      rgba(17, 17, 17, 0.64) 65%,
+      rgba(17, 17, 17, 0.2)
     );
   }
   .s42IntroContent {
@@ -12049,7 +12059,7 @@ body:has(.s42App) .siteFooter {
   .s42MomentStats > div {
     min-height: 100px;
     border-right: 0;
-    border-bottom: 1px solid #32353a;
+    border-bottom: 1px solid rgba(192, 196, 200, 0.2);
   }
   .s42MomentStats > div:last-child {
     border-bottom: 0;
@@ -12074,7 +12084,7 @@ body:has(.s42App) .siteFooter {
   }
   .s42Summary div {
     border-right: 0;
-    border-bottom: 1px solid #34373c;
+    border-bottom: 1px solid rgba(192, 196, 200, 0.2);
   }
   .s42Summary div:last-child {
     border-bottom: 0;

@@ -1,0 +1,651 @@
+
+.sgApp {
+  --spill-red: #e8472f;
+  --spill-neon: #ff5638;
+  --spill-deep-red: #a82e22;
+  --spill-black: #111111;
+  --spill-silver: #c0c4c8;
+  --red: var(--spill-red);
+  --lvl: var(--spill-silver);
+  --heat: 0;
+}
+
+/* Ambient glow follows the level colour and grows with the heat. */
+.sgApp .s42Dashboard {
+  background:
+    radial-gradient(
+      circle at 50% 18%,
+      color-mix(in srgb, var(--lvl) calc(8% + var(--heat) * 22%), transparent),
+      transparent 42%
+    ),
+    var(--spill-black);
+  transition: background 0.8s ease;
+}
+.sgApp .s42Play {
+  background: none;
+}
+
+.sgKicker {
+  color: var(--lvl);
+  font-family: var(--font-display);
+  font-size: 15px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* ── Meta rows ─────────────────────────────────────────────── */
+
+.sgLevelBadge {
+  padding: 6px 12px;
+  border: 1px solid var(--lvl);
+  border-radius: 999px;
+  color: var(--lvl);
+  font-family: var(--font-display);
+  font-size: 15px;
+  letter-spacing: 0.1em;
+}
+.sgSubMeta {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  color: rgba(192, 196, 200, 0.68);
+  font-size: 15px;
+}
+
+/* ── Heat meter ────────────────────────────────────────────── */
+
+.sgHeat {
+  width: min(210px, 50%);
+  display: grid;
+  gap: 6px;
+}
+.sgHeatTrack {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: rgba(192, 196, 200, 0.14);
+}
+.sgHeatTrack span {
+  width: calc(var(--heat) * 100%);
+  height: 100%;
+  display: block;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    var(--spill-silver),
+    var(--spill-red) 55%,
+    var(--spill-neon)
+  );
+  background-size: 210px 100%;
+  transition: width 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+.sgHeat.max .sgHeatTrack span {
+  animation: sgPulseGlow 1.2s ease-in-out infinite;
+}
+.sgHeatMeta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 15px;
+}
+.sgHeatMeta b {
+  color: #fff;
+  font-weight: 500;
+}
+.sgHeatMeta small {
+  color: rgba(192, 196, 200, 0.5);
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+/* ── Card ──────────────────────────────────────────────────── */
+
+.sgCard {
+  position: relative;
+  border-color: color-mix(in srgb, var(--lvl) 45%, rgba(192, 196, 200, 0.2));
+  box-shadow:
+    0 30px 90px rgba(0, 0, 0, 0.46),
+    0 0 calc(20px + var(--heat) * 60px)
+      color-mix(in srgb, var(--lvl) 30%, transparent);
+  animation: sgFlipIn 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  transform-origin: 50% 60%;
+}
+.sgCard > span {
+  color: var(--lvl);
+}
+.sgCard.hasTwist {
+  border-color: var(--spill-neon);
+}
+.sgCardBack {
+  background:
+    repeating-linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.03) 0 12px,
+      transparent 12px 24px
+    ),
+    linear-gradient(150deg, #1d1d1d, var(--spill-black));
+}
+.sgCardBackMark {
+  color: var(--red);
+  font-family: var(--font-display);
+  font-size: 96px;
+  line-height: 1;
+  text-shadow: 0 0 30px rgba(232, 71, 47, 0.6);
+  animation: sgPulse 1.4s ease-in-out infinite;
+}
+
+.sgSpotlight {
+  margin-bottom: 22px;
+  padding: 8px 16px;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--lvl) 16%, transparent);
+}
+.sgSpotlight span {
+  color: var(--spill-silver);
+  font-size: 15px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.sgSpotlight b {
+  color: #fff;
+  font-size: 18px;
+}
+
+.sgTwistTag {
+  max-width: 460px;
+  margin-bottom: 20px;
+  padding: 10px 16px;
+  display: grid;
+  gap: 4px;
+  border: 1px dashed var(--spill-neon);
+  border-radius: 14px;
+  color: var(--spill-neon);
+  font-family: var(--font-display);
+  font-size: 15px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.sgTwistTag small {
+  color: var(--spill-silver);
+  font-family: inherit;
+  font-size: 15px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* ── Timer ─────────────────────────────────────────────────── */
+
+.sgTimer {
+  --p: 1;
+  width: 92px;
+  height: 92px;
+  margin-top: 28px;
+  position: relative;
+  display: grid;
+  place-content: center;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: #fff;
+  cursor: pointer;
+}
+.sgTimerRing {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    var(--lvl) calc(var(--p) * 360deg),
+    rgba(192, 196, 200, 0.16) 0
+  );
+  -webkit-mask: radial-gradient(farthest-side, transparent 86%, #000 88%);
+  mask: radial-gradient(farthest-side, transparent 86%, #000 88%);
+  transition: background 0.9s linear;
+}
+.sgTimer b {
+  position: relative;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 400;
+}
+.sgTimer small {
+  position: relative;
+  color: rgba(192, 196, 200, 0.68);
+  font-size: 15px;
+}
+.sgTimer.urgent b {
+  color: var(--red);
+  animation: sgPulse 0.5s ease-in-out infinite;
+}
+.sgTimer.done b {
+  color: var(--red);
+}
+
+/* ── Tools ─────────────────────────────────────────────────── */
+
+.sgTools {
+  margin-top: 4px;
+}
+.sgTools .sgPass {
+  color: var(--spill-neon);
+}
+.sgTools button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.sgProgress {
+  position: relative;
+  margin-top: 18px;
+  overflow: visible;
+}
+.sgProgress span {
+  background: var(--lvl);
+}
+.sgProgress i {
+  width: 2px;
+  height: 11px;
+  position: absolute;
+  top: -3px;
+  background: rgba(192, 196, 200, 0.4);
+}
+
+/* ── Full-screen moments (roulette / level / twist / forfeit) ─ */
+
+.sgRoulette,
+.sgLevelUp,
+.sgTwist,
+.sgForfeit {
+  flex: 1;
+  min-height: 520px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  text-align: center;
+  animation: sgFadeUp 0.45s ease both;
+}
+
+.sgRouletteName {
+  min-height: 1.1em;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(44px, 12vw, 88px);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+.sgRoulette.landed .sgRouletteName {
+  color: var(--lvl);
+  text-shadow: 0 0 40px color-mix(in srgb, var(--lvl) 70%, transparent);
+  animation: sgPop 0.5s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+.sgRouletteHint {
+  color: rgba(192, 196, 200, 0.68);
+  font-size: 17px;
+}
+
+.sgLevelNumber {
+  color: var(--lvl);
+  font-family: var(--font-display);
+  font-size: clamp(130px, 38vw, 220px);
+  line-height: 0.9;
+  text-shadow: 0 0 60px color-mix(in srgb, var(--lvl) 70%, transparent);
+  animation: sgPop 0.7s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+.sgLevelUp h1,
+.sgTwist h1,
+.sgForfeit h1 {
+  margin: 0;
+  font-size: clamp(40px, 9vw, 68px);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+.sgLevelUp p,
+.sgTwist p,
+.sgForfeit p {
+  max-width: 460px;
+  margin: 0;
+  color: var(--spill-silver);
+  font-size: clamp(19px, 3vw, 24px);
+  line-height: 1.45;
+}
+.sgLevelUp .s42Primary,
+.sgTwist .s42Primary,
+.sgForfeit .s42Primary {
+  min-width: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.sgTwistFlash {
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: var(--spill-neon);
+  color: var(--spill-black);
+  font-family: var(--font-display);
+  font-size: 15px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  animation: sgShake 0.6s ease both;
+}
+.sgTwist h1 {
+  color: var(--spill-neon);
+}
+.sgTwistBonus {
+  width: min(460px, 100%);
+  padding: 22px;
+  display: grid;
+  gap: 14px;
+  border: 1px solid rgba(192, 196, 200, 0.2);
+  border-radius: 22px;
+  background: #171717;
+}
+.sgTwistBonus strong {
+  font-size: 21px;
+  line-height: 1.35;
+}
+.sgCountdown {
+  color: var(--spill-neon);
+  font-family: var(--font-display);
+  font-size: 58px;
+  line-height: 1;
+}
+
+.sgForfeit h1 {
+  color: var(--red);
+}
+.sgForfeit small {
+  color: rgba(192, 196, 200, 0.68);
+  font-size: 15px;
+}
+
+/* ── Toast ─────────────────────────────────────────────────── */
+
+.sgToast {
+  position: fixed;
+  z-index: 40;
+  top: 92px;
+  left: 50%;
+  padding: 12px 20px;
+  border: 1px solid var(--lvl);
+  border-radius: 999px;
+  background: rgba(17, 17, 17, 0.94);
+  color: #fff;
+  font-size: 15px;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  animation: sgToast 2.6s ease both;
+}
+
+/* ── Wrapped result ────────────────────────────────────────── */
+
+.sgStats {
+  width: min(560px, 100%);
+  margin: 28px auto 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.sgStats div {
+  padding: 16px 10px;
+  display: grid;
+  gap: 4px;
+  border: 1px solid rgba(192, 196, 200, 0.16);
+  border-radius: 16px;
+  background: #171717;
+}
+.sgStats strong {
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 400;
+}
+.sgStats span {
+  color: rgba(192, 196, 200, 0.68);
+  font-size: 15px;
+}
+.sgMvp {
+  margin: 20px 0 0;
+  color: var(--spill-silver);
+  font-size: 17px;
+}
+.sgMvp b {
+  color: var(--red);
+}
+.sgSaved {
+  width: min(560px, 100%);
+  margin: 28px auto 0;
+  text-align: left;
+}
+.sgSaved h2 {
+  margin: 0 0 12px;
+  color: var(--red);
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.sgSaved ul {
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+  list-style: none;
+}
+.sgSaved li {
+  padding: 14px 16px;
+  display: grid;
+  gap: 6px;
+  border-left: 3px solid var(--red);
+  background: #171717;
+  font-size: 17px;
+  line-height: 1.45;
+}
+.sgSaved li small {
+  color: rgba(192, 196, 200, 0.5);
+  font-size: 15px;
+}
+
+/* ── Join page: nickname ───────────────────────────────────── */
+
+.s42NameForm {
+  width: min(520px, 100%);
+  margin-top: 26px;
+  display: grid;
+  gap: 14px;
+}
+.s42NameForm input {
+  min-height: 60px;
+  padding: 0 20px;
+  border: 1px solid rgba(192, 196, 200, 0.2);
+  border-radius: 14px;
+  outline: none;
+  background: #171717;
+  color: #fff;
+  font-size: 20px;
+}
+.s42NameForm input:focus {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(232, 71, 47, 0.2);
+}
+.s42JoinedList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.s42JoinedList span {
+  padding: 6px 12px;
+  border: 1px solid rgba(192, 196, 200, 0.16);
+  border-radius: 999px;
+  color: var(--spill-silver);
+  font-size: 15px;
+}
+
+/* ── Animations ────────────────────────────────────────────── */
+
+@keyframes sgFlipIn {
+  from {
+    opacity: 0;
+    transform: perspective(900px) rotateY(-80deg) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(900px) rotateY(0) scale(1);
+  }
+}
+@keyframes sgFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes sgPop {
+  0% {
+    transform: scale(0.6);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes sgPulse {
+  50% {
+    opacity: 0.55;
+  }
+}
+@keyframes sgPulseGlow {
+  50% {
+    filter: brightness(1.5) drop-shadow(0 0 6px var(--spill-neon));
+  }
+}
+@keyframes sgShake {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  20% {
+    transform: rotate(-6deg) scale(1.1);
+  }
+  40% {
+    transform: rotate(5deg) scale(1.1);
+  }
+  60% {
+    transform: rotate(-3deg);
+  }
+  80% {
+    transform: rotate(2deg);
+  }
+}
+@keyframes sgToast {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -12px);
+  }
+  12%,
+  85% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -12px);
+  }
+}
+
+/* ── Mobile ────────────────────────────────────────────────── */
+
+@media (max-width: 700px) {
+  .sgSubMeta {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .sgHeat {
+    width: 100%;
+  }
+  .sgStats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .sgRoulette,
+  .sgLevelUp,
+  .sgTwist,
+  .sgForfeit {
+    min-height: 62svh;
+  }
+  .sgTools {
+    flex-wrap: wrap;
+  }
+  .sgToast {
+    max-width: calc(100% - 32px);
+    white-space: normal;
+    text-align: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sgApp *,
+  .sgApp *::before,
+  .sgApp *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.sgWrapped blockquote {
+  margin-top: 36px;
+}
+@media (max-width: 700px) {
+  .sgApp .sgCard {
+    min-height: 0;
+    padding: 30px 22px;
+  }
+  .sgTimer {
+    width: 78px;
+    height: 78px;
+    margin-top: 20px;
+  }
+}
+
+/* Neon = "ON AIR" moments: twists glow like a neon sign. */
+.sgTwistFlash {
+  box-shadow: 0 0 22px rgba(255, 86, 56, 0.65);
+}
+.sgTwist h1 {
+  text-shadow: 0 0 26px rgba(255, 86, 56, 0.55);
+}
+
+/* Level 3 "All in": Deep Red floods the background. */
+.sgLevel3 .s42Dashboard {
+  background:
+    radial-gradient(
+      circle at 50% 18%,
+      color-mix(
+        in srgb,
+        var(--spill-neon) calc(10% + var(--heat) * 20%),
+        transparent
+      ),
+      transparent 42%
+    ),
+    radial-gradient(
+      circle at 50% 110%,
+      color-mix(in srgb, var(--spill-deep-red) 45%, transparent),
+      transparent 60%
+    ),
+    var(--spill-black);
+}
