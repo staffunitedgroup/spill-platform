@@ -1,17 +1,6 @@
 import { config } from "dotenv";
 config({ path: ".env.local" });
 
-// The 42 SPILL prompts used in the SPILL 42 UI (src/components/spill-42-app.tsx).
-// Reused here as the real database content instead of a separate placeholder set,
-// since these already match the product doc's mix of ASK / DO / NOTICE / DARE / PREDICT / IMAGINE.
-//
-// Mapping from the UI's prompt categories to the Prisma `SpillType` enum:
-//   ASK -> QUESTION, DO -> INSTRUCTION, NOTICE -> OBSERVATION,
-//   DARE -> CHALLENGE, PREDICT -> SCENARIO, IMAGINE -> VISION
-//
-// `content` packs the main text and the short "follow" line together as
-// `text|||follow`, split again in the UI — the schema has no separate field
-// for it and this keeps the original pacing intact without a migration.
 
 type PromptType = "ASK" | "DO" | "NOTICE" | "DARE" | "PREDICT" | "IMAGINE";
 

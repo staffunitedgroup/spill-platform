@@ -1,9 +1,15 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { siteAccessToken, SITE_ACCESS_COOKIE, validSitePassword } from "@/lib/site-access";
+import {
+  siteAccessToken,
+  SITE_ACCESS_COOKIE,
+  validSitePassword,
+} from "@/lib/site-access";
 
-export async function unlockSite(password: string): Promise<{ success: boolean; error?: string }> {
+export async function unlockSite(
+  password: string,
+): Promise<{ success: boolean; error?: string }> {
   const trimmed = (password || "").trim();
   if (!trimmed) {
     return { success: false, error: "Please enter the access password." };
@@ -13,8 +19,14 @@ export async function unlockSite(password: string): Promise<{ success: boolean; 
     return { success: false, error: "Incorrect password. Access denied." };
   }
 
+  const token = siteAccessToken();
+  if (!token) {
+    // Only reachable if SITE_ACCESS_PASSWORD is missing (then nothing validates).
+    return { success: false, error: "Access is not configured yet." };
+  }
+
   const cookieStore = await cookies();
-  cookieStore.set(SITE_ACCESS_COOKIE, siteAccessToken(), {
+  cookieStore.set(SITE_ACCESS_COOKIE, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
