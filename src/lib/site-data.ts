@@ -38,13 +38,17 @@ export const locations: Location[] = [
   },
 ];
 
+// Where "Play SPILL 42" buttons go (header dropdown, mobile menu, What's On).
+// Change it here once — e.g. to a real table code or a table picker page.
+export const SPILL42_PLAY_HREF = "/spill/table/TEST01";
+
 export const globalNavigation = [
   {
     label: "What’s On",
     href: "/whats-on",
     items: [
       { label: "Events", href: "/whats-on#events" },
-      { label: "SPILL 42", href: "/spill/table/TEST01" },
+      { label: "SPILL 42", href: SPILL42_PLAY_HREF },
       { label: "Live", href: "/livestream" },
       { label: "This Week", href: "/whats-on#this-week" },
       { label: "Upcoming", href: "/whats-on#upcoming" },
