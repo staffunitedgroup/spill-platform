@@ -33,6 +33,7 @@ import {
 } from "@/components/spill-game-ui";
 import {
   PASSES_PER_PLAYER,
+  GAME_EXTRAS,
   STREAK_MILESTONES,
   TOTAL_SPILLS,
   deriveStats,
@@ -97,22 +98,28 @@ const CONNECTION_OPTIONS: {
   label: string;
   note: string;
 }[] = [
-  { value: "FRIENDS_ONLY", label: "Friends only", note: "Keep it easy." },
+  // { value: "FRIENDS_ONLY", label: "Friends only", note: "Keep it easy." },
+  // {
+  //   value: "MAYBE_MORE",
+  //   label: "Friends, maybe more",
+  //   note: "Leave room for possibility.",
+  // },
+  // {
+  //   value: "ALREADY_TOGETHER",
+  //   label: "Already together",
+  //   note: "Only when both choose it.",
+  // },
+  { value: "FRIENDS_ONLY", label: "Friends", note: "Keep it easy." },
   {
     value: "MAYBE_MORE",
-    label: "Friends, maybe more",
+    label: "Friend Plus",
     note: "Leave room for possibility.",
-  },
-  {
-    value: "ALREADY_TOGETHER",
-    label: "Already together",
-    note: "Only when both choose it.",
   },
 ];
 
 const connectionLabels: Record<ConnectionType, string> = {
   FRIENDS_ONLY: "Friends only",
-  MAYBE_MORE: "Friends, maybe more",
+  MAYBE_MORE: "Friends Plus",
   ALREADY_TOGETHER: "Already together",
 };
 
@@ -255,11 +262,12 @@ export default function SpillSessionPage() {
     }
 
     const prev = data.history.find((h) => h.sequence === current.sequence - 1);
-    const first: Stage = prev?.passed
-      ? "forfeit"
-      : isLevelStart(current.sequence)
-        ? "levelUp"
-        : "drawing";
+    const first: Stage =
+      GAME_EXTRAS && prev?.passed
+        ? "forfeit"
+        : isLevelStart(current.sequence)
+          ? "levelUp"
+          : "drawing";
     setShownSeq(current.sequence);
     setStage(first);
   }, [data, session, current, shownSeq]);
@@ -343,7 +351,11 @@ export default function SpillSessionPage() {
   // Streak milestone toasts (same moment on every phone).
   const streak = stats?.streak ?? 0;
   useEffect(() => {
-    if (streak > lastStreakRef.current && STREAK_MILESTONES.includes(streak)) {
+    if (
+      GAME_EXTRAS &&
+      streak > lastStreakRef.current &&
+      STREAK_MILESTONES.includes(streak)
+    ) {
       setToast(`${streak} in a row — the heat is rising`);
       buzz([40, 30, 40]);
     }
@@ -371,7 +383,7 @@ export default function SpillSessionPage() {
   const isMyTurn = spotlight === myIndex;
   const twist = seq ? twistAt(session.id, seq, session.mode) : null;
   const level = getLevel(Math.max(1, seq || stats.played));
-  const heat = getHeat(stats.streak, Math.max(1, seq));
+  const heat = GAME_EXTRAS ? getHeat(stats.streak, Math.max(1, seq)) : 0;
   const myPassesLeft = PASSES_PER_PLAYER - (stats.passesUsed[myIndex] ?? 0);
   const content = current ? splitContent(current.spill.content) : null;
   const timerSeconds = current
@@ -633,7 +645,9 @@ export default function SpillSessionPage() {
                       ? `You chose · ${connectionLabels[data.connection.myChoice]}`
                       : `${players.length} players`}
                   </span>
-                  <HeatMeter heat={heat} streak={stats.streak} />
+                  {GAME_EXTRAS && (
+                    <HeatMeter heat={heat} streak={stats.streak} />
+                  )}
                 </div>
 
                 {current && content ? (
@@ -769,10 +783,10 @@ export default function SpillSessionPage() {
         <section className="s42Result">
           <div className="s42ResultMark">42</div>
           <span>You&apos;ve SPILLed all 42!</span>
-          <h1>Every card. Every twist. Done.</h1>
+          <h1>Every card. Done.</h1>
           <p>
-            {stats.answered} answered · {stats.passed} passed · {stats.twists}{" "}
-            twists survived
+            {stats.answered} answered · {stats.passed} passed
+            {GAME_EXTRAS && ` · ${stats.twists} twists survived`}
           </p>
           <div className="s42ResultActions">
             <button
@@ -883,14 +897,18 @@ export default function SpillSessionPage() {
               <strong>{minutes}</strong>
               <span>Minutes together</span>
             </div>
-            <div>
-              <strong>{stats.bestStreak}</strong>
-              <span>Best streak</span>
-            </div>
-            <div>
-              <strong>{stats.twists}</strong>
-              <span>Twists survived</span>
-            </div>
+            {GAME_EXTRAS && (
+              <>
+                <div>
+                  <strong>{stats.bestStreak}</strong>
+                  <span>Best streak</span>
+                </div>
+                <div>
+                  <strong>{stats.twists}</strong>
+                  <span>Twists survived</span>
+                </div>
+              </>
+            )}
             <div>
               <strong>{stats.passed}</strong>
               <span>Passes used</span>
@@ -900,12 +918,6 @@ export default function SpillSessionPage() {
               <span>Level reached</span>
             </div>
           </div>
-
-          {/* {stats.mostSpotlighted !== null && (
-            <p className="sgMvp">
-              Spotlight MVP · <b>{nameOf(stats.mostSpotlighted)}</b>
-            </p>
-          )} */}
 
           {saved.length > 0 && (
             <div className="sgSaved">
