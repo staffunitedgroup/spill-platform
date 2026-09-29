@@ -1,5 +1,3 @@
-
-
 export type SpillType =
   | "QUESTION"
   | "INSTRUCTION"
@@ -10,7 +8,6 @@ export type SpillType =
 
 export const TOTAL_SPILLS = 42;
 export const PASSES_PER_PLAYER = 2;
-
 
 function hashString(input: string): number {
   let h = 1779033703 ^ input.length;
@@ -33,7 +30,6 @@ export function seededRandom(seed: string): () => number {
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
 }
-
 
 export type Level = {
   number: 1 | 2 | 3;
@@ -78,7 +74,6 @@ export function getLevel(sequence: number): Level {
 export function isLevelStart(sequence: number): boolean {
   return LEVELS.some((l) => l.startsAt === sequence && l.number > 1);
 }
-
 
 export type TwistId =
   | "HOT_SEAT"
@@ -162,7 +157,6 @@ const POINT_PROMPTS = [
 
 export const TWIST_CHANCE = 0.24;
 
-
 export function getTwist(
   sessionId: string,
   sequence: number,
@@ -191,31 +185,52 @@ export function fillName(text: string, name: string): string {
   return text.replaceAll("{name}", name);
 }
 
+// ── Spotlight (who answers) ──────────────────────────────────
+// Multi-phone: every phone must compute the SAME spotlight from nothing but
+// (sessionId, sequence, playerCount). Players go in "rounds": each round is a
+// seeded shuffle of everyone, so turns stay balanced, and the first player of
+// a round is never the last player of the previous one.
 
-export function pickSpotlight(
+function roundOrder(sessionId: string, round: number, n: number): number[] {
+  const order = Array.from({ length: n }, (_, i) => i);
+  const rand = seededRandom(`${sessionId}:round:${round}`);
+  for (let i = n - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  if (round > 0 && n > 1) {
+    const prev = roundOrder(sessionId, round - 1, n);
+    if (order[0] === prev[n - 1]) [order[0], order[1]] = [order[1], order[0]];
+  }
+  return order;
+}
+
+/** Index (in join order) of the player in the spotlight for this card. */
+export function spotlightFor(
   sessionId: string,
   sequence: number,
   playerCount: number,
-  history: number[],
 ): number {
   if (playerCount <= 1) return 0;
-  const counts = Array.from({ length: playerCount }, () => 0);
-  history.forEach((i) => {
-    if (i >= 0 && i < playerCount) counts[i]++;
-  });
-  const last = history[history.length - 1];
-  const min = Math.min(...counts);
-  let candidates = counts
-    .map((c, i) => ({ c, i }))
-    .filter((x) => x.c === min && x.i !== last)
-    .map((x) => x.i);
-  if (candidates.length === 0) {
-    candidates = counts.map((_, i) => i).filter((i) => i !== last);
-  }
-  const rand = seededRandom(`${sessionId}:spotlight:${sequence}`);
-  return candidates[Math.floor(rand() * candidates.length)];
+  const idx = Math.max(0, sequence - 1);
+  const round = Math.floor(idx / playerCount);
+  return roundOrder(sessionId, round, playerCount)[idx % playerCount];
 }
 
+/** Twist for a card, computed identically on every phone. */
+export function twistAt(
+  sessionId: string,
+  sequence: number,
+  mode: "TWO_PERSON" | "GROUP",
+): Twist | null {
+  let prevHadTwist = false;
+  let twist: Twist | null = null;
+  for (let s = 1; s <= sequence; s++) {
+    twist = getTwist(sessionId, s, mode, prevHadTwist);
+    prevHadTwist = twist !== null;
+  }
+  return twist;
+}
 
 export function getTimerSeconds(
   type: SpillType,
@@ -233,7 +248,6 @@ export function getTimerSeconds(
       return null;
   }
 }
-
 
 const FORFEITS = [
   "Tell the table your most embarrassing autocorrect.",
@@ -253,7 +267,6 @@ export function getForfeit(sessionId: string, sequence: number): string {
   return FORFEITS[Math.floor(rand() * FORFEITS.length)];
 }
 
-
 export function getHeat(streak: number, sequence: number): number {
   const levelBonus = (getLevel(sequence).number - 1) * 10;
   return Math.max(0, Math.min(100, streak * 9 + levelBonus));
@@ -268,63 +281,68 @@ export function getHeatLabel(heat: number): string {
 
 export const STREAK_MILESTONES = [5, 10, 15, 20, 30];
 
+// ── Shared game stats (derived from server history) ─────────
+// The server stores every drawn card and whether it was passed, so all phones
+// derive the exact same streak / heat / passes / summary.
 
-export type CardRecord = {
+export type HistoryItem = {
   sequence: number;
-  type: SpillType;
-  title: string;
-  text: string;
-  spotlight: number;
-  twist: TwistId | null;
   passed: boolean;
+  completed: boolean;
 };
 
-export type GameState = {
-  version: 1;
-  startedAt: number;
-  passesUsed: number[]; // index = player
-  streak: number;
-  bestStreak: number;
-  cards: CardRecord[];
-  saved: number[]; // sequences
-};
-
-export function createGameState(playerCount: number): GameState {
-  return {
-    version: 1,
-    startedAt: Date.now(),
-    passesUsed: Array.from({ length: playerCount }, () => 0),
-    streak: 0,
-    bestStreak: 0,
-    cards: [],
-    saved: [],
-  };
-}
-
-export type GameSummary = {
-  minutes: number;
+export type SharedStats = {
   played: number;
   answered: number;
   passed: number;
   twists: number;
+  streak: number;
   bestStreak: number;
+  passesUsed: number[]; // index = player (join order)
   mostSpotlighted: number | null;
 };
 
-export function summarize(state: GameState, playerCount: number): GameSummary {
-  const counts = Array.from({ length: playerCount }, () => 0);
-  state.cards.forEach((c) => {
-    if (c.spotlight < playerCount) counts[c.spotlight]++;
-  });
-  const max = Math.max(0, ...counts);
-  const leaders = counts.filter((c) => c === max).length;
+export function deriveStats(
+  sessionId: string,
+  mode: "TWO_PERSON" | "GROUP",
+  playerCount: number,
+  history: HistoryItem[],
+): SharedStats {
+  const sorted = [...history].sort((a, b) => a.sequence - b.sequence);
+  const passesUsed = Array.from({ length: playerCount }, () => 0);
+  const spotCounts = Array.from({ length: playerCount }, () => 0);
+  let streak = 0;
+  let bestStreak = 0;
+  let twists = 0;
+  let prevHadTwist = false;
+
+  for (const h of sorted) {
+    const who = spotlightFor(sessionId, h.sequence, playerCount);
+    spotCounts[who]++;
+    const t = getTwist(sessionId, h.sequence, mode, prevHadTwist);
+    prevHadTwist = t !== null;
+    if (t) twists++;
+    if (!h.completed) continue;
+    if (h.passed) {
+      passesUsed[who]++;
+      streak = 0;
+    } else {
+      streak++;
+      bestStreak = Math.max(bestStreak, streak);
+    }
+  }
+
+  const completed = sorted.filter((h) => h.completed);
+  const max = Math.max(0, ...spotCounts);
+  const leaders = spotCounts.filter((c) => c === max).length;
   return {
-    minutes: Math.max(1, Math.round((Date.now() - state.startedAt) / 60000)),
-    played: state.cards.length,
-    answered: state.cards.filter((c) => !c.passed).length,
-    passed: state.cards.filter((c) => c.passed).length,
-    twists: state.cards.filter((c) => c.twist).length,
-    bestStreak: state.bestStreak,
-    mostSpotlighted: max > 0 && leaders === 1 ? counts.indexOf(max) : null,
+    played: sorted.length,
+    answered: completed.filter((h) => !h.passed).length,
+    passed: completed.filter((h) => h.passed).length,
+    twists,
+    streak,
+    bestStreak,
+    passesUsed,
+    mostSpotlighted: max > 0 && leaders === 1 ? spotCounts.indexOf(max) : null,
   };
 }

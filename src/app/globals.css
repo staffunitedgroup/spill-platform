@@ -11237,7 +11237,7 @@ a:hover > .navArrow.down {
   width: min(1180px, 100%);
 }
 .s42Back {
-  margin: 0 0 38px;
+  margin: 20px 0 38px;
   padding: 0;
   border: 0;
   background: none;
@@ -12016,7 +12016,7 @@ a:hover > .navArrow.down {
 }
 .s42Result > p {
   max-width: 650px;
-  margin: 0;
+  /* margin: 0; */
   color: #c0c4c8;
   font-size: 18px;
   line-height: 1.6;

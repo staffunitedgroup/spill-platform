@@ -1,5 +1,15 @@
 "use client";
 
+// ─────────────────────────────────────────────────────────────
+// SPILL 42 — multi-phone game screen.
+//
+// Every player is on THEIR OWN phone (joined via the table QR). This page:
+//   • polls the shared session state from the server,
+//   • shows private choices (connection level, ending) only on your phone,
+//   • derives spotlight / twists / streak from the server so every phone
+//     at the table sees exactly the same game.
+// ─────────────────────────────────────────────────────────────
+
 import {
   useCallback,
   useEffect,
@@ -25,62 +35,62 @@ import {
   PASSES_PER_PLAYER,
   STREAK_MILESTONES,
   TOTAL_SPILLS,
-  createGameState,
+  deriveStats,
   fillName,
   getForfeit,
   getHeat,
   getLevel,
   getTimerSeconds,
-  getTwist,
   isLevelStart,
-  pickSpotlight,
-  summarize,
-  type CardRecord,
-  type GameState,
+  spotlightFor,
+  twistAt,
   type SpillType,
-  type Twist,
 } from "@/lib/spill-engine/game-rules";
+import { clearMe, loadMe, type DevicePlayer } from "@/lib/spill-device";
 import "../spill-game.css";
 
 type ConnectionType = "FRIENDS_ONLY" | "MAYBE_MORE" | "ALREADY_TOGETHER";
 type SessionStatus = "WAITING" | "READY" | "ACTIVE" | "ENDING" | "ENDED";
 type SessionMode = "TWO_PERSON" | "GROUP";
 
-type StoredParticipant = { name: string; token: string };
-type StoredSession = {
-  sessionId: string;
-  mode: SessionMode;
-  maxParticipants: number;
-  participants: StoredParticipant[];
-};
-
-type SessionSpillPayload = {
-  sequence: number;
-  spill: { type: SpillType; content: string; category: string | null };
-};
-
-type CurrentSpillResponse = {
+type SharedState = {
   session: {
     id: string;
+    sessionCode: string;
+    mode: SessionMode;
     status: SessionStatus;
-    participants?: { wantsStayConnected: boolean | null }[];
+    startedAt: string | null;
+    endedAt: string | null;
+    maxParticipants: number;
   };
-  resolvedConnectionType?: ConnectionType | null;
-  currentSpill: SessionSpillPayload | null;
+  participants: { id: string; displayName: string }[];
+  me: number;
+  connection: {
+    mine: boolean;
+    myChoice: ConnectionType | null;
+    submitted: number;
+  };
+  ending: { mine: boolean; submitted: number; mutual: boolean | null };
+  history: { sequence: number; passed: boolean; completed: boolean }[];
+  currentSpill: {
+    sequence: number;
+    spill: { type: SpillType; content: string; category: string | null };
+  } | null;
 };
 
-type Phase =
-  | "loading"
-  | "connectionOne"
-  | "connectionHandoff"
-  | "connectionTwo"
-  | "spill"
-  | "poolExhausted"
-  | "ending"
-  | "endingHandoff"
-  | "result";
+// Card reveal steps on each phone: forfeit (if last card was passed) →
+// level-up → spotlight roulette → twist → card.
+type Stage = "forfeit" | "levelUp" | "drawing" | "twist" | "card";
 
-type Stage = "levelUp" | "drawing" | "twist" | "card" | "forfeit";
+type SavedMoment = {
+  sequence: number;
+  title: string;
+  text: string;
+  who: string;
+};
+
+const POLL_MS = 1500;
+const FIRST_CARD_FALLBACK_MS = 3000;
 
 const CONNECTION_OPTIONS: {
   value: ConnectionType;
@@ -125,53 +135,36 @@ const SPILL_PHRASES = [
   "SPILL and you shall receive.",
 ];
 
-function loadStored(sessionCode: string): StoredSession | null {
-  try {
-    const raw = localStorage.getItem(`spill:${sessionCode}`);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw);
-    if (
-      !parsed ||
-      typeof parsed !== "object" ||
-      !Array.isArray(parsed.participants) ||
-      typeof parsed.maxParticipants !== "number"
-    ) {
-      return null;
-    }
-    return parsed as StoredSession;
-  } catch {
-    return null;
-  }
-}
-
-function gameKey(sessionCode: string) {
-  return `spill:${sessionCode}:game`;
-}
-
-function loadGame(sessionCode: string, playerCount: number): GameState {
-  try {
-    const raw = localStorage.getItem(gameKey(sessionCode));
-    if (raw) {
-      const parsed = JSON.parse(raw) as GameState;
-      if (parsed?.version === 1 && Array.isArray(parsed.cards)) return parsed;
-    }
-  } catch {
-    /* ignore */
-  }
-  return createGameState(playerCount);
-}
-
-function saveGame(sessionCode: string, state: GameState) {
-  try {
-    localStorage.setItem(gameKey(sessionCode), JSON.stringify(state));
-  } catch {
-    /* private mode etc. — the game still works in memory */
-  }
-}
-
 function splitContent(content: string) {
   const [text, follow] = content.split("|||");
   return { text: text ?? content, follow: follow ?? "" };
+}
+
+function savedKey(code: string) {
+  return `spill:${code}:saved`;
+}
+
+function loadSaved(code: string): SavedMoment[] {
+  try {
+    const raw = localStorage.getItem(savedKey(code));
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function persistSaved(code: string, saved: SavedMoment[]) {
+  try {
+    localStorage.setItem(savedKey(code), JSON.stringify(saved));
+  } catch {
+    /* ignore */
+  }
+}
+
+function names(list: string[]) {
+  if (list.length <= 1) return list.join("");
+  return `${list.slice(0, -1).join(", ")} & ${list[list.length - 1]}`;
 }
 
 export default function SpillSessionPage() {
@@ -179,38 +172,61 @@ export default function SpillSessionPage() {
   const router = useRouter();
   const sessionCode = params.sessionCode;
 
-  const [stored, setStored] = useState<StoredSession | null>(null);
-  const [data, setData] = useState<CurrentSpillResponse | null>(null);
-  const [phase, setPhase] = useState<Phase>("loading");
+  const [me, setMe] = useState<DevicePlayer | null>(null);
+  const [data, setData] = useState<SharedState | null>(null);
   const [stage, setStage] = useState<Stage>("card");
+  const [shownSeq, setShownSeq] = useState(0);
+  const [endingOpen, setEndingOpen] = useState(false);
+  const [exhausted, setExhausted] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
-  const [mutual, setMutual] = useState<boolean | null>(null);
-  const [endingIndex, setEndingIndex] = useState(0);
-  const [readyForPhase, setReadyForPhase] = useState<Phase | null>(null);
-  const [game, setGame] = useState<GameState | null>(null);
+  const [saved, setSaved] = useState<SavedMoment[]>([]);
   const [toast, setToast] = useState<string | null>(null);
-  const [forfeit, setForfeit] = useState<{ name: string; text: string } | null>(
-    null,
-  );
-  const autoDrawRef = useRef(false);
+  const initialisedRef = useRef(false);
+  const lastStreakRef = useRef(0);
+  const noCardSinceRef = useRef(0);
+  const lastDrawAttemptRef = useRef(0);
   const [phrase] = useState(
     () => SPILL_PHRASES[Math.floor(Math.random() * SPILL_PHRASES.length)],
   );
 
+  // Who am I on this phone?
   useEffect(() => {
-    const saved = loadStored(sessionCode);
-    if (!saved || saved.participants.length < saved.maxParticipants) {
+    const player = loadMe(sessionCode);
+    if (!player) {
       router.replace(`/spill/${sessionCode}/join`);
       return;
     }
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setStored(saved);
-    setGame(loadGame(sessionCode, saved.participants.length));
+    setMe(player);
+    setSaved(loadSaved(sessionCode));
   }, [sessionCode, router]);
 
+  const fetchState = useCallback(async () => {
+    if (!me) return;
+    try {
+      const res = await fetch(
+        `/api/sessions/${me.sessionId}/current-spill?participantToken=${encodeURIComponent(me.token)}`,
+        { cache: "no-store" },
+      );
+      if (res.status === 403 || res.status === 404) {
+        // This phone's seat no longer exists (e.g. staff reset the table).
+        clearMe(sessionCode);
+        router.replace(`/spill/${sessionCode}/join`);
+        return;
+      }
+      if (res.ok) setData(await res.json());
+    } catch {
+      /* offline for a moment — keep the last known state */
+    }
+  }, [me, router, sessionCode]);
+
   useEffect(() => {
-    if (game) saveGame(sessionCode, game);
-  }, [game, sessionCode]);
+    if (!me) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchState();
+    const id = setInterval(fetchState, POLL_MS);
+    return () => clearInterval(id);
+  }, [me, fetchState]);
 
   useEffect(() => {
     if (!toast) return;
@@ -218,142 +234,123 @@ export default function SpillSessionPage() {
     return () => clearTimeout(t);
   }, [toast]);
 
-  const fetchState = useCallback(async () => {
-    if (!stored) return;
-    const token = stored.participants[0]?.token;
-    try {
-      const res = await fetch(
-        `/api/sessions/${stored.sessionId}/current-spill?participantToken=${encodeURIComponent(token ?? "")}`,
-      );
-      if (res.ok) {
-        const json = await res.json();
-        setData(json);
-      }
-    } catch {}
-  }, [stored]);
+  const session = data?.session;
+  const players = data?.participants ?? [];
+  const n = Math.max(players.length, 1);
+  const current = data?.currentSpill ?? null;
+  const seq = current?.sequence ?? 0;
 
+  // A new card arrived from the server → run the reveal on THIS phone.
   useEffect(() => {
-    if (!stored) return;
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    fetchState();
-    const interval = setInterval(fetchState, 4000);
-    return () => clearInterval(interval);
-  }, [stored, fetchState]);
+    if (!data || !session || !current) return;
+    if (current.sequence === shownSeq) return;
 
-  useEffect(() => {
-    if (!data || !stored) return;
-    if (phase === "loading") {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      if (data.session.status === "READY") setPhase("connectionOne");
-      else if (data.session.status === "ACTIVE") setPhase("spill");
-      else if (
-        data.session.status === "ENDING" ||
-        data.session.status === "ENDED"
-      )
-        setPhase("result");
+    // First load (or reload mid-card): just show it, no animation.
+    if (!initialisedRef.current) {
+      initialisedRef.current = true;
+
+      setShownSeq(current.sequence);
+      setStage("card");
+      return;
     }
-  }, [data, phase, stored]);
 
+    const prev = data.history.find((h) => h.sequence === current.sequence - 1);
+    const first: Stage = prev?.passed
+      ? "forfeit"
+      : isLevelStart(current.sequence)
+        ? "levelUp"
+        : "drawing";
+    setShownSeq(current.sequence);
+    setStage(first);
+  }, [data, session, current, shownSeq]);
+
+  // Mark as initialised once state has loaded even without a card yet,
+  // so the very first card animates.
   useEffect(() => {
-    if (phase === "connectionHandoff" || phase === "endingHandoff") {
-      const timer = setTimeout(() => setReadyForPhase(phase), 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [phase]);
+    if (data && !current) initialisedRef.current = true;
+  }, [data, current]);
 
-  const registerCard = useCallback(
-    (sessionSpill: SessionSpillPayload, animate: boolean) => {
-      if (!stored) return;
-      const seq = sessionSpill.sequence;
-      setGame((current) => {
-        if (!current || current.cards.some((c) => c.sequence === seq)) {
-          return current;
+  const advance = useCallback(
+    async (passed = false) => {
+      if (!me || actionLoading) return;
+      setActionLoading(true);
+      try {
+        const res = await fetch(`/api/sessions/${me.sessionId}/next-spill`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            participantToken: me.token,
+            currentSequence: seq,
+            ...(passed ? { passed: true } : {}),
+          }),
+        });
+        const json = await res.json().catch(() => ({}));
+        if (res.ok && json.exhausted) {
+          setExhausted(true);
+          buzz([80, 60, 80, 60, 240]);
+        } else if (!res.ok) {
+          const code = json.error?.code;
+          // ALREADY_ADVANCED = another phone was faster; nothing to report.
+          if (code !== "ALREADY_ADVANCED") {
+            setToast(
+              json.error?.message ?? "Couldn't reach SPILL. Trying again…",
+            );
+          }
         }
-        const history = current.cards.map((c) => c.spotlight);
-        const prev = current.cards[current.cards.length - 1];
-        const spotlight = pickSpotlight(
-          stored.sessionId,
-          seq,
-          stored.participants.length,
-          history,
-        );
-        const twist = getTwist(
-          stored.sessionId,
-          seq,
-          stored.mode,
-          Boolean(prev?.twist),
-        );
-        const { text } = splitContent(sessionSpill.spill.content);
-        const record: CardRecord = {
-          sequence: seq,
-          type: sessionSpill.spill.type,
-          title: sessionSpill.spill.category ?? "SPILL",
-          text,
-          spotlight,
-          twist: twist?.id ?? null,
-          passed: false,
-        };
-        return { ...current, cards: [...current.cards, record] };
-      });
-      if (animate) {
-        setStage(isLevelStart(seq) ? "levelUp" : "drawing");
-      } else {
-        setStage("card");
+      } catch {
+        setToast("Connection issue — trying again…");
+      } finally {
+        setActionLoading(false);
+        fetchState();
       }
     },
-    [stored],
+    [me, actionLoading, seq, fetchState],
   );
 
-  const advance = useCallback(async () => {
-    if (!stored || actionLoading) return;
-    setActionLoading(true);
-    try {
-      const res = await fetch(`/api/sessions/${stored.sessionId}/next-spill`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          participantToken: stored.participants[0].token,
-          currentSequence: data?.currentSpill?.sequence ?? 0,
-        }),
-      });
-      if (res.ok) {
-        const json = await res.json();
-        if (json.exhausted) {
-          buzz([80, 60, 80, 60, 240]);
-          setPhase("poolExhausted");
-        } else if (json.currentSpill) {
-          setData((d) => (d ? { ...d, currentSpill: json.currentSpill } : d));
-          registerCard(json.currentSpill, true);
-        }
-      }
-    } finally {
-      setActionLoading(false);
-      fetchState();
-    }
-  }, [stored, actionLoading, data, registerCard, fetchState]);
-
+  // First card. The first player's phone draws it right away; every other
+  // phone steps in if there is still no card after a few seconds. Failed
+  // attempts (e.g. the database waking up) are retried every few seconds.
+  // Time is tracked in refs so the 1.5s polling doesn't reset the countdown.
   useEffect(() => {
-    if (phase !== "spill" || !data || !game) return;
-    if (data.session.status !== "ACTIVE") return;
-    const current = data.currentSpill;
-    if (current) {
-      if (!game.cards.some((c) => c.sequence === current.sequence)) {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        registerCard(current, game.cards.length === 0);
-      }
+    const waitingForFirstCard =
+      !!data &&
+      !!session &&
+      session.status === "ACTIVE" &&
+      !current &&
+      data.history.length === 0;
+    if (!waitingForFirstCard) {
+      noCardSinceRef.current = 0;
       return;
     }
-    if (game.cards.length >= TOTAL_SPILLS) {
-      setPhase("poolExhausted");
-      return;
+    const now = Date.now();
+    if (!noCardSinceRef.current) noCardSinceRef.current = now;
+    const myTurnToDraw =
+      data.me === 0 || now - noCardSinceRef.current > FIRST_CARD_FALLBACK_MS;
+    if (
+      myTurnToDraw &&
+      now - lastDrawAttemptRef.current > FIRST_CARD_FALLBACK_MS
+    ) {
+      lastDrawAttemptRef.current = now;
+      advance(false);
     }
-    if (game.cards.length === 0 && !autoDrawRef.current) {
-      autoDrawRef.current = true;
-      advance();
-    }
-  }, [phase, data, game, registerCard, advance]);
+  }, [data, session, current, advance]);
 
-  if (!stored || !game || (phase === "loading" && !data)) {
+  const stats =
+    data && session
+      ? deriveStats(session.id, session.mode, n, data.history)
+      : null;
+
+  // Streak milestone toasts (same moment on every phone).
+  const streak = stats?.streak ?? 0;
+  useEffect(() => {
+    if (streak > lastStreakRef.current && STREAK_MILESTONES.includes(streak)) {
+      setToast(`${streak} in a row — the heat is rising`);
+      buzz([40, 30, 40]);
+    }
+    lastStreakRef.current = streak;
+  }, [streak]);
+
+  if (!me || !data || !session || !stats) {
     return (
       <main className="s42App">
         <section className="s42Intro">
@@ -365,171 +362,123 @@ export default function SpillSessionPage() {
     );
   }
 
-  const participants = stored.participants;
-  const names = participants.map((p) => p.name);
-  const handoffReady = readyForPhase === phase;
-  const p1 = participants[0];
-  const p2 = participants[1];
-  const resolvedConnection = data?.resolvedConnectionType ?? null;
+  const myIndex = data.me;
+  const myName = players[myIndex]?.displayName ?? me.name;
+  const nameOf = (i: number) => players[i]?.displayName ?? `Player ${i + 1}`;
 
-  const currentSpill = data?.currentSpill ?? null;
-  const index = currentSpill?.sequence ?? game.cards.length;
-  const record = currentSpill
-    ? game.cards.find((c) => c.sequence === currentSpill.sequence)
-    : undefined;
-  const prevRecord = record
-    ? game.cards.find((c) => c.sequence === record.sequence - 1)
-    : undefined;
-  const twist: Twist | null =
-    record && record.twist
-      ? getTwist(
-          stored.sessionId,
-          record.sequence,
-          stored.mode,
-          Boolean(prevRecord?.twist),
+  const spotlight = seq ? spotlightFor(session.id, seq, n) : 0;
+  const spotlightName = nameOf(spotlight);
+  const isMyTurn = spotlight === myIndex;
+  const twist = seq ? twistAt(session.id, seq, session.mode) : null;
+  const level = getLevel(Math.max(1, seq || stats.played));
+  const heat = getHeat(stats.streak, Math.max(1, seq));
+  const myPassesLeft = PASSES_PER_PLAYER - (stats.passesUsed[myIndex] ?? 0);
+  const content = current ? splitContent(current.spill.content) : null;
+  const timerSeconds = current
+    ? getTimerSeconds(current.spill.type, twist)
+    : null;
+  const isSaved = saved.some((s) => s.sequence === seq);
+
+  const prevCard = data.history.find((h) => h.sequence === seq - 1);
+  const forfeitWho =
+    seq > 1 ? nameOf(spotlightFor(session.id, seq - 1, n)) : "";
+  const forfeitText = seq > 1 ? getForfeit(session.id, seq - 1) : "";
+
+  const allDone =
+    data.history.length > 0 && data.history.every((h) => h.completed);
+  const poolExhausted =
+    session.status === "ACTIVE" && !current && (exhausted || allDone);
+
+  // Shown on the result screen, where the session has both timestamps.
+  const minutes =
+    session.startedAt && session.endedAt
+      ? Math.max(
+          1,
+          Math.round(
+            (new Date(session.endedAt).getTime() -
+              new Date(session.startedAt).getTime()) /
+              60000,
+          ),
         )
-      : null;
-  const spotlightName = record ? names[record.spotlight] : names[0];
-  const level = getLevel(Math.max(1, index));
-  const heat = getHeat(game.streak, Math.max(1, index));
-  const passesLeft = record
-    ? PASSES_PER_PLAYER - (game.passesUsed[record.spotlight] ?? 0)
-    : 0;
-  const timerSeconds = currentSpill
-    ? getTimerSeconds(currentSpill.spill.type, twist)
-    : null;
-  const content = currentSpill
-    ? splitContent(currentSpill.spill.content)
-    : null;
-  const isSaved = currentSpill
-    ? game.saved.includes(currentSpill.sequence)
-    : false;
+      : 1;
 
   function afterRoulette() {
     setStage(twist ? "twist" : "card");
   }
 
-  function answerAndNext() {
-    if (!game || !currentSpill) {
-      advance();
-      return;
-    }
-    const streak = game.streak + 1;
-    setGame({
-      ...game,
-      streak,
-      bestStreak: Math.max(game.bestStreak, streak),
-    });
-    if (STREAK_MILESTONES.includes(streak)) {
-      setToast(`${streak} in a row — the heat is rising`);
-      buzz([40, 30, 40]);
-    } else if (currentSpill.sequence === Math.floor(TOTAL_SPILLS / 2)) {
-      setToast("Halfway there. Keep SPILLing.");
-    }
-    advance();
-  }
-
-  function pass() {
-    if (!game || !record || passesLeft <= 0 || !stored) return;
-    const passesUsed = [...game.passesUsed];
-    passesUsed[record.spotlight] = (passesUsed[record.spotlight] ?? 0) + 1;
-    setGame({
-      ...game,
-      streak: 0,
-      passesUsed,
-      cards: game.cards.map((c) =>
-        c.sequence === record.sequence ? { ...c, passed: true } : c,
-      ),
-    });
-    setForfeit({
-      name: spotlightName,
-      text: getForfeit(stored.sessionId, record.sequence),
-    });
-    setStage("forfeit");
-    buzz([150]);
+  function afterForfeit() {
+    setStage(isLevelStart(seq) ? "levelUp" : "drawing");
   }
 
   function toggleSaved() {
-    if (!game || !currentSpill) return;
-    const seq = currentSpill.sequence;
-    setGame({
-      ...game,
-      saved: game.saved.includes(seq)
-        ? game.saved.filter((s) => s !== seq)
-        : [...game.saved, seq],
-    });
+    if (!current || !content) return;
+    const next = isSaved
+      ? saved.filter((s) => s.sequence !== seq)
+      : [
+          ...saved,
+          {
+            sequence: seq,
+            title: current.spill.category ?? "SPILL",
+            text: content.text,
+            who: spotlightName,
+          },
+        ];
+    setSaved(next);
+    persistSaved(sessionCode, next);
   }
 
-  async function submitConnection(
-    participant: StoredParticipant,
-    value: ConnectionType,
-    isSecond: boolean,
-  ) {
-    if (!stored) return;
+  async function submitConnection(value: ConnectionType) {
+    if (!me) return;
     setActionLoading(true);
-    const res = await fetch(
-      `/api/sessions/${stored.sessionId}/connection-selection`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          participantToken: participant.token,
-          connectionType: value,
-        }),
-      },
-    );
-    setActionLoading(false);
-    if (!res.ok) return;
-
-    if (!isSecond) {
-      setReadyForPhase(null);
-      setPhase("connectionHandoff");
-    } else {
-      setPhase("spill");
-      fetchState();
-    }
-  }
-
-  function startEnding() {
-    setEndingIndex(0);
-    setPhase("ending");
-  }
-
-  async function submitEnding(wantsStayConnected: boolean) {
-    if (!stored) return;
-    const participant = participants[endingIndex];
-    setActionLoading(true);
-    const res = await fetch(`/api/sessions/${stored.sessionId}/ending`, {
+    await fetch(`/api/sessions/${me.sessionId}/connection-selection`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        participantToken: participant.token,
-        wantsStayConnected,
+        participantToken: me.token,
+        connectionType: value,
       }),
-    });
-    const json = await res.json();
+    }).catch(() => null);
     setActionLoading(false);
-    if (!res.ok) return;
-
-    if (json.bothSubmitted) {
-      setMutual(json.mutual ?? false);
-      setPhase("result");
-      buzz([60, 40, 60]);
-    } else {
-      setEndingIndex((i) => i + 1);
-      setReadyForPhase(null);
-      setPhase("endingHandoff");
-    }
+    fetchState();
   }
 
-  const currentEndingParticipant = participants[endingIndex];
-  const summary = summarize(game, participants.length);
-  const savedCards = game.cards.filter((c) => game.saved.includes(c.sequence));
-  const isMutual =
-    mutual ??
-    (data?.session.participants?.length
-      ? data.session.participants.every((p) => p.wantsStayConnected === true)
-      : false);
+  async function submitEnding(wantsStayConnected: boolean) {
+    if (!me) return;
+    setActionLoading(true);
+    const res = await fetch(`/api/sessions/${me.sessionId}/ending`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ participantToken: me.token, wantsStayConnected }),
+    }).catch(() => null);
+    setActionLoading(false);
+    if (res?.ok) buzz([60, 40, 60]);
+    fetchState();
+  }
+
+  // ── Which screen? (server status + this phone's private progress) ──
+  type Screen =
+    | "lobby"
+    | "connection"
+    | "connectionWait"
+    | "game"
+    | "poolExhausted"
+    | "ending"
+    | "endingWait"
+    | "result";
+
+  let screen: Screen = "lobby";
+  if (session.status === "WAITING") screen = "lobby";
+  else if (session.status === "READY")
+    screen = data.connection.mine ? "connectionWait" : "connection";
+  else if (session.status === "ACTIVE")
+    screen = endingOpen ? "ending" : poolExhausted ? "poolExhausted" : "game";
+  else if (session.status === "ENDING")
+    screen = data.ending.mine ? "endingWait" : "ending";
+  else screen = "result";
+
+  const others = players
+    .filter((_, i) => i !== myIndex)
+    .map((p) => p.displayName);
 
   return (
     <main
@@ -546,23 +495,49 @@ export default function SpillSessionPage() {
           />
         </Link>
         <strong>42</strong>
-        <span />
+        <span className="sgMe">{myName}</span>
       </header>
 
       <Toast message={toast} />
 
-      {(phase === "connectionOne" || phase === "connectionTwo") && p1 && p2 && (
+      {screen === "lobby" && (
+        <section className="s42Setup">
+          <div className="s42SetupPanel sgLobby">
+            <div className="s42SetupHeading">
+              <span>
+                {players.length} of {session.maxParticipants} joined
+              </span>
+              <h1>Waiting for your table</h1>
+              <p>
+                Everyone scans the QR on the table with their own phone. The
+                game starts when all {session.maxParticipants} are in.
+              </p>
+            </div>
+            <ul className="sgSeats">
+              {Array.from({ length: session.maxParticipants }, (_, i) => (
+                <li key={i} className={players[i] ? "taken" : ""}>
+                  <b>{players[i] ? players[i].displayName : "Waiting…"}</b>
+                  {i === myIndex && <small>You</small>}
+                </li>
+              ))}
+            </ul>
+            <p className="s42Permission">
+              Table code <b className="sgCode">{session.sessionCode}</b>
+            </p>
+          </div>
+        </section>
+      )}
+
+      {screen === "connection" && (
         <section className="s42Setup">
           <div className="s42SetupPanel private">
-            <div className="s42PrivateBadge">
-              Private choice · {phase === "connectionOne" ? p1.name : p2.name}
-            </div>
+            <div className="s42PrivateBadge">Private · only you see this</div>
             <div className="s42SetupHeading">
               <span>Choose connection</span>
               <h1>What feels right?</h1>
               <p>
-                Choose privately. SPILL uses only the least intimate option you
-                both selected.
+                {names(others)} won&apos;t see your answer. SPILL uses only the
+                least intimate option you both chose.
               </p>
             </div>
             <div className="s42ChoiceGrid three">
@@ -571,13 +546,7 @@ export default function SpillSessionPage() {
                   key={opt.value}
                   type="button"
                   disabled={actionLoading}
-                  onClick={() =>
-                    submitConnection(
-                      phase === "connectionOne" ? p1 : p2,
-                      opt.value,
-                      phase === "connectionTwo",
-                    )
-                  }
+                  onClick={() => submitConnection(opt.value)}
                 >
                   <b>{opt.label}</b>
                   <small>{opt.note}</small>
@@ -589,130 +558,119 @@ export default function SpillSessionPage() {
         </section>
       )}
 
-      {phase === "connectionHandoff" && p2 && (
+      {screen === "connectionWait" && (
         <section className="s42Setup">
           <div className="s42Handoff">
             <span>Choice saved privately</span>
-            <h1>Pass the phone</h1>
-            <p>{p2.name}, tap below when the screen is yours.</p>
-            <button
-              className="s42Primary"
-              type="button"
-              disabled={!handoffReady}
-              onClick={() => setPhase("connectionTwo")}
-            >
-              {handoffReady ? (
-                <>
-                  I&apos;m {p2.name} <span>→</span>
-                </>
-              ) : (
-                "One moment…"
-              )}
-            </button>
+            <h1>Waiting for {names(others)}</h1>
+            <p>Nobody will ever see what you chose.</p>
+            <div className="sgPulseDots" aria-hidden="true">
+              <i />
+              <i />
+              <i />
+            </div>
           </div>
         </section>
       )}
 
-      {phase === "spill" && (
+      {screen === "game" && (
         <section className="s42Dashboard">
           <div className="s42Play sgPlay">
-            {currentSpill && record && stage === "levelUp" && (
+            {current && stage === "forfeit" && prevCard?.passed && (
+              <div className="sgForfeit">
+                <span className="sgKicker">{forfeitWho} passed</span>
+                <h1>Forfeit</h1>
+                <p>{forfeitText}</p>
+                <small>Streak reset. The table decides if it counts.</small>
+                <button
+                  className="s42Primary"
+                  type="button"
+                  onClick={afterForfeit}
+                >
+                  Continue <span>→</span>
+                </button>
+              </div>
+            )}
+
+            {current && stage === "levelUp" && (
               <LevelUp level={level} onContinue={() => setStage("drawing")} />
             )}
 
-            {currentSpill && record && stage === "drawing" && (
+            {current && stage === "drawing" && (
               <SpotlightRoulette
-                key={record.sequence}
-                names={names}
-                spotlight={record.spotlight}
-                sequence={record.sequence}
+                key={seq}
+                names={players.map((p) => p.displayName)}
+                spotlight={spotlight}
+                sequence={seq}
                 onDone={afterRoulette}
               />
             )}
 
-            {currentSpill && record && stage === "twist" && twist && (
+            {current && stage === "twist" && twist && (
               <TwistReveal
-                key={record.sequence}
+                key={seq}
                 twist={twist}
                 name={spotlightName}
                 onContinue={() => setStage("card")}
               />
             )}
 
-            {stage === "forfeit" && forfeit && (
-              <div className="sgForfeit">
-                <span className="sgKicker">{forfeit.name} passed</span>
-                <h1>Forfeit</h1>
-                <p>{forfeit.text}</p>
-                <small>
-                  Streak reset. {forfeit.name} has{" "}
-                  {record
-                    ? PASSES_PER_PLAYER -
-                      (game.passesUsed[record.spotlight] ?? 0)
-                    : 0}{" "}
-                  pass(es) left.
-                </small>
-                <button
-                  className="s42Primary"
-                  type="button"
-                  disabled={actionLoading}
-                  onClick={() => {
-                    setForfeit(null);
-                    advance();
-                  }}
-                >
-                  Forfeit done · Next SPILL <span>→</span>
-                </button>
-              </div>
-            )}
-
-            {(stage === "card" || !record) && (
+            {(stage === "card" ||
+              !current ||
+              (stage === "forfeit" && !prevCard?.passed)) && (
               <>
                 <div className="s42PlayMeta sgMeta">
                   <span className="sgLevelBadge">
                     Lv {level.number} · {level.name}
                   </span>
                   <b>
-                    {index || "…"} / {TOTAL_SPILLS}
+                    {seq || "…"} / {TOTAL_SPILLS}
                   </b>
                 </div>
                 <div className="sgSubMeta">
                   <span>
-                    {resolvedConnection
-                      ? connectionLabels[resolvedConnection]
-                      : stored.mode === "GROUP"
-                        ? `${participants.length} players`
-                        : `${p1.name} & ${p2?.name ?? ""}`}
+                    {data.connection.myChoice
+                      ? `You chose · ${connectionLabels[data.connection.myChoice]}`
+                      : `${players.length} players`}
                   </span>
-                  <HeatMeter heat={heat} streak={game.streak} />
+                  <HeatMeter heat={heat} streak={stats.streak} />
                 </div>
 
-                {currentSpill && content && record ? (
+                {current && content ? (
                   <article
-                    key={currentSpill.sequence}
-                    className={`s42Prompt sgCard sgType${currentSpill.spill.type}${twist ? " hasTwist" : ""}`}
+                    key={seq}
+                    className={`s42Prompt sgCard sgType${current.spill.type}${twist ? " hasTwist" : ""}${isMyTurn ? " isMine" : ""}`}
                     aria-live="polite"
                   >
                     <div className="sgSpotlight">
-                      <span>Spotlight</span>
-                      <b>{spotlightName}</b>
+                      {isMyTurn ? (
+                        <b>Your turn</b>
+                      ) : (
+                        <>
+                          <span>Spotlight</span>
+                          <b>{spotlightName}</b>
+                        </>
+                      )}
                     </div>
                     {twist && (
                       <div className="sgTwistTag">
                         ⚡ {twist.title}
-                        <small>{fillName(twist.rule, spotlightName)}</small>
+                        <small>
+                          {fillName(
+                            twist.rule,
+                            isMyTurn ? "You" : spotlightName,
+                          )}
+                        </small>
                       </div>
                     )}
                     <span>
                       <b>
-                        <TypeIcon type={currentSpill.spill.type} />
+                        <TypeIcon type={current.spill.type} />
                       </b>
-                      {typeLabels[currentSpill.spill.type]}
+                      {typeLabels[current.spill.type]}
                     </span>
                     <h1>
-                      <BrandedText
-                        text={currentSpill.spill.category ?? "SPILL"}
-                      />
+                      <BrandedText text={current.spill.category ?? "SPILL"} />
                     </h1>
                     <p>{content.text}</p>
                     {content.follow && (
@@ -721,7 +679,9 @@ export default function SpillSessionPage() {
                         <strong>{content.follow}</strong>
                       </>
                     )}
-                    {timerSeconds && <SpillTimer seconds={timerSeconds} />}
+                    {timerSeconds && (
+                      <SpillTimer key={`t${seq}`} seconds={timerSeconds} />
+                    )}
                   </article>
                 ) : (
                   <article className="s42Prompt sgCard sgCardBack">
@@ -734,43 +694,69 @@ export default function SpillSessionPage() {
                   <button
                     className={isSaved ? "saved" : ""}
                     type="button"
-                    disabled={!currentSpill}
+                    disabled={!current}
                     onClick={toggleSaved}
                   >
                     {isSaved ? "Saved moment" : "Remember this"}
                   </button>
+                  {isMyTurn && current && (
+                    <button
+                      type="button"
+                      className="sgPass"
+                      disabled={myPassesLeft <= 0 || actionLoading}
+                      onClick={() => {
+                        buzz(150);
+                        advance(true);
+                      }}
+                    >
+                      Pass · {Math.max(0, myPassesLeft)} left
+                    </button>
+                  )}
                   <button
                     type="button"
-                    className="sgPass"
-                    disabled={!record || passesLeft <= 0 || actionLoading}
-                    onClick={pass}
-                  >
-                    Pass · {Math.max(0, passesLeft)} left
-                  </button>
-                  <button
-                    type="button"
+                    className="sgEnd"
                     disabled={actionLoading}
-                    onClick={startEnding}
+                    onClick={() => setEndingOpen(true)}
+                    aria-label="End SPILL — finish the game for the whole table"
                   >
-                    End
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.4"
+                      strokeLinecap="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M12 3v9" />
+                      <path d="M6.3 6.8a8 8 0 1 0 11.4 0" />
+                    </svg>
+                    End SPILL
                   </button>
                 </div>
                 <div className="s42Progress sgProgress">
-                  <span style={{ width: `${(index / TOTAL_SPILLS) * 100}%` }} />
+                  <span style={{ width: `${(seq / TOTAL_SPILLS) * 100}%` }} />
                   <i style={{ left: `${(14 / TOTAL_SPILLS) * 100}%` }} />
                   <i style={{ left: `${(28 / TOTAL_SPILLS) * 100}%` }} />
                 </div>
                 <button
                   className="s42Next"
                   type="button"
-                  disabled={actionLoading || !currentSpill}
-                  onClick={answerAndNext}
+                  disabled={
+                    actionLoading || (!current && data.history.length > 0)
+                  }
+                  onClick={() => advance(false)}
                 >
                   {actionLoading
                     ? "…"
-                    : currentSpill?.sequence === TOTAL_SPILLS
-                      ? "Finish SPILL 42"
-                      : `${spotlightName} SPILLed · Next`}{" "}
+                    : !current
+                      ? "Draw the first SPILL"
+                      : seq === TOTAL_SPILLS
+                        ? "Finish SPILL 42"
+                        : isMyTurn
+                          ? "I SPILLed · Next"
+                          : `${spotlightName} SPILLed · Next`}{" "}
                   <span>→</span>
                 </button>
               </>
@@ -779,29 +765,31 @@ export default function SpillSessionPage() {
         </section>
       )}
 
-      {phase === "poolExhausted" && (
+      {screen === "poolExhausted" && (
         <section className="s42Result">
           <div className="s42ResultMark">42</div>
           <span>You&apos;ve SPILLed all 42!</span>
           <h1>Every card. Every twist. Done.</h1>
           <p>
-            {summary.answered} answered · {summary.passed} passed ·{" "}
-            {summary.twists} twists survived
+            {stats.answered} answered · {stats.passed} passed · {stats.twists}{" "}
+            twists survived
           </p>
           <div className="s42ResultActions">
-            <button className="s42Primary" type="button" onClick={startEnding}>
+            <button
+              className="s42Primary"
+              type="button"
+              onClick={() => setEndingOpen(true)}
+            >
               Wrap up <span>→</span>
             </button>
           </div>
         </section>
       )}
 
-      {phase === "ending" && currentEndingParticipant && (
+      {screen === "ending" && (
         <section className="s42Ending">
           <div className="s42EndPanel">
-            <div className="s42PrivateBadge">
-              Private choice · {currentEndingParticipant.name}
-            </div>
+            <div className="s42PrivateBadge">Private · only you see this</div>
             <span>End on a positive note</span>
             <h1>What happens next?</h1>
             <p>
@@ -828,43 +816,43 @@ export default function SpillSessionPage() {
                 <small>I&apos;d like to exchange contact information.</small>
               </button>
             </div>
+            {session.status === "ACTIVE" && (
+              <button
+                className="s42Back"
+                type="button"
+                onClick={() => setEndingOpen(false)}
+              >
+                ← Keep playing
+              </button>
+            )}
           </div>
         </section>
       )}
 
-      {phase === "endingHandoff" && currentEndingParticipant && (
+      {screen === "endingWait" && (
         <section className="s42Ending">
           <div className="s42Handoff">
             <span>Choice saved privately</span>
-            <h1>Pass the phone</h1>
+            <h1>Waiting for the table</h1>
             <p>
-              {currentEndingParticipant.name}, tap below when the screen is
-              yours.
+              {data.ending.submitted} of {players.length} have chosen. Nobody
+              sees anyone else&apos;s answer.
             </p>
-            <button
-              className="s42Primary"
-              type="button"
-              disabled={!handoffReady}
-              onClick={() => setPhase("ending")}
-            >
-              {handoffReady ? (
-                <>
-                  I&apos;m {currentEndingParticipant.name} <span>→</span>
-                </>
-              ) : (
-                "One moment…"
-              )}
-            </button>
+            <div className="sgPulseDots" aria-hidden="true">
+              <i />
+              <i />
+              <i />
+            </div>
           </div>
         </section>
       )}
 
-      {phase === "result" && (
+      {screen === "result" && (
         <section className="s42Result sgWrapped">
           <div className="s42ResultMark">42</div>
           <span>Your SPILL, wrapped</span>
           <h1>
-            {isMutual ? (
+            {data.ending.mutual ? (
               <>
                 Everyone chose
                 <br />
@@ -881,61 +869,63 @@ export default function SpillSessionPage() {
             )}
           </h1>
           <p>
-            {isMutual
+            {data.ending.mutual
               ? "The feeling is mutual. Exchange details directly — and keep the connection human."
               : "No rejection screen. No match score. Just a real conversation that happened."}
           </p>
 
           <div className="sgStats">
             <div>
-              <strong>{summary.played}</strong>
+              <strong>{stats.played}</strong>
               <span>SPILLs played</span>
             </div>
             <div>
-              <strong>{summary.minutes}</strong>
+              <strong>{minutes}</strong>
               <span>Minutes together</span>
             </div>
             <div>
-              <strong>{summary.bestStreak}</strong>
+              <strong>{stats.bestStreak}</strong>
               <span>Best streak</span>
             </div>
             <div>
-              <strong>{summary.twists}</strong>
+              <strong>{stats.twists}</strong>
               <span>Twists survived</span>
             </div>
             <div>
-              <strong>{summary.passed}</strong>
+              <strong>{stats.passed}</strong>
               <span>Passes used</span>
             </div>
             <div>
-              <strong>{getLevel(Math.max(1, summary.played)).number}</strong>
+              <strong>{getLevel(Math.max(1, stats.played)).number}</strong>
               <span>Level reached</span>
             </div>
           </div>
 
-          {summary.mostSpotlighted !== null && (
+          {/* {stats.mostSpotlighted !== null && (
             <p className="sgMvp">
-              Spotlight MVP · <b>{names[summary.mostSpotlighted]}</b>
+              Spotlight MVP · <b>{nameOf(stats.mostSpotlighted)}</b>
             </p>
-          )}
+          )} */}
 
-          {savedCards.length > 0 && (
+          {saved.length > 0 && (
             <div className="sgSaved">
               <h2>Moments you saved</h2>
               <ul>
-                {savedCards.map((card) => (
-                  <li key={card.sequence}>
-                    <small>
-                      #{card.sequence} · {card.title} · {names[card.spotlight]}
-                    </small>
-                    {card.text}
-                  </li>
-                ))}
+                {[...saved]
+                  .sort((a, b) => a.sequence - b.sequence)
+                  .map((card) => (
+                    <li key={card.sequence}>
+                      <small>
+                        #{card.sequence} · {card.title} · {card.who}
+                      </small>
+                      {card.text}
+                    </li>
+                  ))}
               </ul>
             </div>
           )}
 
-          <blockquote>{phrase}</blockquote>
+          <blockquote suppressHydrationWarning>{phrase}</blockquote>
           <div className="s42ResultActions">
             <Link href="/">Return to SPILL</Link>
           </div>

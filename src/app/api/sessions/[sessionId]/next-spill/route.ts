@@ -3,7 +3,12 @@ import { prisma } from "@/lib/prisma";
 import { nextSpillSchema } from "@/lib/validation/next-spill";
 import { selectNextSpill } from "@/lib/spill-engine/select-next-spill";
 import { resolveConnectionType } from "@/lib/spill-engine/resolve-connection";
-import { TOTAL_SPILLS } from "@/lib/spill-engine/game-rules";
+import {
+  PASSES_PER_PLAYER,
+  TOTAL_SPILLS,
+  spotlightFor,
+} from "@/lib/spill-engine/game-rules";
+import { orderParticipants } from "@/lib/participant-order";
 
 export async function POST(
   req: NextRequest,
@@ -39,7 +44,7 @@ export async function POST(
     );
   }
 
-  const { participantToken, currentSequence } = parsed.data;
+  const { participantToken, currentSequence, passed } = parsed.data;
 
   const session = await prisma.session.findUnique({
     where: { id: sessionId },
@@ -110,63 +115,132 @@ export async function POST(
 
   let result;
   try {
-    result = await prisma.$transaction(async (tx) => {
-      const latest = await tx.sessionSpill.findFirst({
-        where: { sessionId },
-        orderBy: { sequence: "desc" },
-        include: { spill: true },
-      });
-      const latestSequence = latest?.sequence ?? 0;
+    result = await prisma.$transaction(
+      async (tx) => {
+        const latest = await tx.sessionSpill.findFirst({
+          where: { sessionId },
+          orderBy: { sequence: "desc" },
+          include: { spill: true },
+        });
+        const latestSequence = latest?.sequence ?? 0;
 
-      if (
-        typeof currentSequence === "number" &&
-        currentSequence !== latestSequence &&
-        latest &&
-        !latest.completedAt
-      ) {
-        return { exhausted: false as const, sessionSpill: latest };
-      }
+        if (
+          typeof currentSequence === "number" &&
+          currentSequence !== latestSequence &&
+          latest &&
+          !latest.completedAt
+        ) {
+          return { exhausted: false as const, sessionSpill: latest };
+        }
 
-      await tx.sessionSpill.updateMany({
-        where: { sessionId, completedAt: null },
-        data: { completedAt: new Date() },
-      });
+        if (passed) {
+          if (
+            !latest ||
+            latest.completedAt ||
+            currentSequence !== latestSequence
+          ) {
+            return { stale: true as const };
+          }
+          const players = orderParticipants(session.participants);
+          const myIndex = players.findIndex((p) => p.id === participant.id);
+          const n = players.length;
+          if (spotlightFor(sessionId, latestSequence, n) !== myIndex) {
+            return { error: "PASS_NOT_ALLOWED" as const };
+          }
+          const passedCards = await tx.sessionSpill.findMany({
+            where: { sessionId, passed: true },
+            select: { sequence: true },
+          });
+          const used = passedCards.filter(
+            (c) => spotlightFor(sessionId, c.sequence, n) === myIndex,
+          ).length;
+          if (used >= PASSES_PER_PLAYER) {
+            return { error: "NO_PASSES_LEFT" as const };
+          }
+          await tx.sessionSpill.update({
+            where: { id: latest.id },
+            data: { completedAt: new Date(), passed: true },
+          });
+        } else {
+          await tx.sessionSpill.updateMany({
+            where: { sessionId, completedAt: null },
+            data: { completedAt: new Date() },
+          });
+        }
 
-      if (latestSequence >= TOTAL_SPILLS) {
-        return { exhausted: true as const };
-      }
+        if (latestSequence >= TOTAL_SPILLS) {
+          return { exhausted: true as const };
+        }
 
-      const nextSpill = await selectNextSpill(sessionId, resolvedType, tx);
+        const nextSpill = await selectNextSpill(sessionId, resolvedType, tx);
 
-      if (!nextSpill) {
-        return { exhausted: true as const };
-      }
+        if (!nextSpill) {
+          return { exhausted: true as const };
+        }
 
-      const sessionSpill = await tx.sessionSpill.create({
-        data: {
-          sessionId,
-          spillId: nextSpill.id,
-          sequence: latestSequence + 1,
-          presentedAt: new Date(),
-        },
-        include: { spill: true },
-      });
+        const sessionSpill = await tx.sessionSpill.create({
+          data: {
+            sessionId,
+            spillId: nextSpill.id,
+            sequence: latestSequence + 1,
+            presentedAt: new Date(),
+          },
+          include: { spill: true },
+        });
 
-      return { exhausted: false as const, sessionSpill };
-    });
+        return { exhausted: false as const, sessionSpill };
+      },
+      {
+        maxWait: 10_000,
+        timeout: 20_000,
+      },
+    );
   } catch (err: unknown) {
-    // Two requests raced for the same sequence → the other one won.
     const isUniqueConflict =
       typeof err === "object" &&
       err !== null &&
       "code" in err &&
       (err as { code?: string }).code === "P2002";
-    if (!isUniqueConflict) throw err;
+    if (!isUniqueConflict) {
+      console.error("[next-spill] failed", err);
+      const code =
+        typeof err === "object" && err !== null && "code" in err
+          ? String((err as { code?: unknown }).code)
+          : "UNKNOWN";
+      const message = err instanceof Error ? err.message : String(err);
+      return NextResponse.json(
+        {
+          error: {
+            code: "NEXT_SPILL_FAILED",
+            message: `Couldn't draw a card (${code}). Trying again…`,
+            detail: message.slice(0, 300),
+          },
+        },
+        { status: 500 },
+      );
+    }
+    return NextResponse.json(
+      { exhausted: false, alreadyAdvanced: true },
+      { status: 200 },
+    );
+  }
+
+  if ("stale" in result) {
+    return NextResponse.json(
+      { exhausted: false, alreadyAdvanced: true },
+      { status: 200 },
+    );
+  }
+
+  if ("error" in result) {
     return NextResponse.json(
       {
         error: {
-          code: "ALREADY_ADVANCED",
-          message: "The next SPILL is already on its way.",
+          code: result.error,
+          message:
+            result.error === "NO_PASSES_LEFT"
+              ? "No passes left — time to SPILL."
+              : "Only the player in the spotlight can pass this card.",
         },
       },
       { status: 409 },

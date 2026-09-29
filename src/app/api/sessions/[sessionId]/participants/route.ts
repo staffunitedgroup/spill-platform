@@ -65,6 +65,13 @@ export async function POST(
       return { error: "SESSION_FULL" as const };
     }
 
+    const nameTaken = session.participants.some(
+      (p) => p.displayName.trim().toLowerCase() === displayName.toLowerCase(),
+    );
+    if (nameTaken) {
+      return { error: "NAME_TAKEN" as const };
+    }
+
     const participant = await tx.participant.create({
       data: {
         sessionId: session.id,
@@ -114,6 +121,17 @@ export async function POST(
             error: {
               code: result.error,
               message: "This session is no longer accepting participants.",
+            },
+          },
+          { status: 409 },
+        );
+      case "NAME_TAKEN":
+        return NextResponse.json(
+          {
+            error: {
+              code: result.error,
+              message:
+                "Someone at this table already uses that name. Try a nickname.",
             },
           },
           { status: 409 },

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { loadMe } from "@/lib/spill-device";
 
 const SPILL_PHRASES = [
   "Good things come to those who SPILL.",
@@ -53,15 +54,62 @@ function pickRandomPhrase() {
 }
 
 type Mode = "TWO_PERSON" | "GROUP";
-type Step = "select" | "groupSize" | "loading";
+type Step = "checking" | "select" | "groupSize" | "loading" | "join" | "busy";
+
+type OpenSession = {
+  sessionCode: string;
+  status: string;
+  mode: Mode;
+  maxParticipants: number;
+  joined: string[];
+  canJoin: boolean;
+};
 
 export default function TableEntryPage() {
   const params = useParams<{ tableCode: string }>();
   const router = useRouter();
-  const [step, setStep] = useState<Step>("select");
+  const [step, setStep] = useState<Step>("checking");
+  const [open, setOpen] = useState<OpenSession | null>(null);
   const [groupSize, setGroupSize] = useState(3);
   const [errorMessage, setErrorMessage] = useState("");
   const [loadingPhrase] = useState(pickRandomPhrase);
+
+  // Multi-phone: each person scans the table QR on their own phone.
+  // If a SPILL is already starting at this table, join it instead of
+  // starting a second one.
+  useEffect(() => {
+    let cancelled = false;
+    async function check() {
+      try {
+        const res = await fetch(`/api/tables/${params.tableCode}/session`);
+        const data = await res.json();
+        if (cancelled) return;
+        if (!res.ok) {
+          setErrorMessage(
+            data.error?.message ?? "This table is not available.",
+          );
+          return;
+        }
+        const session: OpenSession | null = data.session;
+        if (!session) {
+          setStep("select");
+          return;
+        }
+        if (loadMe(session.sessionCode)) {
+          router.replace(`/spill/${session.sessionCode}`);
+          return;
+        }
+        setOpen(session);
+        setStep(session.canJoin ? "join" : "busy");
+      } catch {
+        if (!cancelled) setErrorMessage("Connection issue - Please try again.");
+      }
+    }
+    check();
+    return () => {
+      cancelled = true;
+    };
+  }, [params.tableCode, router]);
 
   async function createSession(mode: Mode, size?: number) {
     setStep("loading");
@@ -101,13 +149,17 @@ export default function TableEntryPage() {
     );
   }
 
-  if (step === "loading") {
+  if (step === "checking" || step === "loading") {
     return (
       <main className="s42App">
         <section className="s42Intro">
           <div className="s42IntroContent">
             <p>Real conversation. Real connection.</p>
-            <h1>Getting your table ready…</h1>
+            <h1>
+              {step === "checking"
+                ? "Finding your table…"
+                : "Getting your table ready…"}
+            </h1>
             <span suppressHydrationWarning>{loadingPhrase}</span>
           </div>
         </section>
@@ -118,6 +170,43 @@ export default function TableEntryPage() {
   return (
     <main className="s42App">
       <section className="s42Setup">
+        {step === "join" && open && (
+          <div className="s42SetupPanel">
+            <div className="s42SetupHeading">
+              <span>
+                {open.joined.length} of {open.maxParticipants} joined
+              </span>
+              <h1>A SPILL is starting here</h1>
+              <p>
+                {open.joined.length > 0
+                  ? `${open.joined.join(", ")} ${open.joined.length === 1 ? "is" : "are"} waiting for you.`
+                  : "Your table is waiting for you."}
+              </p>
+            </div>
+            <button
+              className="s42Primary"
+              type="button"
+              onClick={() => router.push(`/spill/${open.sessionCode}/join`)}
+            >
+              Join this SPILL <span>→</span>
+            </button>
+          </div>
+        )}
+
+        {step === "busy" && open && (
+          <div className="s42SetupPanel">
+            <div className="s42SetupHeading">
+              <span>Table in play</span>
+              <h1>This table is already SPILLing</h1>
+              <p>
+                {open.joined.join(", ")}{" "}
+                {open.joined.length === 1 ? "is" : "are"} mid-game. If this is
+                your table, ask a staff member to help you start fresh.
+              </p>
+            </div>
+          </div>
+        )}
+
         {step === "select" && (
           <div className="s42SetupPanel">
             <div className="s42SetupHeading">
@@ -128,12 +217,12 @@ export default function TableEntryPage() {
             <div className="s42ChoiceGrid two">
               <button type="button" onClick={() => createSession("TWO_PERSON")}>
                 <b>Two people</b>
-                <small>One phone. Face to face.</small>
+                <small>Each on your own phone. Face to face.</small>
                 <i>→</i>
               </button>
               <button type="button" onClick={() => setStep("groupSize")}>
                 <b>Small group</b>
-                <small>Three to six people.</small>
+                <small>Three to six people, one phone each.</small>
                 <i>→</i>
               </button>
             </div>

@@ -433,7 +433,7 @@
   font-size: 15px;
 }
 .sgMvp {
-  margin: 20px 0 0;
+  margin: 30px 0 0;
   color: var(--spill-silver);
   font-size: 17px;
 }
@@ -664,4 +664,128 @@
       transparent 60%
     ),
     var(--spill-black);
+}
+
+/* ── Multi-phone: who is on this phone, lobby, waiting ───────── */
+
+.s42Header .sgMe {
+  justify-self: end;
+  max-width: 34vw;
+  overflow: hidden;
+  color: var(--spill-silver, #c0c4c8);
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.sgSeats {
+  width: min(520px, 100%);
+  margin: 28px 0 18px;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+  list-style: none;
+}
+.sgSeats li {
+  min-height: 58px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px dashed rgba(192, 196, 200, 0.3);
+  border-radius: 14px;
+  color: rgba(192, 196, 200, 0.6);
+  font-size: 18px;
+}
+.sgSeats li.taken {
+  border-style: solid;
+  border-color: var(--red);
+  color: #fff;
+  animation: sgFadeUp 0.4s ease both;
+}
+.sgSeats li b {
+  font-weight: 500;
+}
+.sgSeats li small {
+  color: var(--red);
+  font-size: 15px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.sgCode {
+  margin-left: 6px;
+  color: #fff;
+  font-family: var(--font-display);
+  letter-spacing: 0.2em;
+}
+
+.sgPulseDots {
+  margin-top: 28px;
+  display: flex;
+  gap: 10px;
+}
+.sgPulseDots i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--red);
+  animation: sgPulse 1.2s ease-in-out infinite;
+}
+.sgPulseDots i:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.sgPulseDots i:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* It's MY turn on this phone: stronger glow + solid spotlight pill. */
+.sgCard.isMine {
+  border-color: var(--lvl);
+  box-shadow:
+    0 30px 90px rgba(0, 0, 0, 0.46),
+    0 0 calc(40px + var(--heat) * 60px)
+      color-mix(in srgb, var(--lvl) 45%, transparent);
+}
+.sgCard.isMine .sgSpotlight {
+  background: var(--lvl);
+}
+.sgCard.isMine .sgSpotlight b {
+  color: var(--spill-black, #111);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* "End SPILL" — clearly a button: power icon + outlined pill. */
+.sgTools .sgEnd {
+  margin-left: auto;
+  min-height: 36px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(192, 196, 200, 0.4);
+  border-radius: 999px;
+  color: var(--spill-silver, #c0c4c8);
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    background 0.2s ease;
+}
+@media (hover: hover) {
+  .sgTools .sgEnd:hover {
+    border-color: var(--red);
+    color: var(--red);
+  }
+}
+.sgTools .sgEnd:active {
+  border-color: var(--red);
+  background: var(--red);
+  color: var(--spill-black, #111);
 }
