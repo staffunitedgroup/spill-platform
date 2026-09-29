@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { connectionSelectionSchema } from "@/lib/validation/connection-selection";
-import { resolveConnectionType } from "@/lib/spill-engine/resolve-connection";
 import type { SessionStatus } from "@/generated/prisma/enums";
 
 export async function POST(
@@ -101,18 +100,9 @@ export async function POST(
       startedAt = updated.startedAt;
     }
 
-    let resolvedType: string | null = null;
-    if (bothSubmitted && allSelections.length === 2) {
-      resolvedType = resolveConnectionType(
-        allSelections[0].connectionType,
-        allSelections[1].connectionType,
-      );
-    }
-
     return {
       yourSelection: connectionType,
       bothSubmitted,
-      resolvedType,
       session: {
         id: session.id,
         status: sessionStatus,
@@ -171,7 +161,6 @@ export async function POST(
     {
       yourSelection: result.yourSelection,
       bothSubmitted: result.bothSubmitted,
-      resolvedType: result.resolvedType,
       session: result.session,
     },
     { status: 200 },

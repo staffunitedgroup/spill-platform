@@ -3,124 +3,88 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { SpillWordmark } from "@/components/brand-text";
+import { loadMe, saveMe } from "@/lib/spill-device";
 import "../../spill-game.css";
 
-type StoredParticipant = { name: string; token: string };
-type StoredSession = {
-  sessionId: string;
-  mode: "TWO_PERSON" | "GROUP";
+type SessionInfo = {
+  id: string;
+  sessionCode: string;
+  status: string;
   maxParticipants: number;
-  participants: StoredParticipant[];
+  joined: string[];
 };
-
-function loadStored(sessionCode: string): StoredSession | null {
-  try {
-    const raw = localStorage.getItem(`spill:${sessionCode}`);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw);
-    if (
-      !parsed ||
-      typeof parsed !== "object" ||
-      !Array.isArray(parsed.participants) ||
-      typeof parsed.maxParticipants !== "number"
-    ) {
-      localStorage.removeItem(`spill:${sessionCode}`);
-      return null;
-    }
-    return parsed as StoredSession;
-  } catch {
-    return null;
-  }
-}
-
-function saveStored(sessionCode: string, data: StoredSession) {
-  localStorage.setItem(`spill:${sessionCode}`, JSON.stringify(data));
-}
 
 export default function JoinPage() {
   const params = useParams<{ sessionCode: string }>();
   const router = useRouter();
   const sessionCode = params.sessionCode;
 
-  const [sessionId, setSessionId] = useState<string | null>(null);
-  const [mode, setMode] = useState<"TWO_PERSON" | "GROUP">("TWO_PERSON");
-  const [maxParticipants, setMaxParticipants] = useState<number>(2);
-  const [participants, setParticipants] = useState<StoredParticipant[]>([]);
+  const [session, setSession] = useState<SessionInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [step, setStep] = useState<"entry" | "handoff">("entry");
+  const [fatal, setFatal] = useState<string | null>(null);
   const [nickname, setNickname] = useState("");
 
   useEffect(() => {
-    async function init() {
-      const stored = loadStored(sessionCode);
-      if (stored && stored.participants.length >= stored.maxParticipants) {
-        router.replace(`/spill/${sessionCode}`);
-        return;
-      }
-      if (stored) {
-        setSessionId(stored.sessionId);
-        setMode(stored.mode);
-        setMaxParticipants(stored.maxParticipants);
-        setParticipants(stored.participants);
-        setStep(stored.participants.length >= 1 ? "handoff" : "entry");
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const res = await fetch(`/api/sessions/by-code/${sessionCode}`);
-        if (!res.ok) {
-          setError(
-            "We couldn't find this table's SPILL. Ask a staff member for help.",
-          );
-          setLoading(false);
-          return;
-        }
-        const json = await res.json();
-        const fetchedSession = json.session ?? json;
-        const id = fetchedSession.id;
-        const fetchedMode: "TWO_PERSON" | "GROUP" =
-          fetchedSession.mode === "GROUP" ? "GROUP" : "TWO_PERSON";
-        const computedMax =
-          fetchedMode === "GROUP" ? (fetchedSession.groupSize ?? 6) : 2;
-        setSessionId(id);
-        setMode(fetchedMode);
-        setMaxParticipants(computedMax);
-        saveStored(sessionCode, {
-          sessionId: id,
-          mode: fetchedMode,
-          maxParticipants: computedMax,
-          participants: [],
-        });
-      } catch {
-        setError("Something went wrong. Please try again.");
-      }
-      setLoading(false);
-    }
-    init();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionCode]);
-
-  async function joinSession() {
-    if (!sessionId) return;
-    const trimmed = nickname.trim().slice(0, 20);
-    const taken = participants.some(
-      (p) => p.name.toLowerCase() === trimmed.toLowerCase(),
-    );
-    if (taken) {
-      setError("Someone already took that name. Try a nickname.");
+    if (loadMe(sessionCode)) {
+      router.replace(`/spill/${sessionCode}`);
       return;
     }
-    const label = trimmed || `Player ${participants.length + 1}`;
+    async function init() {
+      try {
+        const res = await fetch(`/api/sessions/by-code/${sessionCode}`);
+        const json = await res.json();
+        if (!res.ok) {
+          setFatal(
+            "We couldn't find this table's SPILL. Ask a staff member for help.",
+          );
+          return;
+        }
+        const s = json.session;
+        const max = s.mode === "GROUP" ? (s.groupSize ?? 6) : 2;
+        const joined: string[] = (s.participants ?? []).map(
+          (p: { displayName: string }) => p.displayName,
+        );
+        if (
+          (s.status !== "WAITING" && s.status !== "READY") ||
+          joined.length >= max
+        ) {
+          setFatal(
+            "This table's SPILL is already in progress. Ask a staff member for help.",
+          );
+          return;
+        }
+        setSession({
+          id: s.id,
+          sessionCode: s.sessionCode,
+          status: s.status,
+          maxParticipants: max,
+          joined,
+        });
+      } catch {
+        setFatal("Something went wrong. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    }
+    init();
+  }, [sessionCode, router]);
+
+  async function joinSession() {
+    if (!session) return;
+    const name = nickname.trim().slice(0, 20);
+    if (!name) {
+      setError("Tell the table what to call you.");
+      return;
+    }
     setSubmitting(true);
     setError(null);
     try {
-      const res = await fetch(`/api/sessions/${sessionId}/participants`, {
+      const res = await fetch(`/api/sessions/${session.id}/participants`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ displayName: label }),
+        body: JSON.stringify({ displayName: name }),
       });
       const json = await res.json();
       if (!res.ok) {
@@ -128,78 +92,32 @@ export default function JoinPage() {
         setSubmitting(false);
         return;
       }
-
-      const updated = [
-        ...participants,
-        { name: label, token: json.participant.participantToken },
-      ];
-      setParticipants(updated);
-      setNickname("");
-      saveStored(sessionCode, {
-        sessionId,
-        mode,
-        maxParticipants,
-        participants: updated,
+      saveMe({
+        sessionId: session.id,
+        sessionCode: session.sessionCode,
+        token: json.participant.participantToken,
+        name,
       });
-      setSubmitting(false);
-
-      const sessionIsReady =
-        json.session.status === "READY" || json.session.status === "ACTIVE";
-      if (sessionIsReady || updated.length >= maxParticipants) {
-        router.replace(`/spill/${sessionCode}`);
-      } else {
-        setStep("handoff");
-      }
+      router.replace(`/spill/${sessionCode}`);
     } catch {
       setError("Something went wrong. Please try again.");
       setSubmitting(false);
     }
   }
 
-  if (loading) {
+  if (loading || fatal || !session) {
     return (
       <main className="s42App">
         <section className="s42Intro">
           <div className="s42IntroContent">
-            <span>Loading…</span>
-          </div>
-        </section>
-      </main>
-    );
-  }
-
-  if (error && !sessionId) {
-    return (
-      <main className="s42App">
-        <section className="s42Intro">
-          <div className="s42IntroContent">
-            <h1>Something went wrong</h1>
-            <span>{error}</span>
-          </div>
-        </section>
-      </main>
-    );
-  }
-
-  if (step === "handoff") {
-    const joinedCount = participants.length;
-    const nextNumber = joinedCount + 1;
-    return (
-      <main className="s42App">
-        <section className="s42Setup">
-          <div className="s42Handoff">
-            <span>
-              {joinedCount} of {maxParticipants} joined
-            </span>
-            <h1>Pass the phone</h1>
-            <p>Player {nextNumber}, tap below when the screen is yours.</p>
-            <button
-              className="s42Primary"
-              type="button"
-              onClick={() => setStep("entry")}
-            >
-              I&apos;m Player {nextNumber} <span>→</span>
-            </button>
+            {fatal ? (
+              <>
+                <h1>Can&apos;t join</h1>
+                <span>{fatal}</span>
+              </>
+            ) : (
+              <span>Loading…</span>
+            )}
           </div>
         </section>
       </main>
@@ -212,7 +130,7 @@ export default function JoinPage() {
         <div className="s42SetupPanel">
           <div className="s42SetupHeading">
             <span>
-              Player {participants.length + 1} of {maxParticipants}
+              {session.joined.length} of {session.maxParticipants} joined
             </span>
             <h1>
               Want to <SpillWordmark />?
@@ -232,14 +150,14 @@ export default function JoinPage() {
               maxLength={20}
               autoComplete="nickname"
               autoFocus
-              placeholder={`Player ${participants.length + 1}`}
+              placeholder="Your name or nickname"
               aria-label="Your name or nickname"
               onChange={(event) => setNickname(event.target.value)}
             />
-            {participants.length > 0 && (
+            {session.joined.length > 0 && (
               <div className="s42JoinedList" aria-label="Already joined">
-                {participants.map((p) => (
-                  <span key={p.token}>{p.name}</span>
+                {session.joined.map((name) => (
+                  <span key={name}>{name}</span>
                 ))}
               </div>
             )}
@@ -248,16 +166,19 @@ export default function JoinPage() {
           <button
             className="s42Primary"
             type="button"
-            disabled={submitting}
+            disabled={submitting || !nickname.trim()}
             onClick={joinSession}
           >
             {submitting
               ? "Joining…"
               : nickname.trim()
                 ? `Join as ${nickname.trim()}`
-                : "Tap to join"}{" "}
+                : "Enter your name"}{" "}
             <span>→</span>
           </button>
+          <p className="s42Permission">
+            Everyone plays on their own phone. Your choices stay private.
+          </p>
         </div>
       </section>
     </main>

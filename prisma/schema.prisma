@@ -170,6 +170,8 @@ model SessionSpill {
   sequence    Int
   presentedAt DateTime? @map("presented_at")
   completedAt DateTime? @map("completed_at")
+  // true = the spotlight player used a pass on this card (forfeit shown to everyone)
+  passed      Boolean   @default(false)
 
   session Session @relation(fields: [sessionId], references: [id])
   spill   Spill   @relation(fields: [spillId], references: [id])

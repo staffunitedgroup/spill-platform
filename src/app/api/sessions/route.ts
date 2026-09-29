@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { createSessionSchema } from "@/lib/validation/session";
 import { generateSessionCode } from "@/lib/session-code";
+import { isSessionStale } from "@/lib/session-staleness";
 
 export async function POST(req: NextRequest) {
   let body: unknown;
@@ -36,7 +37,6 @@ export async function POST(req: NextRequest) {
 
   const { tableCode, mode, groupSize } = parsed.data;
 
-  // 1. Tìm bàn theo tableCode
   const table = await prisma.table.findFirst({
     where: { tableCode: tableCode.toUpperCase(), status: "ACTIVE" },
   });
@@ -56,40 +56,24 @@ export async function POST(req: NextRequest) {
   const existingSession = await prisma.session.findFirst({
     where: {
       tableId: table.id,
-      status: { in: ["WAITING", "READY", "ACTIVE"] },
+      status: { in: ["WAITING", "READY", "ACTIVE", "ENDING"] },
     },
     orderBy: { createdAt: "desc" },
   });
 
   if (existingSession) {
-    const WAITING_READY_TIMEOUT_MIN = 15;
-    const ACTIVE_TIMEOUT_MIN = 90;
-
-    const referenceTime =
-      existingSession.status === "ACTIVE" && existingSession.startedAt
-        ? existingSession.startedAt
-        : existingSession.createdAt;
-
-    const timeoutMin =
-      existingSession.status === "ACTIVE"
-        ? ACTIVE_TIMEOUT_MIN
-        : WAITING_READY_TIMEOUT_MIN;
-
-    const ageMs = Date.now() - referenceTime.getTime();
-    const isStale = ageMs > timeoutMin * 60 * 1000;
+    const isStale = isSessionStale(existingSession);
 
     if (!isStale) {
       return NextResponse.json({ session: existingSession }, { status: 200 });
     }
 
-    // Session bị bỏ dở quá lâu → đóng lại để nhường chỗ cho session mới
     await prisma.session.update({
       where: { id: existingSession.id },
       data: { status: "ENDED" },
     });
   }
 
-  // 3. Tạo session mới, đảm bảo sessionCode không trùng
   let session;
   let attempts = 0;
 
@@ -108,7 +92,6 @@ export async function POST(req: NextRequest) {
         },
       });
     } catch (err: unknown) {
-      // Trùng sessionCode (rất hiếm) → thử lại
       const isUniqueConflict =
         typeof err === "object" &&
         err !== null &&

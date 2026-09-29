@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { resolveConnectionType } from "@/lib/spill-engine/resolve-connection";
+import { orderParticipants } from "@/lib/participant-order";
+import { maxParticipantsFor } from "@/lib/session-staleness";
 
 export async function GET(
   req: NextRequest,
@@ -38,11 +39,10 @@ export async function GET(
     );
   }
 
-  const isValidParticipant = session.participants.some(
-    (p) => p.participantToken === participantToken,
-  );
+  const players = orderParticipants(session.participants);
+  const me = players.findIndex((p) => p.participantToken === participantToken);
 
-  if (!isValidParticipant) {
+  if (me < 0) {
     return NextResponse.json(
       {
         error: {
@@ -54,19 +54,28 @@ export async function GET(
     );
   }
 
-  const currentSessionSpill = await prisma.sessionSpill.findFirst({
-    where: { sessionId, completedAt: null },
-    orderBy: { sequence: "desc" },
-    include: { spill: true },
-  });
+  const [currentSessionSpill, history] = await Promise.all([
+    prisma.sessionSpill.findFirst({
+      where: { sessionId, completedAt: null },
+      orderBy: { sequence: "desc" },
+      include: { spill: true },
+    }),
+    prisma.sessionSpill.findMany({
+      where: { sessionId },
+      orderBy: { sequence: "asc" },
+      select: { sequence: true, passed: true, completedAt: true },
+    }),
+  ]);
 
-  // Needed so the UI can show the agreed connection level after a reload.
-  const resolvedConnectionType =
-    session.mode === "TWO_PERSON" && session.connectionSelections.length >= 2
-      ? resolveConnectionType(
-          session.connectionSelections[0].connectionType,
-          session.connectionSelections[1].connectionType,
-        )
+  const selections = session.connectionSelections;
+
+  const myId = players[me].id;
+  const endingSubmitted = players.filter(
+    (p) => p.wantsStayConnected !== null,
+  ).length;
+  const mutual =
+    session.status === "ENDED" && endingSubmitted === players.length
+      ? players.every((p) => p.wantsStayConnected === true)
       : null;
 
   return NextResponse.json({
@@ -78,14 +87,39 @@ export async function GET(
       status: session.status,
       startedAt: session.startedAt,
       endedAt: session.endedAt,
-      participants: session.participants.map((p) => ({
-        id: p.id,
-        displayName: p.displayName,
-        status: p.status,
-        wantsStayConnected: p.wantsStayConnected,
-      })),
+      maxParticipants: maxParticipantsFor(session),
     },
-    resolvedConnectionType,
-    currentSpill: currentSessionSpill ?? null,
+    participants: players.map((p) => ({
+      id: p.id,
+      displayName: p.displayName,
+    })),
+    me,
+    connection: {
+      mine: selections.some((s) => s.participantId === myId),
+      myChoice:
+        selections.find((s) => s.participantId === myId)?.connectionType ??
+        null,
+      submitted: selections.length,
+    },
+    ending: {
+      mine: players[me].wantsStayConnected !== null,
+      submitted: endingSubmitted,
+      mutual,
+    },
+    history: history.map((h) => ({
+      sequence: h.sequence,
+      passed: h.passed,
+      completed: h.completedAt !== null,
+    })),
+    currentSpill: currentSessionSpill
+      ? {
+          sequence: currentSessionSpill.sequence,
+          spill: {
+            type: currentSessionSpill.spill.type,
+            content: currentSessionSpill.spill.content,
+            category: currentSessionSpill.spill.category,
+          },
+        }
+      : null,
   });
 }
