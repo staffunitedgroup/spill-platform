@@ -9,6 +9,8 @@ export type SpillType =
 export const TOTAL_SPILLS = 42;
 export const PASSES_PER_PLAYER = 2;
 
+export const GAME_EXTRAS = false;
+
 function hashString(input: string): number {
   let h = 1779033703 ^ input.length;
   for (let i = 0; i < input.length; i++) {
@@ -164,6 +166,7 @@ export function getTwist(
   previousHadTwist: boolean,
 ): Twist | null {
   if (sequence >= TOTAL_SPILLS) return FINAL_TWIST;
+  if (!GAME_EXTRAS) return null;
   if (sequence <= 2 || previousHadTwist) return null;
 
   const rand = seededRandom(`${sessionId}:twist:${sequence}`);
