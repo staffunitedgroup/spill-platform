@@ -80,7 +80,6 @@ type SharedState = {
   } | null;
 };
 
-// Card reveal steps on each phone: forfeit (if last card was passed) →
 // level-up → spotlight roulette → twist → card.
 type Stage = "forfeit" | "levelUp" | "drawing" | "twist" | "card";
 
@@ -99,17 +98,6 @@ const CONNECTION_OPTIONS: {
   label: string;
   note: string;
 }[] = [
-  // { value: "FRIENDS_ONLY", label: "Friends only", note: "Keep it easy." },
-  // {
-  //   value: "MAYBE_MORE",
-  //   label: "Friends, maybe more",
-  //   note: "Leave room for possibility.",
-  // },
-  // {
-  //   value: "ALREADY_TOGETHER",
-  //   label: "Already together",
-  //   note: "Only when both choose it.",
-  // },
   { value: "FRIENDS_ONLY", label: "Friends", note: "Keep it easy." },
   {
     value: "MAYBE_MORE",
@@ -121,6 +109,7 @@ const CONNECTION_OPTIONS: {
 const connectionLabels: Record<ConnectionType, string> = {
   FRIENDS_ONLY: "Friends only",
   MAYBE_MORE: "Friends Plus",
+  // No longer offered; kept so older sessions still show a label.
   ALREADY_TOGETHER: "Already together",
 };
 
@@ -165,9 +154,7 @@ function loadSaved(code: string): SavedMoment[] {
 function persistSaved(code: string, saved: SavedMoment[]) {
   try {
     localStorage.setItem(savedKey(code), JSON.stringify(saved));
-  } catch {
-    /* ignore */
-  }
+  } catch {}
 }
 
 function names(list: string[]) {
@@ -197,7 +184,6 @@ export default function SpillSessionPage() {
     () => SPILL_PHRASES[Math.floor(Math.random() * SPILL_PHRASES.length)],
   );
 
-  // Who am I on this phone?
   useEffect(() => {
     const player = loadMe(sessionCode);
     if (!player) {
@@ -217,15 +203,12 @@ export default function SpillSessionPage() {
         { cache: "no-store" },
       );
       if (res.status === 403 || res.status === 404) {
-        // This phone's seat no longer exists (e.g. staff reset the table).
         clearMe(sessionCode);
         router.replace(`/spill/${sessionCode}/join`);
         return;
       }
       if (res.ok) setData(await res.json());
-    } catch {
-      /* offline for a moment — keep the last known state */
-    }
+    } catch {}
   }, [me, router, sessionCode]);
 
   useEffect(() => {
@@ -248,7 +231,6 @@ export default function SpillSessionPage() {
   const current = data?.currentSpill ?? null;
   const seq = current?.sequence ?? 0;
 
-  // A new card arrived from the server → run the reveal on THIS phone.
   useEffect(() => {
     if (!data || !session || !current) return;
     if (current.sequence === shownSeq) return;
@@ -273,8 +255,6 @@ export default function SpillSessionPage() {
     setStage(first);
   }, [data, session, current, shownSeq]);
 
-  // Mark as initialised once state has loaded even without a card yet,
-  // so the very first card animates.
   useEffect(() => {
     if (data && !current) initialisedRef.current = true;
   }, [data, current]);
@@ -299,7 +279,6 @@ export default function SpillSessionPage() {
           buzz([80, 60, 80, 60, 240]);
         } else if (!res.ok) {
           const code = json.error?.code;
-          // ALREADY_ADVANCED = another phone was faster; nothing to report.
           if (code !== "ALREADY_ADVANCED") {
             setToast(
               json.error?.message ?? "Couldn't reach SPILL. Trying again…",
@@ -316,10 +295,6 @@ export default function SpillSessionPage() {
     [me, actionLoading, seq, fetchState],
   );
 
-  // First card. The first player's phone draws it right away; every other
-  // phone steps in if there is still no card after a few seconds. Failed
-  // attempts (e.g. the database waking up) are retried every few seconds.
-  // Time is tracked in refs so the 1.5s polling doesn't reset the countdown.
   useEffect(() => {
     const waitingForFirstCard =
       !!data &&
@@ -349,7 +324,6 @@ export default function SpillSessionPage() {
       ? deriveStats(session.id, session.mode, n, data.history)
       : null;
 
-  // Streak milestone toasts (same moment on every phone).
   const streak = stats?.streak ?? 0;
   useEffect(() => {
     if (
@@ -402,7 +376,6 @@ export default function SpillSessionPage() {
   const poolExhausted =
     session.status === "ACTIVE" && !current && (exhausted || allDone);
 
-  // Shown on the result screen, where the session has both timestamps.
   const minutes =
     session.startedAt && session.endedAt
       ? Math.max(
@@ -468,7 +441,6 @@ export default function SpillSessionPage() {
     fetchState();
   }
 
-  // ── Which screen? (server status + this phone's private progress) ──
   type Screen =
     | "lobby"
     | "connection"
@@ -940,7 +912,7 @@ export default function SpillSessionPage() {
 
           <blockquote suppressHydrationWarning>{phrase}</blockquote>
           <div className="s42ResultActions">
-            <Link href={`/spill/table/${session.tableCode}`}>
+            <Link href={`/spill/table/${me.homeTable ?? session.tableCode}`}>
               Return to SPILL
             </Link>
           </div>

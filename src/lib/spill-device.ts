@@ -3,6 +3,7 @@ export type DevicePlayer = {
   sessionCode: string;
   token: string;
   name: string;
+  homeTable?: string;
 };
 
 const key = (sessionCode: string) => `spill:${sessionCode}:me`;

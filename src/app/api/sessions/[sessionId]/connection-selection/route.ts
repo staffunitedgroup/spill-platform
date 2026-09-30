@@ -40,6 +40,7 @@ export async function POST(
   const { participantToken, connectionType } = parsed.data;
 
   const result = await prisma.$transaction(async (tx) => {
+    await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${sessionId}))`;
     const session = await tx.session.findUnique({
       where: { id: sessionId },
       include: { participants: true, connectionSelections: true },
