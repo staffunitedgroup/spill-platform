@@ -63,6 +63,7 @@ type SharedState = {
     startedAt: string | null;
     endedAt: string | null;
     maxParticipants: number;
+    tableCode: string;
   };
   participants: { id: string; displayName: string }[];
   me: number;
@@ -888,7 +889,7 @@ export default function SpillSessionPage() {
               : "No rejection screen. No match score. Just a real conversation that happened."}
           </p>
 
-          <div className="sgStats">
+          <div className={`sgStats${GAME_EXTRAS ? " isSix" : ""}`}>
             <div>
               <strong>{stats.played}</strong>
               <span>SPILLs played</span>
@@ -939,7 +940,9 @@ export default function SpillSessionPage() {
 
           <blockquote suppressHydrationWarning>{phrase}</blockquote>
           <div className="s42ResultActions">
-            <Link href="/">Return to SPILL</Link>
+            <Link href={`/spill/table/${session.tableCode}`}>
+              Return to SPILL
+            </Link>
           </div>
         </section>
       )}
