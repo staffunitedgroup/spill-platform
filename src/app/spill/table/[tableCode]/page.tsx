@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { loadMe } from "@/lib/spill-device";
+import { clearOpen, loadOpen } from "@/lib/open-device";
+import "../../spill-game.css";
 
 const SPILL_PHRASES = [
   "Good things come to those who SPILL.",
@@ -114,6 +116,17 @@ export default function TableEntryPage() {
   async function createSession(mode: Mode, size?: number) {
     setStep("loading");
     try {
+      // Playing with their own table → stop being listed as "open".
+      const openHere = loadOpen();
+      if (openHere) {
+        clearOpen();
+        fetch("/api/open/close", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token: openHere.token }),
+        }).catch(() => {});
+      }
+
       const res = await fetch("/api/sessions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -214,7 +227,7 @@ export default function TableEntryPage() {
               <h1>Who&rsquo;s SPILLing?</h1>
               <p>Choose the people. We&rsquo;ll shape the experience.</p>
             </div>
-            <div className="s42ChoiceGrid two">
+            <div className="s42ChoiceGrid three">
               <button type="button" onClick={() => createSession("TWO_PERSON")}>
                 <b>Two people</b>
                 <small>Each on your own phone. Face to face.</small>
@@ -223,6 +236,16 @@ export default function TableEntryPage() {
               <button type="button" onClick={() => setStep("groupSize")}>
                 <b>Small group</b>
                 <small>Three to six people, one phone each.</small>
+                <i>→</i>
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  router.push(`/spill/table/${params.tableCode}/open`)
+                }
+              >
+                <b>Meet someone new</b>
+                <small>Solo tonight? See who&apos;s open to SPILL.</small>
                 <i>→</i>
               </button>
             </div>

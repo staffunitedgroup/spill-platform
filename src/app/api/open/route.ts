@@ -9,8 +9,6 @@ import {
   readJson,
 } from "@/lib/open-spill";
 
-// POST /api/open — "I'm open to SPILL" from this phone, at this table.
-// Returns the presence token the phone keeps (no account needed).
 export async function POST(req: NextRequest) {
   const body = await readJson(req);
   if (body === undefined) {

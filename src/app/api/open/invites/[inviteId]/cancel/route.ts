@@ -3,7 +3,6 @@ import { prisma } from "@/lib/prisma";
 import { tokenSchema } from "@/lib/validation/open-spill";
 import { apiError, readJson } from "@/lib/open-spill";
 
-// POST /api/open/invites/:inviteId/cancel — the inviter takes it back.
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ inviteId: string }> },
@@ -22,7 +21,6 @@ export async function POST(
     return apiError("PRESENCE_NOT_FOUND", "You're not open to SPILL.", 404);
   }
 
-  // Only a still-pending invite that I sent. Anything else is a no-op.
   await prisma.spillInvite.updateMany({
     where: { id: inviteId, fromId: me.id, status: "PENDING" },
     data: { status: "CANCELLED", respondedAt: new Date() },

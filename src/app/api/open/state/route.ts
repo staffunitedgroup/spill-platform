@@ -7,10 +7,6 @@ import {
   meetColorByName,
 } from "@/lib/open-spill";
 
-// GET /api/open/state?token=…
-// Polled every ~2s by a phone that is "open to SPILL". Returns only what this
-// person may see: first names, never table numbers — until an invite is
-// accepted, and then only the one table where the two of them meet.
 export async function GET(req: NextRequest) {
   const token = req.nextUrl.searchParams.get("token");
   if (!token) {
@@ -41,8 +37,6 @@ export async function GET(req: NextRequest) {
       where: { fromId: me.id, status: "PENDING" },
       include: { to: { select: { displayName: true } } },
     }),
-    // "Linh isn't available right now" — declined and expired look the same,
-    // so the inviter never learns which one it was.
     prisma.spillInvite.findFirst({
       where: {
         fromId: me.id,
@@ -131,12 +125,10 @@ export async function GET(req: NextRequest) {
           0,
           Math.floor((now.getTime() - o.createdAt.getTime()) / 60_000),
         ),
-        // Answering someone else's invite right now.
         busy: o.invitesGot.length > 0,
       }));
   }
 
-  // Match: where to meet and how to recognise each other.
   let match = null;
   if (acceptedInvite?.session) {
     const iInvited = acceptedInvite.from.id === me.id;
@@ -163,7 +155,6 @@ export async function GET(req: NextRequest) {
         sessionCode: acceptedInvite.session.sessionCode,
         status: acceptedInvite.session.status,
       },
-      // Lets this phone enter the game as its own player.
       participantToken: participant?.participantToken ?? null,
       playerName: participant?.displayName ?? me.displayName,
     };

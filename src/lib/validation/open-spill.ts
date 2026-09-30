@@ -12,7 +12,6 @@ export const openSchema = z.object({
   ageConfirmed: z.literal(true, {
     error: "Please confirm you are 18 or older",
   }),
-  /** The phone's previous presence, if any — it gets closed. */
   previousToken: token.optional(),
 });
 

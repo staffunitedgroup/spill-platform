@@ -106,8 +106,6 @@ export async function POST(
       },
     });
 
-    // Same first name twice would make "Linh, you're in the spotlight"
-    // ambiguous — the inviter gets a small suffix.
     const inviterName =
       fresh.from.displayName.trim().toLowerCase() ===
       fresh.to.displayName.trim().toLowerCase()

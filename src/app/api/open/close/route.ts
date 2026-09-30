@@ -3,8 +3,6 @@ import { prisma } from "@/lib/prisma";
 import { tokenSchema } from "@/lib/validation/open-spill";
 import { apiError, readJson } from "@/lib/open-spill";
 
-// POST /api/open/close — "Hide me": stop being listed, cancel pending invites.
-// Also called when the person starts a game with their own table instead.
 export async function POST(req: NextRequest) {
   const parsed = tokenSchema.safeParse(await readJson(req));
   if (!parsed.success) {

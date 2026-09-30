@@ -76,11 +76,7 @@ export async function readJson(req: Request): Promise<unknown | undefined> {
 
 type TxLike = { $executeRaw: typeof prisma.$executeRaw };
 
-/**
- * Serialise invite / accept for the same people: two phones inviting Linh at
- * the same moment must not both succeed. Transaction-scoped Postgres locks,
- * always taken in the same order so they can't deadlock.
- */
+
 export async function lockPresences(tx: TxLike, ids: string[]) {
   for (const id of [...new Set(ids)].sort()) {
     await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${id}))`;

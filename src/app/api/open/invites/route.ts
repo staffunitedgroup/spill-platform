@@ -21,7 +21,6 @@ const MESSAGES = {
   ],
 } as const;
 
-// POST /api/open/invites — "Invite to SPILL" someone from the Available list.
 export async function POST(req: NextRequest) {
   const parsed = createInviteSchema.safeParse(await readJson(req));
   if (!parsed.success) {
@@ -83,7 +82,6 @@ export async function POST(req: NextRequest) {
         }),
       ]);
 
-    // After a "Not now" you can't ask the same person again this visit.
     if (declinedBefore > 0)
       return { ok: false as const, error: "TARGET_UNAVAILABLE" as const };
     if (myPendingOut > 0)
