@@ -24,7 +24,11 @@ export async function GET(
 
   const session = await prisma.session.findUnique({
     where: { id: sessionId },
-    include: { participants: true, connectionSelections: true },
+    include: {
+      participants: true,
+      connectionSelections: true,
+      table: { select: { tableCode: true } },
+    },
   });
 
   if (!session) {
@@ -88,6 +92,7 @@ export async function GET(
       startedAt: session.startedAt,
       endedAt: session.endedAt,
       maxParticipants: maxParticipantsFor(session),
+      tableCode: session.table.tableCode,
     },
     participants: players.map((p) => ({
       id: p.id,

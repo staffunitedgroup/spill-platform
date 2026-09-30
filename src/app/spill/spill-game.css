@@ -408,11 +408,15 @@
 /* ── Wrapped result ────────────────────────────────────────── */
 
 .sgStats {
-  width: min(560px, 100%);
+  width: min(440px, 100%);
   margin: 28px auto 0;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 10px;
+}
+.sgStats.isSix {
+  width: min(560px, 100%);
+  grid-template-columns: repeat(3, 1fr);
 }
 .sgStats div {
   padding: 16px 10px;
@@ -587,7 +591,8 @@
   .sgHeat {
     width: 100%;
   }
-  .sgStats {
+  .sgStats,
+  .sgStats.isSix {
     grid-template-columns: repeat(2, 1fr);
   }
   .sgRoulette,
@@ -781,4 +786,350 @@
   border-color: var(--red);
   background: var(--red);
   color: var(--spill-black, #111);
+}
+
+/* ── Phase 2 · Meet someone new ─────────────────────────────── */
+
+/* Table page: "or" + the Meet someone new choice */
+
+.s42ChoiceGrid.opNewChoice button {
+  min-height: 118px;
+  border-color: rgba(232, 71, 47, 0.55);
+  background: linear-gradient(145deg, rgba(232, 71, 47, 0.18), #171717 70%);
+}
+
+/* Setup */
+.opRules {
+  margin: 22px 0 6px;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+  list-style: none;
+  color: #c0c4c8;
+  font-size: 15px;
+}
+.opRules li {
+  display: flex;
+  gap: 10px;
+}
+.opRules li::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  margin-top: 8px;
+  flex: none;
+  border-radius: 50%;
+  background: #e8472f;
+}
+.opCheck {
+  margin: 16px 0 4px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+.opCheck input {
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  accent-color: #e8472f;
+}
+
+/* Open: top bar */
+.opTop {
+  margin-bottom: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.opLive {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.opLive i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #2fbf71;
+  box-shadow: 0 0 0 0 rgba(47, 191, 113, 0.6);
+  animation: opLive 1.8s ease-out infinite;
+}
+@keyframes opLive {
+  to {
+    box-shadow: 0 0 0 12px rgba(47, 191, 113, 0);
+  }
+}
+.opHide,
+.opPending button,
+.opNotNow {
+  min-height: 36px;
+  padding: 0 16px;
+  border: 1px solid rgba(192, 196, 200, 0.4);
+  border-radius: 999px;
+  background: none;
+  color: #c0c4c8;
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+@media (hover: hover) {
+  .opHide:hover,
+  .opPending button:hover,
+  .opNotNow:hover {
+    border-color: #fff;
+    color: #fff;
+  }
+}
+
+/* Open: my invite waiting for an answer */
+.opPending {
+  width: min(520px, 100%);
+  margin-top: 24px;
+  padding: 14px 16px 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid #e8472f;
+  border-radius: 14px;
+  background: rgba(232, 71, 47, 0.1);
+}
+.opPending div {
+  display: grid;
+  gap: 2px;
+}
+.opPending b {
+  color: #fff;
+  font-weight: 500;
+}
+.opPending small {
+  color: #e8472f;
+  font-family: var(--font-display);
+  font-size: 15px;
+  letter-spacing: 0.1em;
+}
+
+/* Open: the list */
+.opList {
+  width: min(520px, 100%);
+  margin: 24px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+  list-style: none;
+}
+.opList li {
+  min-height: 68px;
+  padding: 10px 12px 10px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid rgba(192, 196, 200, 0.2);
+  border-radius: 14px;
+  background: #171717;
+  animation: sgFadeUp 0.4s ease both;
+}
+.opList li div {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+.opList li b {
+  overflow: hidden;
+  color: #fff;
+  font-size: 19px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.opList li small {
+  color: rgba(192, 196, 200, 0.68);
+  font-size: 15px;
+}
+.opList li button {
+  min-height: 42px;
+  padding: 0 20px;
+  flex: none;
+  border: 0;
+  border-radius: 999px;
+  background: #e8472f;
+  color: #111;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.2s ease;
+}
+@media (hover: hover) {
+  .opList li button:hover:not(:disabled) {
+    background: #ff5638;
+  }
+}
+.opList li button:disabled,
+.opHide:disabled,
+.opPending button:disabled,
+.opNotNow:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.opEmpty {
+  width: min(520px, 100%);
+  margin-top: 24px;
+  padding: 26px 20px;
+  border: 1px dashed rgba(192, 196, 200, 0.3);
+  border-radius: 14px;
+  color: #c0c4c8;
+}
+.opEmpty p {
+  margin: 0 0 6px;
+  color: #fff;
+  font-size: 18px;
+}
+.opEmpty small {
+  font-size: 15px;
+}
+.opEmpty .sgPulseDots {
+  margin-top: 18px;
+}
+
+/* Incoming invite */
+.opInvite {
+  position: fixed;
+  z-index: 50;
+  inset: 0;
+  padding: 16px;
+  display: grid;
+  place-items: center;
+  background: rgba(8, 8, 8, 0.82);
+  backdrop-filter: blur(6px);
+  animation: sgFadeUp 0.3s ease both;
+}
+.opInviteCard {
+  width: min(460px, 100%);
+  padding: 28px 24px 24px;
+  border: 1px solid #e8472f;
+  border-radius: 20px;
+  background: #171717;
+  box-shadow: 0 0 80px rgba(232, 71, 47, 0.28);
+}
+.opKicker {
+  color: #e8472f;
+  font-family: var(--font-display);
+  font-size: 15px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.opInviteCard h2 {
+  margin: 12px 0 10px;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(26px, 7vw, 34px);
+  font-weight: 400;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+.opInviteCard p {
+  margin: 0 0 12px;
+  color: #c0c4c8;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.opInviteCard small {
+  color: #e8472f;
+  font-family: var(--font-display);
+  font-size: 15px;
+  letter-spacing: 0.1em;
+}
+.opInviteActions {
+  margin-top: 20px;
+  display: grid;
+  gap: 10px;
+}
+.opInviteActions .s42Primary {
+  width: 100%;
+}
+.opNotNow {
+  width: 100%;
+  min-height: 48px;
+}
+
+/* Meet: both phones glow in the same colour with the same code */
+.opMeet {
+  --meet: #e8472f;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(
+      circle at 50% 30%,
+      color-mix(in srgb, var(--meet) 34%, transparent),
+      transparent 60%
+    ),
+    #111;
+  box-shadow: inset 0 0 0 10px var(--meet);
+}
+.opMeetInner {
+  width: min(520px, 100%);
+  padding: 48px 16px;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  text-align: center;
+}
+.opMeetInner .opKicker {
+  color: #fff;
+}
+.opBadge {
+  width: 184px;
+  height: 184px;
+  margin: 14px 0 4px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--meet);
+  color: #111;
+  font-family: var(--font-display);
+  font-size: 72px;
+  letter-spacing: 0.06em;
+  box-shadow: 0 0 90px var(--meet);
+  animation: sgPop 0.5s ease both;
+}
+.opColor {
+  margin: 0;
+  color: var(--meet);
+  font-size: 15px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.opMeetInner h1 {
+  margin: 18px 0 0;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(30px, 8vw, 46px);
+  font-weight: 400;
+  line-height: 1.02;
+  text-transform: uppercase;
+}
+.opLead {
+  max-width: 420px;
+  margin: 4px 0 18px;
+  color: #c0c4c8;
+  font-size: 17px;
+  line-height: 1.5;
+}
+.opMeetInner .s42Primary {
+  width: 100%;
 }
