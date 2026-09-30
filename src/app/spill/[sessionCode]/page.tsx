@@ -121,6 +121,7 @@ const CONNECTION_OPTIONS: {
 const connectionLabels: Record<ConnectionType, string> = {
   FRIENDS_ONLY: "Friends only",
   MAYBE_MORE: "Friends Plus",
+  // No longer offered; kept so older sessions still show a label.
   ALREADY_TOGETHER: "Already together",
 };
 
