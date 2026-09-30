@@ -11,13 +11,18 @@ export const INVITE_SECONDS = 120;
 export const INVITE_RESULT_SECONDS = 60;
 
 /** Both phones show the same colour + code so the two people spot each other. */
+// export const MEET_COLORS = [
+//   { name: "Red", hex: "#E8472F" },
+//   { name: "Blue", hex: "#3D7BFF" },
+//   { name: "Green", hex: "#2FBF71" },
+//   { name: "Yellow", hex: "#F5C518" },
+//   { name: "Purple", hex: "#9B5CFF" },
+//   { name: "Pink", hex: "#FF4FA3" },
+// ] as const;
 export const MEET_COLORS = [
-  { name: "Red", hex: "#E8472F" },
-  { name: "Blue", hex: "#3D7BFF" },
-  { name: "Green", hex: "#2FBF71" },
-  { name: "Yellow", hex: "#F5C518" },
-  { name: "Purple", hex: "#9B5CFF" },
-  { name: "Pink", hex: "#FF4FA3" },
+  { name: "Red", hex: "#E8472F", ink: "#111111" },
+  { name: "Silver", hex: "#C0C4C8", ink: "#111111" },
+  { name: "Deep red", hex: "#A82E22", ink: "#FFFFFF" },
 ] as const;
 
 const CODE_LETTERS = "ACEFHJKMNPRTWXY";
@@ -75,7 +80,6 @@ export async function readJson(req: Request): Promise<unknown | undefined> {
 }
 
 type TxLike = { $executeRaw: typeof prisma.$executeRaw };
-
 
 export async function lockPresences(tx: TxLike, ids: string[]) {
   for (const id of [...new Set(ids)].sort()) {
