@@ -351,7 +351,7 @@ export default function OpenToSpillPage() {
         <section className="s42Setup">
           <div className="s42SetupPanel">
             <Link className="s42Back" href={`/spill/table/${tableCode}`}>
-              ← Back
+              <span aria-hidden="true">←</span> Back
             </Link>
             <div className="s42SetupHeading">
               <span>

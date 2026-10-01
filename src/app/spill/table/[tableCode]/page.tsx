@@ -268,7 +268,7 @@ export default function TableEntryPage() {
               type="button"
               onClick={() => setStep("select")}
             >
-              ← Back
+              <span aria-hidden="true">←</span> Back
             </button>
             <div className="s42SetupHeading">
               <span>02 / Group size</span>

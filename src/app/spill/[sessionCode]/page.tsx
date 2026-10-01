@@ -810,7 +810,7 @@ export default function SpillSessionPage() {
                 type="button"
                 onClick={() => setEndingOpen(false)}
               >
-                ← Keep playing
+                <span aria-hidden="true">←</span> Keep playing
               </button>
             )}
           </div>

@@ -11236,16 +11236,57 @@ a:hover > .navArrow.down {
 .s42SetupPanel.private {
   width: min(1180px, 100%);
 }
+/* One "← Back" for every SPILL 42 screen: a quiet pill, the arrow nudges on hover. */
 .s42Back {
-  margin: 20px 0 38px;
-  padding: 0;
-  border: 0;
-  background: none;
+  margin: 8px 0 32px;
+  min-height: 40px;
+  padding: 0 18px 0 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(192, 196, 200, 0.35);
+  border-radius: 999px;
+  background: rgba(17, 17, 17, 0.4);
   color: #c0c4c8;
-  font-size: 15px;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1;
   letter-spacing: 0.12em;
+  text-decoration: none;
   text-transform: uppercase;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease;
+}
+/* beats ".s42App button { font: inherit }" so button and link Backs match */
+.s42App .s42Back {
+  font-size: 14px;
+  line-height: 1;
+}
+.s42Back > span {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+@media (hover: hover) {
+  .s42Back:hover {
+    border-color: #e8472f;
+    background: rgba(232, 71, 47, 0.12);
+    color: #fff;
+  }
+  .s42Back:hover > span {
+    transform: translateX(-4px);
+  }
+}
+.s42Back:active {
+  transform: scale(0.97);
+}
+.s42Back:focus-visible {
+  outline: 2px solid #ff5638;
+  outline-offset: 3px;
 }
 .s42SetupHeading {
   max-width: 800px;
