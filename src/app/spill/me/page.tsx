@@ -16,14 +16,14 @@ function BackToSpill() {
   }, []);
   if (!table) {
     return (
-      <p className="meBack isHint">
+      <p className="meHint">
         At SPILL? Point your phone camera at the QR on your table to play.
       </p>
     );
   }
   return (
-    <Link className="meBack" href={`/spill/table/${table}`}>
-      ← Back to SPILL
+    <Link className="s42Back" href={`/spill/table/${table}`}>
+      <span aria-hidden="true">←</span> Back to SPILL
     </Link>
   );
 }

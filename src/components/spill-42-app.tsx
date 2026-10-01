@@ -598,7 +598,7 @@ export function Spill42App() {
                 type="button"
                 onClick={() => setSetupStep("participants")}
               >
-                ← Back
+                <span aria-hidden="true">←</span> Back
               </button>
               <div className="s42SetupHeading">
                 <span>02 / Group size</span>
