@@ -194,19 +194,33 @@ export async function notifyConnectionsOpen(opts: {
   return sent;
 }
 
-/** "Linh, your SPILL match, is here tonight" — for the signed-in guest. */
+/**
+ * "Linh, your SPILL match, is here tonight" — for the signed-in guest.
+ * Only while Linh is actually open to SPILL right now: once she leaves (or
+ * Open switches itself off) the line disappears. Also hidden if I removed
+ * Linh or turned off "Tell me when they're back".
+ */
 export async function hereTonight(guestId: string) {
   const since = new Date(Date.now() - HERE_TONIGHT_HOURS * 60 * 60 * 1000);
-  const notes = await prisma.spillNotification.findMany({
-    where: { toGuestId: guestId, createdAt: { gte: since } },
-    orderBy: { createdAt: "desc" },
-    select: { id: true, aboutGuestId: true, aboutName: true, createdAt: true },
-  });
+  const [notes, connections] = await Promise.all([
+    prisma.spillNotification.findMany({
+      where: { toGuestId: guestId, createdAt: { gte: since } },
+      orderBy: { createdAt: "desc" },
+      select: { id: true, aboutGuestId: true, aboutName: true, createdAt: true },
+    }),
+    connectionsOf(guestId),
+  ]);
+  const wanted = new Set(
+    connections.filter((c) => c.notify).map((c) => c.otherGuestId),
+  );
   // One line per person, newest first.
   const seen = new Set<string>();
   const unique = notes.filter((n) =>
-    seen.has(n.aboutGuestId) ? false : (seen.add(n.aboutGuestId), true),
+    !wanted.has(n.aboutGuestId) || seen.has(n.aboutGuestId)
+      ? false
+      : (seen.add(n.aboutGuestId), true),
   );
+  if (unique.length === 0) return [];
   const now = new Date();
   const openNow = new Set(
     (
@@ -220,10 +234,12 @@ export async function hereTonight(guestId: string) {
       })
     ).map((p) => p.guestId),
   );
-  return unique.map((n) => ({
-    id: n.id,
-    name: n.aboutName,
-    at: n.createdAt,
-    openNow: openNow.has(n.aboutGuestId),
-  }));
+  return unique
+    .filter((n) => openNow.has(n.aboutGuestId))
+    .map((n) => ({
+      id: n.id,
+      name: n.aboutName,
+      at: n.createdAt,
+      openNow: true,
+    }));
 }

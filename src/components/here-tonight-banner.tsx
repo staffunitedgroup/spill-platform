@@ -18,7 +18,7 @@ export function HereTonightBanner({
 
   useEffect(() => {
     let cancelled = false;
-    (async () => {
+    const load = async () => {
       try {
         const res = await fetch("/api/me", { cache: "no-store" });
         if (!res.ok) return; // not signed in → nothing to show
@@ -27,9 +27,13 @@ export function HereTonightBanner({
       } catch {
         /* quiet */
       }
-    })();
+    };
+    load();
+    // Someone may arrive while this screen is open — check again now and then.
+    const id = setInterval(load, 15_000);
     return () => {
       cancelled = true;
+      clearInterval(id);
     };
   }, []);
 

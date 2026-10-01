@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { prisma } from "@/lib/prisma";
 import {
   INVITE_RESULT_SECONDS,
@@ -7,7 +7,9 @@ import {
   expireStale,
   meetColorByName,
 } from "@/lib/open-spill";
-import { connectionsOf } from "@/lib/stay-connected";
+import { connectionsOf, notifyConnectionsOpen } from "@/lib/stay-connected";
+import { currentGuestId } from "@/lib/guest-auth";
+import { siteOrigin } from "@/lib/spill-email";
 
 export async function GET(req: NextRequest) {
   const token = req.nextUrl.searchParams.get("token");
@@ -20,11 +22,43 @@ export async function GET(req: NextRequest) {
   const me = await prisma.openPresence.findUnique({
     where: { presenceToken: token },
     include: {
-      table: { select: { venueId: true, tableCode: true, displayName: true } },
+      table: {
+        select: {
+          venueId: true,
+          tableCode: true,
+          displayName: true,
+          venue: { select: { name: true } },
+        },
+      },
     },
   });
   if (!me) {
     return apiError("PRESENCE_NOT_FOUND", "You're not open to SPILL.", 404);
+  }
+
+  // Phase 3: opened first, signed in afterwards (same phone) → this spot now
+  // belongs to that guest, and their connections hear about it once.
+  if (!me.guestId && (me.status === "OPEN" || me.status === "PAUSED")) {
+    const guestId = await currentGuestId();
+    if (guestId) {
+      const claimed = await prisma.openPresence.updateMany({
+        where: { id: me.id, guestId: null },
+        data: { guestId },
+      });
+      if (claimed.count === 1) {
+        me.guestId = guestId;
+        const origin = siteOrigin(req);
+        after(() =>
+          notifyConnectionsOpen({
+            guestId,
+            name: me.displayName,
+            venueId: me.table.venueId,
+            venueName: me.table.venue.name,
+            origin,
+          }).catch((err) => console.error("[open/state] notify failed", err)),
+        );
+      }
+    }
   }
 
   const now = new Date();
