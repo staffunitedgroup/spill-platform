@@ -42,6 +42,7 @@ export function GlobalHeader() {
             <span className="dropdownSoon">More locations coming</span>
           </div>
         </HoverDropdown>
+        <Link href="/album">Album</Link>
         {globalNavigation.map((item) => (
           <HoverDropdown
             className="navDropdown"
@@ -79,6 +80,10 @@ export function GlobalHeader() {
           <p>Navigate SPILL</p>
           <Link href="/">
             SPILL Global
+            <NavArrow />
+          </Link>
+          <Link href="/album">
+            Album
             <NavArrow />
           </Link>
           <Link href="/#locations">
