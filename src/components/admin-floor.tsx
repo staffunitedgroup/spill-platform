@@ -22,6 +22,7 @@ type FloorOpen = {
   openMinutes: number;
   minutesLeft: number;
   reports: number;
+  away: boolean;
 };
 type FloorReport = {
   id: string;
@@ -156,6 +157,9 @@ export function AdminFloor({ password }: { password: string }) {
                 </div>
                 <div className="afTags">
                   {p.status === "PAUSED" && <i className="afTag">Paused</i>}
+                  {p.away && p.status !== "PAUSED" && (
+                    <i className="afTag">Away</i>
+                  )}
                   {p.reports > 0 && (
                     <i className="afTag isAlert">
                       {p.reports} report{p.reports > 1 ? "s" : ""}

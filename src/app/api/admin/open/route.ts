@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { isAdmin } from "@/lib/admin-auth";
-import { apiError, expireStale } from "@/lib/open-spill";
+import { apiError, expireStale, liveSince } from "@/lib/open-spill";
 import { isSessionStale } from "@/lib/session-staleness";
 
 // GET /api/admin/open — staff view for the floor:
@@ -47,6 +47,7 @@ export async function GET(req: NextRequest) {
         displayName: true,
         status: true,
         createdAt: true,
+        updatedAt: true,
         expiresAt: true,
         table: { select: { tableCode: true } },
         _count: { select: { reportsGot: true } },
@@ -105,6 +106,8 @@ export async function GET(req: NextRequest) {
         Math.ceil((p.expiresAt.getTime() - now.getTime()) / 60_000),
       ),
       reports: p._count.reportsGot,
+      // Phone left the Open screen (tab closed / locked) — hidden from guests.
+      away: p.updatedAt < liveSince(now),
     })),
     reports: reports.map((r) => ({
       id: r.id,

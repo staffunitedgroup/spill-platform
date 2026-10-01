@@ -3,6 +3,7 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import { emailConfigured, emailHtml, sendEmail } from "@/lib/spill-email";
+import { liveSince } from "@/lib/open-spill";
 
 /** At most one "they're back" per connection per day (checklist). */
 export const NOTIFY_EVERY_HOURS = 24;
@@ -229,6 +230,7 @@ export async function hereTonight(guestId: string) {
           guestId: { in: unique.map((n) => n.aboutGuestId) },
           status: "OPEN",
           expiresAt: { gt: now },
+          updatedAt: { gte: liveSince(now) },
         },
         select: { guestId: true },
       })
