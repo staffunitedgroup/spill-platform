@@ -5,7 +5,9 @@ import {
   apiError,
   blockedPresenceIds,
   expireStale,
+  liveSince,
   meetColorByName,
+  touchPresence,
 } from "@/lib/open-spill";
 import { connectionsOf, notifyConnectionsOpen } from "@/lib/stay-connected";
 import { currentGuestId } from "@/lib/guest-auth";
@@ -62,6 +64,9 @@ export async function GET(req: NextRequest) {
   }
 
   const now = new Date();
+  if (me.status === "OPEN" || me.status === "PAUSED") {
+    await touchPresence(me.id);
+  }
 
   const [incoming, outgoing, lastResult, acceptedInvite] = await Promise.all([
     prisma.spillInvite.findFirst({
@@ -138,6 +143,7 @@ export async function GET(req: NextRequest) {
       where: {
         status: "OPEN",
         expiresAt: { gt: now },
+        updatedAt: { gte: liveSince(now) },
         id: { not: me.id },
         table: { venueId: me.table.venueId },
       },

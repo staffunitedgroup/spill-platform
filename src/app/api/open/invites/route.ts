@@ -8,6 +8,7 @@ import {
   expireStale,
   lockPresences,
   blockedPresenceIds,
+  liveSince,
   readJson,
 } from "@/lib/open-spill";
 
@@ -68,6 +69,7 @@ export async function POST(req: NextRequest) {
       !target ||
       target.status !== "OPEN" ||
       target.expiresAt <= now ||
+      target.updatedAt < liveSince(now) ||
       target.table.venueId !== fresh.table.venueId
     ) {
       return { ok: false as const, error: "TARGET_UNAVAILABLE" as const };

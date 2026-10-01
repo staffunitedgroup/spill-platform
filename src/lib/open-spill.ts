@@ -9,6 +9,12 @@ export const OPEN_MINUTES = 45;
 export const INVITE_SECONDS = 120;
 /** "Linh isn't available right now" stays on the inviter's screen this long. */
 export const INVITE_RESULT_SECONDS = 60;
+/**
+ * A phone on the Open screen checks in every 2 s. If it hasn't for this long
+ * (tab closed, phone locked, walked out) the person drops off everyone's list
+ * until the screen is back — they couldn't answer an invite anyway.
+ */
+export const LIVE_SECONDS = 90;
 /** This many different people reporting someone hides them automatically. */
 export const AUTO_HIDE_REPORTS = 2;
 
@@ -86,6 +92,23 @@ export async function lockPresences(tx: TxLike, ids: string[]) {
 }
 
 export const TX_OPTIONS = { maxWait: 10_000, timeout: 20_000 };
+
+/** Seen on the Open screen at or after this moment = still here. */
+export function liveSince(now = new Date()): Date {
+  return new Date(now.getTime() - LIVE_SECONDS * 1000);
+}
+
+/**
+ * "This phone is still on the Open screen." Uses updated_at as last-seen;
+ * written at most every 20 s per person so polling stays cheap.
+ */
+export async function touchPresence(id: string) {
+  await prisma.$executeRaw`
+    UPDATE open_presences SET updated_at = now()
+    WHERE id = ${id}
+      AND status IN ('OPEN', 'PAUSED')
+      AND updated_at < now() - interval '20 seconds'`;
+}
 
 /**
  * Everyone this person must never see or be invited by again tonight:
