@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { loadMe } from "@/lib/spill-device";
 import { clearOpen, loadOpen } from "@/lib/open-device";
 import { HereTonightBanner } from "@/components/here-tonight-banner";
+import { rememberTable } from "@/lib/last-table";
 import "../../spill-game.css";
 
 const SPILL_PHRASES = [
@@ -76,6 +77,11 @@ export default function TableEntryPage() {
   const [groupSize, setGroupSize] = useState(3);
   const [errorMessage, setErrorMessage] = useState("");
   const [loadingPhrase] = useState(pickRandomPhrase);
+
+  // So /spill/me can send this phone back to its table.
+  useEffect(() => {
+    rememberTable(params.tableCode);
+  }, [params.tableCode]);
 
   // Multi-phone: each person scans the table QR on their own phone.
   // If a SPILL is already starting at this table, join it instead of

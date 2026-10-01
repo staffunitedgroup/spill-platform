@@ -3,7 +3,26 @@
 // Phase 3 · "Your SPILL" — connections and notification settings.
 // Not signed in → ask for a sign-in link.
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
+import { lastTable } from "@/lib/last-table";
 import "../spill-game.css";
+
+/** "← Back to SPILL" — to the table this phone last scanned. */
+function BackToSpill() {
+  const [table, setTable] = useState<string | null>(null);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setTable(lastTable());
+  }, []);
+  if (!table) {
+    return <p className="meBack isHint">Scan the QR on your table to play.</p>;
+  }
+  return (
+    <Link className="meBack" href={`/spill/table/${table}`}>
+      ← Back to SPILL
+    </Link>
+  );
+}
 
 type Me = {
   guest: {
@@ -121,6 +140,7 @@ export default function MySpillPage() {
       <main className="s42App sgApp opApp">
         <section className="s42Setup">
           <div className="s42SetupPanel">
+            <BackToSpill />
             <div className="s42SetupHeading">
               <span>Your SPILL</span>
               <h1>Sign in</h1>
@@ -181,6 +201,7 @@ export default function MySpillPage() {
     <main className="s42App sgApp opApp">
       <section className="s42Setup">
         <div className="s42SetupPanel meSpill">
+          <BackToSpill />
           <div className="s42SetupHeading">
             <span>{guest.email}</span>
             <h1>Your SPILL</h1>
