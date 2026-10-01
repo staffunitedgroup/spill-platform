@@ -321,6 +321,10 @@ export default function AdminPage() {
         </div>
       </div>
 
+      {/* Phase 2: tables at a glance, who's open, reports */}
+      <AdminFloor password={password} />
+      <h2 className="afSectionTitle">Games in progress</h2>
+
       {loadError && (
         <p style={{ color: "var(--red)", marginBottom: 20 }}>{loadError}</p>
       )}
@@ -336,7 +340,7 @@ export default function AdminPage() {
             border: "1px dashed #333",
           }}
         >
-          No active tables right now.
+          No games in progress right now.
         </div>
       ) : (
         <div style={{ border: "1px solid #2c2c2f" }}>
@@ -452,9 +456,6 @@ export default function AdminPage() {
           ))}
         </div>
       )}
-
-      {/* Phase 2: tables at a glance, who's open, reports */}
-      <AdminFloor password={password} />
     </main>
   );
 }
