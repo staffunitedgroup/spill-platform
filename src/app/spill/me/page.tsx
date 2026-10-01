@@ -15,7 +15,11 @@ function BackToSpill() {
     setTable(lastTable());
   }, []);
   if (!table) {
-    return <p className="meBack isHint">Scan the QR on your table to play.</p>;
+    return (
+      <p className="meBack isHint">
+        At SPILL? Point your phone camera at the QR on your table to play.
+      </p>
+    );
   }
   return (
     <Link className="meBack" href={`/spill/table/${table}`}>

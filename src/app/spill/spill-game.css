@@ -941,6 +941,7 @@
   animation: sgFadeUp 0.4s ease both;
 }
 .opList li div {
+  flex: 1 1 auto;
   min-width: 0;
   display: grid;
   gap: 2px;
@@ -1359,6 +1360,7 @@ body:has(.s42App) .floatingContact {
 /* "You SPILLed before" tag in the Open list */
 .opMatchTag {
   width: max-content;
+  max-width: 100%;
   padding: 2px 8px;
   border: 1px solid #ff5638;
   border-radius: 999px;
@@ -1367,6 +1369,21 @@ body:has(.s42App) .floatingContact {
   font-style: normal;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+/* "You met them as Toby" — a past match using a different name tonight */
+.opList li small.opKnownAs {
+  color: #fff;
+  font-size: 14px;
+}
+.opInviteKnown {
+  margin: 12px 0 4px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+  font-size: 15px;
 }
 
 /* /spill/me */

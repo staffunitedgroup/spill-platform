@@ -12,7 +12,19 @@ export function rememberTable(tableCode: string) {
 
 export function lastTable(): string | null {
   try {
-    return localStorage.getItem(KEY);
+    const saved = localStorage.getItem(KEY);
+    if (saved) return saved;
+    // Phones that played before this was added: fall back to what they
+    // already stored — an Open spot, or the home table of a past game.
+    const open = JSON.parse(localStorage.getItem("spill:open") ?? "null");
+    if (open && typeof open.tableCode === "string") return open.tableCode;
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (!k || !/^spill:.+:me$/.test(k)) continue;
+      const me = JSON.parse(localStorage.getItem(k) ?? "null");
+      if (me && typeof me.homeTable === "string") return me.homeTable;
+    }
+    return null;
   } catch {
     return null;
   }

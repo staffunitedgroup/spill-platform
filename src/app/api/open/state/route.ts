@@ -72,7 +72,9 @@ export async function GET(req: NextRequest) {
     prisma.spillInvite.findFirst({
       where: { toId: me.id, status: "PENDING" },
       orderBy: { createdAt: "asc" },
-      include: { from: { select: { id: true, displayName: true } } },
+      include: {
+        from: { select: { id: true, displayName: true, guestId: true } },
+      },
     }),
     prisma.spillInvite.findFirst({
       where: { fromId: me.id, status: "PENDING" },
@@ -122,6 +124,22 @@ export async function GET(req: NextRequest) {
       : Promise.resolve(null),
   ]);
 
+  // Phase 3: my SPILL connections (only if I'm signed in) → the name I know
+  // them by. People can type a different name each night, so when it differs
+  // we say who they are: "You SPILLed before — as Toby".
+  const knownName = new Map<string, string>(
+    me.guestId
+      ? (await connectionsOf(me.guestId)).map((c) => [c.otherGuestId, c.name])
+      : [],
+  );
+  const knownAs = (guestId: string | null, shownName: string) => {
+    const name = guestId ? knownName.get(guestId) : undefined;
+    if (!name) return null;
+    return name.trim().toLowerCase() === shownName.trim().toLowerCase()
+      ? null
+      : name;
+  };
+
   // Available list — only while I'm open myself.
   let available: {
     id: string;
@@ -130,6 +148,8 @@ export async function GET(req: NextRequest) {
     busy: boolean;
     /** Phase 3: someone this guest chose to Stay Connected with. */
     isMatch: boolean;
+    /** …and the name I know them by, when they're using a different one. */
+    knownAs: string | null;
   }[] = [];
   if (me.status === "OPEN") {
     const declinedMe = await prisma.spillInvite.findMany({
@@ -162,11 +182,6 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    // My SPILL connections who are here (only if I'm signed in).
-    const matchIds = me.guestId
-      ? new Set((await connectionsOf(me.guestId)).map((c) => c.otherGuestId))
-      : new Set<string>();
-
     available = others
       .filter((o) => !hidden.has(o.id))
       .map((o) => ({
@@ -177,7 +192,8 @@ export async function GET(req: NextRequest) {
           Math.floor((now.getTime() - o.createdAt.getTime()) / 60_000),
         ),
         busy: o.invitesGot.length > 0,
-        isMatch: !!o.guestId && matchIds.has(o.guestId),
+        isMatch: !!o.guestId && knownName.has(o.guestId),
+        knownAs: knownAs(o.guestId, o.displayName),
       }))
       // People you already SPILLed with first.
       .sort((a, b) => Number(b.isMatch) - Number(a.isMatch));
@@ -230,6 +246,7 @@ export async function GET(req: NextRequest) {
           id: incoming.id,
           fromId: incoming.from.id,
           fromName: incoming.from.displayName,
+          knownAs: knownAs(incoming.from.guestId, incoming.from.displayName),
           expiresAt: incoming.expiresAt,
         }
       : null,
