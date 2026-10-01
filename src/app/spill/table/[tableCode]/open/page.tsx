@@ -28,6 +28,7 @@ type OpenState = {
     displayName: string;
     openMinutes: number;
     busy: boolean;
+    isMatch: boolean;
   }[];
   incoming: {
     id: string;
@@ -609,6 +610,9 @@ export default function OpenToSpillPage() {
                 <li key={p.id}>
                   <div>
                     <b>{p.displayName}</b>
+                    {p.isMatch && (
+                      <i className="opMatchTag">You SPILLed before</i>
+                    )}
                     <small>
                       {p.busy
                         ? "Answering an invite"

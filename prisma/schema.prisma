@@ -102,7 +102,8 @@ model Venue {
   createdAt DateTime    @default(now()) @map("created_at")
   updatedAt DateTime    @updatedAt @map("updated_at")
 
-  tables Table[]
+  tables        Table[]
+  notifications SpillNotification[]
 
   @@map("venues")
 }
@@ -157,10 +158,14 @@ model Participant {
   leftAt           DateTime?         @map("left_at")
   status           ParticipantStatus @default(WAITING)
   wantsStayConnected Boolean?        @map("wants_stay_connected")
+  // Phase 3: set when this player signs in to Stay Connected.
+  guestId            String?           @map("guest_id")
 
   session              Session               @relation(fields: [sessionId], references: [id])
+  guest                Guest?                @relation(fields: [guestId], references: [id], onDelete: SetNull)
   connectionSelections ConnectionSelection[]
   openPresences        OpenPresence[]
+  loginTokens          LoginToken[]
 
   @@map("participants")
 }
@@ -243,9 +248,12 @@ model OpenPresence {
   // Set once matched: the 2-person session and this phone's player in it.
   sessionId      String?            @map("session_id")
   participantId  String?            @map("participant_id")
+  // Phase 3: a signed-in guest who turned on Open (lets us tell connections).
+  guestId        String?            @map("guest_id")
   createdAt      DateTime           @default(now()) @map("created_at")
   updatedAt      DateTime           @updatedAt @map("updated_at")
 
+  guest       Guest?        @relation(fields: [guestId], references: [id], onDelete: SetNull)
   table       Table         @relation(fields: [tableId], references: [id])
   session     Session?      @relation(fields: [sessionId], references: [id])
   participant Participant?  @relation(fields: [participantId], references: [id])
@@ -297,4 +305,88 @@ model SpillReport {
   @@index([status, createdAt])
   @@index([reportedId])
   @@map("spill_reports")
+}
+
+// ─────────────────────────────────────────
+// PHASE 3 · STAY CONNECTED
+// ─────────────────────────────────────────
+
+// A guest who signed in with an email magic link (no password).
+// Only ever offered after a mutual Stay Connected.
+model Guest {
+  id                  String   @id @default(cuid())
+  email               String   @unique
+  // Name from the last game they played — shown to their connections.
+  displayName         String?  @map("display_name")
+  emailNotifications  Boolean  @default(true) @map("email_notifications")
+  notificationsPaused Boolean  @default(false) @map("notifications_paused")
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  participants       Participant[]
+  openPresences      OpenPresence[]
+  connectionsA       SpillConnection[]   @relation("ConnectionA")
+  connectionsB       SpillConnection[]   @relation("ConnectionB")
+  notificationsGot   SpillNotification[] @relation("NotificationTo")
+  notificationsAbout SpillNotification[] @relation("NotificationAbout")
+
+  @@map("guests")
+}
+
+// One-time sign-in link. Only the SHA-256 of the token is stored.
+model LoginToken {
+  id            String    @id @default(cuid())
+  email         String
+  tokenHash     String    @unique @map("token_hash")
+  // The player who asked from the result screen — linked on sign-in.
+  participantId String?   @map("participant_id")
+  expiresAt     DateTime  @map("expires_at")
+  usedAt        DateTime? @map("used_at")
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  participant Participant? @relation(fields: [participantId], references: [id], onDelete: SetNull)
+
+  @@index([email, createdAt])
+  @@map("login_tokens")
+}
+
+// Two guests who both chose Stay Connected. guestAId < guestBId (sorted).
+model SpillConnection {
+  id        String   @id @default(cuid())
+  guestAId  String   @map("guest_a_id")
+  guestBId  String   @map("guest_b_id")
+  // Names as they knew each other in the game.
+  nameA     String   @map("name_a")
+  nameB     String   @map("name_b")
+  sessionId String?  @map("session_id")
+  // "Don't tell me when they're back" — each side decides for themselves.
+  mutedByA  Boolean  @default(false) @map("muted_by_a")
+  mutedByB  Boolean  @default(false) @map("muted_by_b")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  guestA Guest @relation("ConnectionA", fields: [guestAId], references: [id], onDelete: Cascade)
+  guestB Guest @relation("ConnectionB", fields: [guestBId], references: [id], onDelete: Cascade)
+
+  @@unique([guestAId, guestBId])
+  @@map("spill_connections")
+}
+
+// "Linh is at SPILL Saigon now and open to SPILL."
+model SpillNotification {
+  id           String    @id @default(cuid())
+  toGuestId    String    @map("to_guest_id")
+  aboutGuestId String    @map("about_guest_id")
+  aboutName    String    @map("about_name")
+  venueId      String?   @map("venue_id")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  seenAt       DateTime? @map("seen_at")
+  emailedAt    DateTime? @map("emailed_at")
+
+  to    Guest  @relation("NotificationTo", fields: [toGuestId], references: [id], onDelete: Cascade)
+  about Guest  @relation("NotificationAbout", fields: [aboutGuestId], references: [id], onDelete: Cascade)
+  venue Venue? @relation(fields: [venueId], references: [id], onDelete: SetNull)
+
+  @@index([toGuestId, createdAt])
+  @@index([aboutGuestId, toGuestId, createdAt])
+  @@map("spill_notifications")
 }

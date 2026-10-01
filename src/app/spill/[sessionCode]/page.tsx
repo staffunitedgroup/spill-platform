@@ -19,6 +19,7 @@ import {
 } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { StayConnectedCard } from "@/components/stay-connected-card";
 import Image from "next/image";
 import { BrandedText, SpillWordmark } from "@/components/brand-text";
 import {
@@ -857,9 +858,18 @@ export default function SpillSessionPage() {
           </h1>
           <p>
             {data.ending.mutual
-              ? "The feeling is mutual. Exchange details directly — and keep the connection human."
+              ? "The feeling is mutual. No numbers to swap — SPILL can tell you when you're both here again."
               : "No rejection screen. No match score. Just a real conversation that happened."}
           </p>
+
+          {/* Phase 3: only when BOTH chose Stay Connected (2 players). */}
+          {data.ending.mutual && players.length === 2 && (
+            <StayConnectedCard
+              participantToken={me.token}
+              partnerName={nameOf(myIndex === 0 ? 1 : 0)}
+              sessionCode={sessionCode}
+            />
+          )}
 
           <div className={`sgStats${GAME_EXTRAS ? " isSix" : ""}`}>
             <div>
