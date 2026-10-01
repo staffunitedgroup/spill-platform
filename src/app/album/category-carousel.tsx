@@ -56,7 +56,7 @@ const imageDimensions: Record<string, readonly [number, number]> = {
 };
 
 const glowPalettes: Record<string, string[]> = {
-  "SPILL Venue & Atmosphere": ["#ff1838", "#c56b3f", "#ed9864", "#00d9ef", "#ff5069"],
+  "SPILL Overview": ["#ff1838", "#c56b3f", "#ed9864", "#00d9ef", "#ff5069"],
   "SPILL Livestream": ["#ff1838", "#f1a060", "#ff563f", "#00d9ef", "#dc8757", "#b55cff", "#4db6ff", "#ffbe5c"],
   "SPILL Podcast": ["#ff1838", "#d28c67", "#ff7a3d", "#7f69ff", "#d5a158", "#ec5d8c", "#00d9ef", "#8b5cf6"],
   "SPILL Confessional": ["#ff1838", "#9a46ff", "#ef476f", "#e8a847", "#00d9ef", "#8b5cf6", "#f97316", "#ec4899", "#f59e0b", "#22c55e"],
@@ -139,7 +139,6 @@ export function CategoryCarousel({ category, items }: CategoryCarouselProps) {
           aria-label={`Previous ${category} item`}
         >
           <span aria-hidden="true">←</span>
-          <span className={styles.sideControlLabel}>Back</span>
         </button>
 
         <div
@@ -187,7 +186,6 @@ export function CategoryCarousel({ category, items }: CategoryCarouselProps) {
           disabled={items.length < 2}
           aria-label={`Next ${category} item`}
         >
-          <span className={styles.sideControlLabel}>Next</span>
           <span aria-hidden="true">→</span>
         </button>
       </div>
