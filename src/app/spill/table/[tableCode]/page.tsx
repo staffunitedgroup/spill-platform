@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { loadMe } from "@/lib/spill-device";
 import { clearOpen, loadOpen } from "@/lib/open-device";
+import { HereTonightBanner } from "@/components/here-tonight-banner";
 import "../../spill-game.css";
 
 const SPILL_PHRASES = [
@@ -227,6 +228,8 @@ export default function TableEntryPage() {
               <h1>Who&rsquo;s SPILLing?</h1>
               <p>Choose the people. We&rsquo;ll shape the experience.</p>
             </div>
+            {/* Phase 3: signed-in guests checking in see their matches. */}
+            <HereTonightBanner tableCode={params.tableCode} />
             <div className="s42ChoiceGrid three">
               <button type="button" onClick={() => createSession("TWO_PERSON")}>
                 <b>Two people</b>

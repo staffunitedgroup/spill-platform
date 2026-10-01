@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { openSchema } from "@/lib/validation/open-spill";
 import {
@@ -8,6 +8,9 @@ import {
   generatePresenceToken,
   readJson,
 } from "@/lib/open-spill";
+import { currentGuestId } from "@/lib/guest-auth";
+import { siteOrigin } from "@/lib/spill-email";
+import { notifyConnectionsOpen } from "@/lib/stay-connected";
 
 export async function POST(req: NextRequest) {
   const body = await readJson(req);
@@ -26,7 +29,12 @@ export async function POST(req: NextRequest) {
 
   const table = await prisma.table.findFirst({
     where: { tableCode: tableCode.toUpperCase(), status: "ACTIVE" },
-    select: { id: true, tableCode: true, displayName: true },
+    select: {
+      id: true,
+      tableCode: true,
+      displayName: true,
+      venue: { select: { id: true, name: true } },
+    },
   });
   if (!table) {
     return apiError(
@@ -37,6 +45,9 @@ export async function POST(req: NextRequest) {
   }
 
   await expireStale();
+
+  // Phase 3: signed in on this phone → their SPILL connections can be told.
+  const guestId = await currentGuestId();
 
   const now = new Date();
   const presence = await prisma.$transaction(async (tx) => {
@@ -65,11 +76,26 @@ export async function POST(req: NextRequest) {
         tableId: table.id,
         displayName,
         presenceToken: generatePresenceToken(),
+        guestId,
         ageConfirmedAt: now,
         expiresAt: new Date(now.getTime() + OPEN_MINUTES * 60_000),
       },
     });
   });
+
+  if (guestId) {
+    const origin = siteOrigin(req);
+    // After the response, so turning on Open never waits for emails.
+    after(() =>
+      notifyConnectionsOpen({
+        guestId,
+        name: presence.displayName,
+        venueId: table.venue.id,
+        venueName: table.venue.name,
+        origin,
+      }).catch((err) => console.error("[open] notify failed", err)),
+    );
+  }
 
   return NextResponse.json(
     {

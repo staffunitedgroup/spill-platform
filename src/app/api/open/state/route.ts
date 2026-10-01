@@ -7,6 +7,7 @@ import {
   expireStale,
   meetColorByName,
 } from "@/lib/open-spill";
+import { connectionsOf } from "@/lib/stay-connected";
 
 export async function GET(req: NextRequest) {
   const token = req.nextUrl.searchParams.get("token");
@@ -88,6 +89,8 @@ export async function GET(req: NextRequest) {
     displayName: string;
     openMinutes: number;
     busy: boolean;
+    /** Phase 3: someone this guest chose to Stay Connected with. */
+    isMatch: boolean;
   }[] = [];
   if (me.status === "OPEN") {
     const declinedMe = await prisma.spillInvite.findMany({
@@ -110,6 +113,7 @@ export async function GET(req: NextRequest) {
         id: true,
         displayName: true,
         createdAt: true,
+        guestId: true,
         invitesGot: {
           where: { status: "PENDING" },
           select: { id: true },
@@ -117,6 +121,11 @@ export async function GET(req: NextRequest) {
         },
       },
     });
+
+    // My SPILL connections who are here (only if I'm signed in).
+    const matchIds = me.guestId
+      ? new Set((await connectionsOf(me.guestId)).map((c) => c.otherGuestId))
+      : new Set<string>();
 
     available = others
       .filter((o) => !hidden.has(o.id))
@@ -128,7 +137,10 @@ export async function GET(req: NextRequest) {
           Math.floor((now.getTime() - o.createdAt.getTime()) / 60_000),
         ),
         busy: o.invitesGot.length > 0,
-      }));
+        isMatch: !!o.guestId && matchIds.has(o.guestId),
+      }))
+      // People you already SPILLed with first.
+      .sort((a, b) => Number(b.isMatch) - Number(a.isMatch));
   }
 
   let match = null;

@@ -1228,3 +1228,270 @@ body:has(.s42App) .floatingContact {
   border-color: #e8472f;
   outline: none;
 }
+
+/* ── Phase 3 · Stay Connected ───────────────────────────────── */
+
+/* Result screen card + sign-in form */
+.scCard {
+  width: min(520px, 100%);
+  margin: 26px auto 0;
+  padding: 24px 22px 18px;
+  display: grid;
+  gap: 10px;
+  border: 1px solid #e8472f;
+  border-radius: 18px;
+  background: #171717;
+  text-align: left;
+}
+.scCard h2 {
+  margin: 0;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(22px, 6vw, 28px);
+  font-weight: 400;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+.scCard p {
+  margin: 0;
+  color: #c0c4c8;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.scCard p b {
+  color: #fff;
+  font-weight: 500;
+}
+.scCard .s42Primary {
+  width: 100%;
+  margin-top: 6px;
+}
+.scForm {
+  width: min(520px, 100%);
+  margin-top: 6px;
+  display: grid;
+  gap: 10px;
+}
+.scForm input {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 16px;
+  border: 1px solid rgba(192, 196, 200, 0.3);
+  border-radius: 12px;
+  background: #111111;
+  color: #fff;
+  font: inherit;
+  font-size: 17px;
+}
+.scForm input:focus {
+  border-color: #e8472f;
+  outline: none;
+}
+.scForm .s42Primary {
+  width: 100%;
+}
+.scForm small {
+  color: rgba(192, 196, 200, 0.7);
+  font-size: 14px;
+}
+.scError {
+  margin: 4px 0 0;
+  color: #ff5638;
+  font-size: 15px;
+}
+.scLink {
+  margin-top: 4px;
+  color: #ff5638;
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.scCard .opReportLink {
+  margin-top: 4px;
+}
+
+/* "Minh, your SPILL match, is here tonight" */
+.htBanner {
+  width: min(560px, 100%);
+  margin: 18px 0 4px;
+  padding: 16px 18px;
+  display: grid;
+  gap: 6px;
+  border: 1px solid #ff5638;
+  border-radius: 14px;
+  background: rgba(232, 71, 47, 0.12);
+  animation: sgFadeUp 0.4s ease both;
+}
+.htBanner p {
+  margin: 0;
+  color: #fff;
+  font-size: 16px;
+  line-height: 1.45;
+}
+.htBanner b {
+  color: #ff5638;
+  font-weight: 600;
+}
+.htActions {
+  margin-top: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+}
+.htCta,
+.htMore,
+.htQuiet a {
+  color: #ff5638;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.htMore,
+.htQuiet a {
+  color: rgba(192, 196, 200, 0.8);
+}
+.htQuiet {
+  margin: 12px 0 0;
+}
+
+/* "You SPILLed before" tag in the Open list */
+.opMatchTag {
+  width: max-content;
+  padding: 2px 8px;
+  border: 1px solid #ff5638;
+  border-radius: 999px;
+  color: #ff5638;
+  font-size: 12px;
+  font-style: normal;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* /spill/me */
+.meTitle {
+  margin: 30px 0 12px;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+.meEmpty {
+  margin: 0;
+  color: #c0c4c8;
+  font-size: 15px;
+}
+.meList {
+  width: min(560px, 100%);
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+  list-style: none;
+}
+.meList li {
+  padding: 14px 16px;
+  display: grid;
+  gap: 8px;
+  border: 1px solid rgba(192, 196, 200, 0.2);
+  border-radius: 14px;
+  background: #171717;
+}
+.meWho {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.meWho b {
+  color: #fff;
+  font-size: 19px;
+  font-weight: 500;
+}
+.meWho small {
+  color: rgba(192, 196, 200, 0.7);
+  font-size: 14px;
+}
+.meRemove {
+  margin: 0;
+  justify-self: start;
+  padding: 2px 0;
+}
+.meSettings {
+  width: min(560px, 100%);
+  display: grid;
+  gap: 10px;
+}
+.meSwitch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  cursor: pointer;
+}
+.meSettings .meSwitch {
+  padding: 14px 16px;
+  border: 1px solid rgba(192, 196, 200, 0.2);
+  border-radius: 14px;
+  background: #171717;
+}
+.meSwitch > span {
+  display: grid;
+  gap: 2px;
+}
+.meSwitch b {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+}
+.meSwitch small {
+  color: rgba(192, 196, 200, 0.7);
+  font-size: 14px;
+}
+/* iOS-style switch, SPILL red when on */
+.meSwitch input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 48px;
+  height: 28px;
+  margin: 0;
+  flex: none;
+  position: relative;
+  border-radius: 999px;
+  background: rgba(192, 196, 200, 0.28);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.meSwitch input::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.2s ease;
+}
+.meSwitch input:checked {
+  background: #e8472f;
+}
+.meSwitch input:checked::after {
+  transform: translateX(20px);
+}
+.meSwitch input:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.meFooter {
+  width: min(560px, 100%);
+  margin-top: 30px;
+  display: grid;
+  gap: 4px;
+}
+.meFooter .opNotNow {
+  width: 100%;
+  min-height: 48px;
+}

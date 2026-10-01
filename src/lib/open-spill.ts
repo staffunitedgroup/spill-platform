@@ -96,7 +96,12 @@ export async function blockedPresenceIds(
   db: Pick<typeof prisma, "spillReport"> = prisma,
 ): Promise<Set<string>> {
   const rows = await db.spillReport.findMany({
-    where: { OR: [{ reporterId: presenceId }, { reportedId: presenceId }] },
+    // Open reports only: once staff resolve one, the two can see each other
+    // again (taps by mistake happen).
+    where: {
+      status: "OPEN",
+      OR: [{ reporterId: presenceId }, { reportedId: presenceId }],
+    },
     select: { reporterId: true, reportedId: true },
   });
   return new Set(
