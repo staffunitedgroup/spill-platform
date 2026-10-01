@@ -1,0 +1,195 @@
+/* Staff floor view (/admin) — SPILL Saigon palette only:
+   Red #E8472F · Neon #FF5638 · Deep Red #A82E22 · Near Black #111111 · Silver #C0C4C8 */
+
+.afFloor {
+  margin-top: 48px;
+  display: grid;
+  gap: 40px;
+}
+.afBlock {
+  display: grid;
+  gap: 14px;
+}
+.afHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+.afHead h2 {
+  margin: 0;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 400;
+  text-transform: uppercase;
+}
+.afHead span,
+.afMuted {
+  margin: 0;
+  color: rgba(192, 196, 200, 0.7);
+  font-size: 14px;
+}
+.afError {
+  margin: 0;
+  color: #ff5638;
+}
+
+/* Tables grid */
+.afTables {
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: 8px;
+  list-style: none;
+}
+.afTables li {
+  min-height: 84px;
+  padding: 12px 14px;
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  border: 1px solid rgba(192, 196, 200, 0.22);
+  background: #111111;
+}
+.afTables b {
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+.afTables small {
+  color: #c0c4c8;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.afTables em {
+  overflow: hidden;
+  color: rgba(192, 196, 200, 0.8);
+  font-size: 13px;
+  font-style: normal;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.afTables li.isWAITING {
+  border-color: #a82e22;
+}
+.afTables li.isWAITING small {
+  color: #ff5638;
+}
+.afTables li.isPLAYING {
+  border-color: #e8472f;
+  background: rgba(232, 71, 47, 0.14);
+}
+.afTables li.isPLAYING small {
+  color: #e8472f;
+}
+
+/* Rows (open people, reports) */
+.afRows {
+  margin: 0;
+  padding: 0;
+  display: grid;
+  border: 1px solid rgba(192, 196, 200, 0.18);
+  list-style: none;
+}
+.afRows li {
+  padding: 16px 18px;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 12px 16px;
+  border-bottom: 1px solid rgba(192, 196, 200, 0.12);
+}
+.afRows li:last-child {
+  border-bottom: 0;
+}
+.afRows li.isDone {
+  opacity: 0.55;
+}
+.afRows li > div:first-child {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+.afRows b {
+  color: #fff;
+  font-size: 17px;
+  font-weight: 500;
+}
+.afRows b small {
+  color: rgba(192, 196, 200, 0.7);
+  font-size: 14px;
+  font-weight: 400;
+}
+.afRows li > div:first-child > small {
+  color: rgba(192, 196, 200, 0.75);
+  font-size: 14px;
+}
+.afNote {
+  margin: 4px 0 0;
+  color: #c0c4c8;
+  font-size: 14px;
+  font-style: italic;
+}
+.afTags {
+  display: flex;
+  gap: 6px;
+}
+.afTag {
+  padding: 3px 10px;
+  border: 1px solid rgba(192, 196, 200, 0.4);
+  color: #c0c4c8;
+  font-size: 12px;
+  font-style: normal;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.afTag.isAlert {
+  border-color: #e8472f;
+  color: #ff5638;
+}
+.afActions {
+  display: flex;
+  gap: 8px;
+}
+.afRows button {
+  padding: 8px 14px;
+  border: 1px solid rgba(192, 196, 200, 0.45);
+  background: transparent;
+  color: #c0c4c8;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.afRows button:hover:not(:disabled) {
+  border-color: #fff;
+  color: #fff;
+}
+.afRows button.isPrimary {
+  border-color: #e8472f;
+  background: #e8472f;
+  color: #111111;
+}
+.afRows button.isPrimary:hover:not(:disabled) {
+  border-color: #ff5638;
+  background: #ff5638;
+  color: #111111;
+}
+.afRows button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+@media (max-width: 700px) {
+  .afRows li {
+    grid-template-columns: 1fr;
+  }
+}

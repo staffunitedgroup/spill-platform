@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import {
   INVITE_RESULT_SECONDS,
   apiError,
+  blockedPresenceIds,
   expireStale,
   meetColorByName,
 } from "@/lib/open-spill";
@@ -31,7 +32,7 @@ export async function GET(req: NextRequest) {
     prisma.spillInvite.findFirst({
       where: { toId: me.id, status: "PENDING" },
       orderBy: { createdAt: "asc" },
-      include: { from: { select: { displayName: true } } },
+      include: { from: { select: { id: true, displayName: true } } },
     }),
     prisma.spillInvite.findFirst({
       where: { fromId: me.id, status: "PENDING" },
@@ -94,6 +95,7 @@ export async function GET(req: NextRequest) {
       select: { toId: true },
     });
     const hidden = new Set(declinedMe.map((d) => d.toId));
+    for (const id of await blockedPresenceIds(me.id)) hidden.add(id);
 
     const others = await prisma.openPresence.findMany({
       where: {
@@ -141,6 +143,7 @@ export async function GET(req: NextRequest) {
       : null;
     const color = meetColorByName(acceptedInvite.meetColor);
     match = {
+      partnerId: partner.id,
       partnerName: partner.displayName,
       // The inviter walks to the table of the person who said yes.
       iWalk: iInvited,
@@ -148,7 +151,7 @@ export async function GET(req: NextRequest) {
         code: acceptedInvite.session.table.tableCode,
         name: acceptedInvite.session.table.displayName,
       },
-      color: { name: color.name, hex: color.hex },
+      color: { name: color.name, hex: color.hex, ink: color.ink },
       code: acceptedInvite.meetCode,
       session: {
         id: acceptedInvite.session.id,
@@ -173,6 +176,7 @@ export async function GET(req: NextRequest) {
     incoming: incoming
       ? {
           id: incoming.id,
+          fromId: incoming.from.id,
           fromName: incoming.from.displayName,
           expiresAt: incoming.expiresAt,
         }

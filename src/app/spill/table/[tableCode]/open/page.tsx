@@ -19,7 +19,7 @@ type OpenState = {
   me: {
     id: string;
     displayName: string;
-    status: "OPEN" | "MATCHED" | "CLOSED";
+    status: "OPEN" | "PAUSED" | "MATCHED" | "CLOSED";
     expiresAt: string;
     table: { code: string; name: string };
   };
@@ -29,20 +29,35 @@ type OpenState = {
     openMinutes: number;
     busy: boolean;
   }[];
-  incoming: { id: string; fromName: string; expiresAt: string } | null;
+  incoming: {
+    id: string;
+    fromId: string;
+    fromName: string;
+    expiresAt: string;
+  } | null;
   outgoing: { id: string; toName: string; expiresAt: string } | null;
   notAvailable: { name: string } | null;
   match: {
+    partnerId: string;
     partnerName: string;
     iWalk: boolean;
     meetTable: { code: string; name: string };
-    color: { name: string; hex: string };
+    color: { name: string; hex: string; ink: string };
     code: string | null;
     session: { id: string; sessionCode: string; status: string };
     participantToken: string | null;
     playerName: string;
   } | null;
 };
+
+type ReportReason = "UNCOMFORTABLE" | "INAPPROPRIATE_NAME" | "SPAM" | "OTHER";
+
+const REPORT_REASONS: { value: ReportReason; label: string }[] = [
+  { value: "UNCOMFORTABLE", label: "They made me uncomfortable" },
+  { value: "INAPPROPRIATE_NAME", label: "Inappropriate name" },
+  { value: "SPAM", label: "Too many invites" },
+  { value: "OTHER", label: "Something else" },
+];
 
 function secondsLeft(iso: string, now: number) {
   return Math.max(0, Math.ceil((new Date(iso).getTime() - now) / 1000));
@@ -69,6 +84,12 @@ export default function OpenToSpillPage() {
   const [error, setError] = useState("");
   const [toast, setToast] = useState("");
   const [now, setNow] = useState(0);
+  const [reportTarget, setReportTarget] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
+  const [reportReason, setReportReason] = useState<ReportReason | null>(null);
+  const [reportNote, setReportNote] = useState("");
   const skewRef = useRef(0);
   const lastNotAvailableRef = useRef("");
 
@@ -198,9 +219,97 @@ export default function OpenToSpillPage() {
     }
   }
 
-  async function hideMe() {
+  async function leave() {
     await act("/api/open/close", {}, "");
   }
+
+  async function setPaused(paused: boolean) {
+    await act("/api/open/pause", { paused });
+  }
+
+  function openReport(id: string, name: string) {
+    setReportTarget({ id, name });
+    setReportReason(null);
+    setReportNote("");
+  }
+
+  async function sendReport() {
+    if (!device || !reportTarget || !reportReason || working) return;
+    setWorking(true);
+    try {
+      const { ok, json } = await call("/api/open/report", {
+        token: device.token,
+        targetId: reportTarget.id,
+        reason: reportReason,
+        ...(reportNote.trim() ? { note: reportNote.trim() } : {}),
+      });
+      if (ok) {
+        setReportTarget(null);
+        setToast("Thanks for telling us. Staff will take a look.");
+      } else {
+        setToast(json.error?.message ?? "Couldn't send. Try again.");
+      }
+    } catch {
+      setToast("Connection issue — try again.");
+    } finally {
+      setWorking(false);
+      fetchState();
+    }
+  }
+
+  // Shared by the list, the invite card and the meet screen.
+  const reportSheet = reportTarget && (
+    <div className="opInvite" role="dialog" aria-modal="true">
+      <div className="opInviteCard opReport">
+        <span className="opKicker">Report</span>
+        <h2>Report {reportTarget.name}</h2>
+        <p>
+          They won&apos;t be told. You won&apos;t see each other again tonight,
+          and SPILL staff will take a look.
+        </p>
+        <div className="opReasons" role="radiogroup">
+          {REPORT_REASONS.map((r) => (
+            <label key={r.value} className="opCheck">
+              <input
+                type="radio"
+                name="reportReason"
+                checked={reportReason === r.value}
+                onChange={() => setReportReason(r.value)}
+              />
+              <span>{r.label}</span>
+            </label>
+          ))}
+        </div>
+        <textarea
+          className="opNoteField"
+          rows={3}
+          maxLength={300}
+          value={reportNote}
+          placeholder="Anything staff should know? (optional)"
+          aria-label="Anything staff should know? (optional)"
+          onChange={(event) => setReportNote(event.target.value)}
+        />
+        <div className="opInviteActions">
+          <button
+            className="s42Primary"
+            type="button"
+            disabled={working || !reportReason}
+            onClick={sendReport}
+          >
+            Send report <span>→</span>
+          </button>
+          <button
+            className="opNotNow"
+            type="button"
+            disabled={working}
+            onClick={() => setReportTarget(null)}
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 
   function startGame() {
     if (!state?.match?.participantToken) return;
@@ -242,7 +351,9 @@ export default function OpenToSpillPage() {
               ← Back
             </Link>
             <div className="s42SetupHeading">
-              <span>{reopening ? "You're hidden" : "Meet someone new"}</span>
+              <span>
+                {reopening ? "You're not listed" : "Meet someone new"}
+              </span>
               <h1>{reopening ? "Open again?" : "Open to SPILL?"}</h1>
               <p>
                 See who else here tonight is up for a SPILL, and let them see
@@ -253,7 +364,7 @@ export default function OpenToSpillPage() {
             <ul className="opRules">
               <li>Only your first name is shown.</li>
               <li>Your table stays private until you both say yes.</li>
-              <li>You can hide anytime. It switches off after 45 minutes.</li>
+              <li>Pause or leave anytime. It switches off after 45 minutes.</li>
             </ul>
 
             <form
@@ -306,7 +417,10 @@ export default function OpenToSpillPage() {
     return (
       <main
         className="s42App sgApp opApp opMeet"
-        style={{ ["--meet" as string]: m.color.hex }}
+        style={{
+          ["--meet" as string]: m.color.hex,
+          ["--meet-ink" as string]: m.color.ink,
+        }}
       >
         <section className="opMeetInner">
           <span className="opKicker">It&apos;s a SPILL</span>
@@ -353,15 +467,75 @@ export default function OpenToSpillPage() {
               <p className="s42Permission">
                 Sit wherever you like — the game runs on your phones.
               </p>
+              <button
+                className="opReportLink"
+                type="button"
+                onClick={() => openReport(m.partnerId, m.partnerName)}
+              >
+                Something wrong? Report {m.partnerName}
+              </button>
             </>
           )}
         </section>
+        {reportSheet}
+        {toast && (
+          <div className="sgToast" role="status">
+            {toast}
+          </div>
+        )}
+      </main>
+    );
+  }
+
+  const leftOpen = secondsLeft(state.me.expiresAt, now);
+
+  // ── 2b. Paused: still open, but nobody can see or invite you ──
+  if (status === "PAUSED") {
+    return (
+      <main className="s42App sgApp opApp">
+        <section className="s42Setup">
+          <div className="s42SetupPanel">
+            <div className="opTop">
+              <span className="opLive isPaused">
+                <i aria-hidden="true" /> Paused · {state.me.displayName}
+              </span>
+            </div>
+            <div className="s42SetupHeading">
+              <span>Still yours for {Math.ceil(leftOpen / 60)} more min</span>
+              <h1>You&apos;re paused</h1>
+              <p>
+                Nobody can see you or invite you right now. Come back whenever
+                you&apos;re ready.
+              </p>
+            </div>
+            <button
+              className="s42Primary"
+              type="button"
+              disabled={working}
+              onClick={() => setPaused(false)}
+            >
+              Show me again <span>→</span>
+            </button>
+            <button
+              className="opNotNow opLeave"
+              type="button"
+              disabled={working}
+              onClick={leave}
+            >
+              Leave for tonight
+            </button>
+          </div>
+        </section>
+        {toast && (
+          <div className="sgToast" role="status">
+            {toast}
+          </div>
+        )}
       </main>
     );
   }
 
   // ── 2. Open: the list, invites ───────────────────────────────
-  const leftOpen = secondsLeft(state.me.expiresAt, now);
   const incoming = state.incoming;
   const outgoing = state.outgoing;
 
@@ -371,16 +545,26 @@ export default function OpenToSpillPage() {
         <div className="s42SetupPanel">
           <div className="opTop">
             <span className="opLive">
-              <i aria-hidden="true" /> You&apos;re open · {state.me.displayName}
+              <i aria-hidden="true" /> Open · {state.me.displayName}
             </span>
-            <button
-              className="opHide"
-              type="button"
-              disabled={working}
-              onClick={hideMe}
-            >
-              Hide me
-            </button>
+            <div className="opTopActions">
+              <button
+                className="opHide"
+                type="button"
+                disabled={working}
+                onClick={() => setPaused(true)}
+              >
+                Pause
+              </button>
+              <button
+                className="opHide"
+                type="button"
+                disabled={working}
+                onClick={leave}
+              >
+                Leave
+              </button>
+            </div>
           </div>
 
           <div className="s42SetupHeading">
@@ -433,6 +617,28 @@ export default function OpenToSpillPage() {
                           : `Open for ${p.openMinutes} min`}
                     </small>
                   </div>
+                  <button
+                    className="opFlag"
+                    type="button"
+                    aria-label={`Report ${p.displayName}`}
+                    title={`Report ${p.displayName}`}
+                    onClick={() => openReport(p.id, p.displayName)}
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+                      <line x1="4" y1="22" x2="4" y2="15" />
+                    </svg>
+                  </button>
                   <button
                     type="button"
                     disabled={working || !!outgoing || !!incoming || p.busy}
@@ -488,9 +694,18 @@ export default function OpenToSpillPage() {
                 Not now
               </button>
             </div>
+            <button
+              className="opReportLink"
+              type="button"
+              onClick={() => openReport(incoming.fromId, incoming.fromName)}
+            >
+              Report {incoming.fromName}
+            </button>
           </div>
         </div>
       )}
+
+      {reportSheet}
 
       {toast && (
         <div className="sgToast" role="status">

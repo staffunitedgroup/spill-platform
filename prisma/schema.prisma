@@ -65,8 +65,21 @@ enum ConnectionStatus {
 // Phase 2 "Meet someone new"
 enum OpenPresenceStatus {
   OPEN // listed as available
+  PAUSED // still open, but hidden from the list for now
   MATCHED // accepted an invite, playing / meeting
   CLOSED // turned off, started a table game, or expired
+}
+
+enum SpillReportReason {
+  UNCOMFORTABLE
+  INAPPROPRIATE_NAME
+  SPAM
+  OTHER
+}
+
+enum SpillReportStatus {
+  OPEN
+  RESOLVED
 }
 
 enum SpillInviteStatus {
@@ -238,6 +251,8 @@ model OpenPresence {
   participant Participant?  @relation(fields: [participantId], references: [id])
   invitesSent SpillInvite[] @relation("InviteFrom")
   invitesGot  SpillInvite[] @relation("InviteTo")
+  reportsMade SpillReport[] @relation("ReportBy")
+  reportsGot  SpillReport[] @relation("ReportAbout")
 
   @@index([status, expiresAt])
   @@map("open_presences")
@@ -263,4 +278,23 @@ model SpillInvite {
   @@index([toId, status])
   @@index([fromId, status])
   @@map("spill_invites")
+}
+
+// "Report" from Meet someone new. Staff see these in /admin.
+model SpillReport {
+  id         String            @id @default(cuid())
+  reporterId String            @map("reporter_id")
+  reportedId String            @map("reported_id")
+  reason     SpillReportReason
+  note       String?
+  status     SpillReportStatus @default(OPEN)
+  createdAt  DateTime          @default(now()) @map("created_at")
+  resolvedAt DateTime?         @map("resolved_at")
+
+  reporter OpenPresence @relation("ReportBy", fields: [reporterId], references: [id])
+  reported OpenPresence @relation("ReportAbout", fields: [reportedId], references: [id])
+
+  @@index([status, createdAt])
+  @@index([reportedId])
+  @@map("spill_reports")
 }
