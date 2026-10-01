@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 type CategoryName =
-  | "SPILL Venue & Atmosphere"
+  | "SPILL Overview"
   | "SPILL Livestream"
   | "SPILL Podcast"
   | "SPILL Confessional"
@@ -20,10 +20,11 @@ type CategoryName =
 type GalleryItem = CarouselItem & { category: CategoryName };
 
 const galleryItems: GalleryItem[] = [
-  { title: "Welcome to SPILL", category: "SPILL Venue & Atmosphere", type: "video", src: "/assets/spill/home/hero-v2.mp4", poster: "/assets/spill/home/hero-v2-poster.jpg" },
-  { title: "Saigon after dark", category: "SPILL Venue & Atmosphere", type: "image", src: "/assets/spill/home/venue-night.jpg", alt: "SPILL Saigon glowing at night" },
-  { title: "Daylight arrival", category: "SPILL Venue & Atmosphere", type: "image", src: "/assets/spill/concept-exterior-day.webp", alt: "SPILL café bar exterior during the day" },
-  { title: "The SPILL experience", category: "SPILL Venue & Atmosphere", type: "video", src: "/assets/spill/home/about.mp4", poster: "/assets/spill/home/about-poster.jpg" },
+  { title: "What is SPILL", category: "SPILL Overview", type: "video", src: "/assets/spill/home/what-is-spill.mp4", poster: "/assets/spill/home/what-is-spill-poster.jpg" },
+  { title: "Welcome to SPILL", category: "SPILL Overview", type: "video", src: "/assets/spill/home/hero-v2.mp4", poster: "/assets/spill/home/hero-v2-poster.jpg" },
+  { title: "Saigon after dark", category: "SPILL Overview", type: "image", src: "/assets/spill/home/venue-night.jpg", alt: "SPILL Saigon glowing at night" },
+  { title: "Daylight arrival", category: "SPILL Overview", type: "image", src: "/assets/spill/concept-exterior-day.webp", alt: "SPILL café bar exterior during the day" },
+  { title: "The SPILL experience", category: "SPILL Overview", type: "video", src: "/assets/spill/home/about.mp4", poster: "/assets/spill/home/about-poster.jpg" },
 
   { title: "Live at SPILL", category: "SPILL Livestream", type: "video", src: "/assets/spill/home/livestream-promotion.mp4", poster: "/assets/spill/home/livestream-promotion-poster.jpg" },
   { title: "A live audience", category: "SPILL Livestream", type: "image", src: "/assets/spill/livestream/hero.png", alt: "A SPILL livestream surrounded by a live audience" },
@@ -66,7 +67,7 @@ const galleryItems: GalleryItem[] = [
 ];
 
 const categories: { id: string; name: CategoryName }[] = [
-  { id: "venue-atmosphere", name: "SPILL Venue & Atmosphere" },
+  { id: "overview", name: "SPILL Overview" },
   { id: "livestream", name: "SPILL Livestream" },
   { id: "podcast", name: "SPILL Podcast" },
   { id: "confessional", name: "SPILL Confessional" },

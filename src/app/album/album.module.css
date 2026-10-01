@@ -48,22 +48,25 @@
 }
 
 .categories {
-  padding: clamp(72px, 9vw, 130px) var(--album-pad)
-    clamp(100px, 12vw, 180px);
+  padding-inline: var(--album-pad);
 }
 
 .category {
-  scroll-margin-top: 24px;
+  height: 100svh;
+  padding-block: clamp(24px, 4svh, 54px);
+  display: flex;
+  flex-direction: column;
+  scroll-margin-top: 0;
 }
 
 .category + .category {
-  margin-top: clamp(90px, 11vw, 160px);
+  border-top: 1px solid #232326;
 }
 
 .categoryHeader {
   max-width: 1200px;
-  margin-bottom: 26px;
-  padding-bottom: 18px;
+  margin-bottom: clamp(14px, 2svh, 24px);
+  padding-bottom: clamp(12px, 1.6svh, 18px);
   display: grid;
   grid-template-columns: 42px 1fr;
   gap: 20px;
@@ -86,14 +89,28 @@
 }
 
 .carousel {
+  min-height: 0;
+  flex: 1;
   width: 100%;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: clamp(10px, 1.5svh, 18px);
+}
+
+.mediaRow {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(12px, 2vw, 30px);
 }
 
 .media {
   width: 100%;
+  height: 100%;
+  min-height: 0;
   max-width: 1440px;
   margin-inline: auto;
-  aspect-ratio: 16 / 9;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -165,16 +182,8 @@
   font-size: 12px;
 }
 
-.carouselFooter {
-  min-height: 96px;
-  padding: 18px 0 0;
-  display: grid;
-  grid-template-columns: 1fr minmax(180px, 2fr) 1fr;
-  align-items: center;
-  gap: 20px;
-}
-
 .caption {
+  min-height: 70px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -199,8 +208,10 @@
 }
 
 .sideControl {
-  min-width: 96px;
-  padding: 14px 16px;
+  width: 56px;
+  min-width: 56px;
+  height: 56px;
+  padding: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -229,6 +240,7 @@
 .sideControl span {
   color: var(--red);
   font-family: var(--font-space-grotesk);
+  font-size: 20px;
 }
 
 .sideControl:hover:not(:disabled) {
@@ -256,6 +268,17 @@
   .introCopy {
     max-width: 650px;
   }
+
+  .mediaRow {
+    grid-template-columns: 52px minmax(0, 1fr) 52px;
+    gap: 12px;
+  }
+
+  .sideControl {
+    width: 52px;
+    min-width: 52px;
+    height: 52px;
+  }
 }
 
 @media (max-width: 640px) {
@@ -281,9 +304,13 @@
     font-size: clamp(20px, 6vw, 27px);
   }
 
-  .media {
-    height: clamp(360px, 62svh, 560px);
-    aspect-ratio: auto;
+  .category {
+    padding-block: 20px;
+  }
+
+  .mediaRow {
+    grid-template-columns: 44px minmax(0, 1fr) 44px;
+    gap: 8px;
   }
 
   .videoControl {
@@ -291,17 +318,11 @@
     padding: 8px 10px;
   }
 
-  .carouselFooter {
-    min-height: 92px;
-    padding-top: 14px;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    gap: 10px;
-  }
-
   .sideControl {
-    min-width: 70px;
-    padding: 11px 9px;
-    gap: 6px;
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    padding: 0;
     font-size: 12px;
   }
 

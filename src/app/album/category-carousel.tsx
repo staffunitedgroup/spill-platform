@@ -56,7 +56,7 @@ const imageDimensions: Record<string, readonly [number, number]> = {
 };
 
 const glowPalettes: Record<string, string[]> = {
-  "SPILL Venue & Atmosphere": ["#ff1838", "#c56b3f", "#ed9864", "#00d9ef", "#ff5069"],
+  "SPILL Overview": ["#ff1838", "#c56b3f", "#ed9864", "#00d9ef", "#ff5069"],
   "SPILL Livestream": ["#ff1838", "#f1a060", "#ff563f", "#00d9ef", "#dc8757", "#b55cff", "#4db6ff", "#ffbe5c"],
   "SPILL Podcast": ["#ff1838", "#d28c67", "#ff7a3d", "#7f69ff", "#d5a158", "#ec5d8c", "#00d9ef", "#8b5cf6"],
   "SPILL Confessional": ["#ff1838", "#9a46ff", "#ef476f", "#e8a847", "#00d9ef", "#8b5cf6", "#f97316", "#ec4899", "#f59e0b", "#22c55e"],
@@ -130,45 +130,7 @@ export function CategoryCarousel({ category, items }: CategoryCarouselProps) {
 
   return (
     <div className={styles.carousel} aria-label={`${category} gallery`}>
-      <div
-        ref={mediaRef}
-        className={styles.media}
-        style={mediaStyle}
-      >
-        {currentItem.type === "video" ? (
-          <video
-            key={currentItem.src}
-            ref={videoRef}
-            className={`${styles.slideMedia} ${direction === 1 ? styles.slideNext : styles.slidePrevious}`}
-            width={mediaWidth}
-            height={mediaHeight}
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            poster={currentItem.poster}
-            aria-label={`${currentItem.title} film`}
-            onPause={() => setIsPlaying(false)}
-            onPlay={() => setIsPlaying(true)}
-          >
-            <source src={currentItem.src} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        ) : (
-          <Image
-            key={currentItem.src}
-            className={`${styles.slideMedia} ${direction === 1 ? styles.slideNext : styles.slidePrevious} ${currentItem.contain ? styles.contain : ""}`}
-            src={currentItem.src}
-            alt={currentItem.alt ?? `SPILL ${currentItem.title}`}
-            width={mediaWidth}
-            height={mediaHeight}
-            sizes="(max-width: 1280px) 100vw, 1200px"
-          />
-        )}
-      </div>
-
-      <div className={styles.carouselFooter}>
+      <div className={styles.mediaRow}>
         <button
           className={`${styles.sideControl} ${styles.backControl}`}
           type="button"
@@ -177,28 +139,44 @@ export function CategoryCarousel({ category, items }: CategoryCarouselProps) {
           aria-label={`Previous ${category} item`}
         >
           <span aria-hidden="true">←</span>
-          Back
         </button>
 
-        <div className={styles.caption}>
-          <h3><BrandedText text={currentItem.title} /></h3>
-          <div className={styles.captionMeta}>
-            <span className={styles.slideCount} aria-live="polite">
-              {currentIndex + 1} / {items.length}
-            </span>
-            {currentItem.type === "video" && (
-              <button
-                className={styles.videoControl}
-                type="button"
-                onClick={toggleVideo}
-                aria-label={`${isPlaying ? "Stop" : "Play"} ${currentItem.title}`}
-                aria-pressed={isPlaying}
-              >
-                <span aria-hidden="true">{isPlaying ? "■" : "▶"}</span>
-                {isPlaying ? "Stop" : "Play"}
-              </button>
-            )}
-          </div>
+        <div
+          ref={mediaRef}
+          className={styles.media}
+          style={mediaStyle}
+        >
+          {currentItem.type === "video" ? (
+            <video
+              key={currentItem.src}
+              ref={videoRef}
+              className={`${styles.slideMedia} ${direction === 1 ? styles.slideNext : styles.slidePrevious}`}
+              width={mediaWidth}
+              height={mediaHeight}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              poster={currentItem.poster}
+              aria-label={`${currentItem.title} film`}
+              onPause={() => setIsPlaying(false)}
+              onPlay={() => setIsPlaying(true)}
+            >
+              <source src={currentItem.src} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          ) : (
+            <Image
+              key={currentItem.src}
+              className={`${styles.slideMedia} ${direction === 1 ? styles.slideNext : styles.slidePrevious} ${currentItem.contain ? styles.contain : ""}`}
+              src={currentItem.src}
+              alt={currentItem.alt ?? `SPILL ${currentItem.title}`}
+              width={mediaWidth}
+              height={mediaHeight}
+              sizes="(max-width: 1280px) 100vw, 1200px"
+            />
+          )}
         </div>
 
         <button
@@ -208,9 +186,29 @@ export function CategoryCarousel({ category, items }: CategoryCarouselProps) {
           disabled={items.length < 2}
           aria-label={`Next ${category} item`}
         >
-          Next
           <span aria-hidden="true">→</span>
         </button>
+      </div>
+
+      <div className={styles.caption}>
+        <h3><BrandedText text={currentItem.title} /></h3>
+        <div className={styles.captionMeta}>
+          <span className={styles.slideCount} aria-live="polite">
+            {currentIndex + 1} / {items.length}
+          </span>
+          {currentItem.type === "video" && (
+            <button
+              className={styles.videoControl}
+              type="button"
+              onClick={toggleVideo}
+              aria-label={`${isPlaying ? "Stop" : "Play"} ${currentItem.title}`}
+              aria-pressed={isPlaying}
+            >
+              <span aria-hidden="true">{isPlaying ? "■" : "▶"}</span>
+              {isPlaying ? "Stop" : "Play"}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
