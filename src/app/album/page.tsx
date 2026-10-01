@@ -101,6 +101,7 @@ export default function AlbumPage() {
               className={styles.category}
               id={category.id}
               key={category.id}
+              data-section-navigator
               aria-labelledby={`${category.id}-heading`}
             >
               <div className={styles.categoryHeader}>

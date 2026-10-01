@@ -26,7 +26,12 @@ export function SectionNavigator() {
 
   function move() {
     if (atBottom) return window.scrollTo({ top: 0, behavior: "smooth" });
-    const sections = Array.from(document.querySelectorAll<HTMLElement>("main > section"));
+    const explicitSections = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-section-navigator]"),
+    );
+    const sections = explicitSections.length
+      ? explicitSections
+      : Array.from(document.querySelectorAll<HTMLElement>("main > section"));
     const advanceThreshold = Math.max(160, window.innerHeight * 0.2);
     const next = sections.find((section) => section.getBoundingClientRect().top > advanceThreshold);
     if (next) next.scrollIntoView({ behavior: "smooth", block: "start" });
