@@ -29,11 +29,13 @@ type OpenState = {
     openMinutes: number;
     busy: boolean;
     isMatch: boolean;
+    knownAs: string | null;
   }[];
   incoming: {
     id: string;
     fromId: string;
     fromName: string;
+    knownAs: string | null;
     expiresAt: string;
   } | null;
   outgoing: { id: string; toName: string; expiresAt: string } | null;
@@ -613,6 +615,11 @@ export default function OpenToSpillPage() {
                     {p.isMatch && (
                       <i className="opMatchTag">You SPILLed before</i>
                     )}
+                    {p.knownAs && (
+                      <small className="opKnownAs">
+                        You met them as {p.knownAs}
+                      </small>
+                    )}
                     <small>
                       {p.busy
                         ? "Answering an invite"
@@ -665,6 +672,12 @@ export default function OpenToSpillPage() {
           <div className="opInviteCard">
             <span className="opKicker">New invite</span>
             <h2>{incoming.fromName} wants to SPILL with you</h2>
+            {incoming.knownAs && (
+              <p className="opInviteKnown">
+                <i className="opMatchTag">You SPILLed before</i>
+                <span>You met them as {incoming.knownAs}</span>
+              </p>
+            )}
             <p>
               Say yes and {incoming.fromName} walks over to your table. Your
               table is only shared if you accept.
