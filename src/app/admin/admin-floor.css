@@ -2,9 +2,17 @@
    Red #E8472F · Neon #FF5638 · Deep Red #A82E22 · Near Black #111111 · Silver #C0C4C8 */
 
 .afFloor {
-  margin-top: 48px;
+  margin-bottom: 40px;
   display: grid;
   gap: 40px;
+}
+.afSectionTitle {
+  margin: 0 0 14px;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 400;
+  text-transform: uppercase;
 }
 .afBlock {
   display: grid;
