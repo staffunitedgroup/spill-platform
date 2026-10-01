@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import { createPortal } from "react-dom";
+import { AdminFloor } from "@/components/admin-floor";
 
 type AdminParticipant = { id: string; displayName: string; status: string };
 type AdminSession = {
@@ -451,6 +452,9 @@ export default function AdminPage() {
           ))}
         </div>
       )}
+
+      {/* Phase 2: tables at a glance, who's open, reports */}
+      <AdminFloor password={password} />
     </main>
   );
 }

@@ -858,13 +858,13 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #2fbf71;
-  box-shadow: 0 0 0 0 rgba(47, 191, 113, 0.6);
+  background: #ff5638;
+  box-shadow: 0 0 0 0 rgba(255, 86, 56, 0.6);
   animation: opLive 1.8s ease-out infinite;
 }
 @keyframes opLive {
   to {
-    box-shadow: 0 0 0 12px rgba(47, 191, 113, 0);
+    box-shadow: 0 0 0 12px rgba(255, 86, 56, 0);
   }
 }
 .opHide,
@@ -1100,7 +1100,7 @@
   place-items: center;
   border-radius: 50%;
   background: var(--meet);
-  color: #111;
+  color: var(--meet-ink, #111);
   font-family: var(--font-display);
   font-size: 72px;
   letter-spacing: 0.06em;
@@ -1132,4 +1132,99 @@
 }
 .opMeetInner .s42Primary {
   width: 100%;
+}
+
+/* The site-wide contact bubble covers game buttons and isn't in the SPILL 42
+   palette — hide it while a SPILL 42 screen is on. */
+body:has(.s42App) .floatingContact {
+  display: none;
+}
+
+/* ── Phase 2 · Pause / Leave / Report ───────────────────────── */
+
+.opTopActions {
+  display: flex;
+  gap: 8px;
+}
+.opLive.isPaused i {
+  background: #c0c4c8;
+  box-shadow: none;
+  animation: none;
+}
+.opLeave {
+  margin-top: 10px;
+}
+
+/* Flag button next to "Invite" */
+.opList li .opFlag {
+  width: 42px;
+  min-height: 42px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(192, 196, 200, 0.3);
+  background: transparent;
+  color: rgba(192, 196, 200, 0.75);
+}
+@media (hover: hover) {
+  .opList li .opFlag:hover:not(:disabled) {
+    border-color: #ff5638;
+    background: transparent;
+    color: #ff5638;
+  }
+}
+.opList li {
+  gap: 8px;
+}
+.opList li > div {
+  margin-right: auto;
+}
+
+/* Quiet text link: "Report Minh", "Something wrong? Report Linh" */
+.opReportLink {
+  margin: 14px auto 0;
+  padding: 6px 4px;
+  display: block;
+  border: 0;
+  background: none;
+  color: rgba(192, 196, 200, 0.7);
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+@media (hover: hover) {
+  .opReportLink:hover {
+    color: #ff5638;
+  }
+}
+
+/* Report sheet */
+.opReasons {
+  margin: 4px 0 12px;
+  display: grid;
+}
+.opReasons .opCheck {
+  margin: 0;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(192, 196, 200, 0.12);
+}
+.opReasons .opCheck input {
+  width: 20px;
+  height: 20px;
+}
+.opNoteField {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid rgba(192, 196, 200, 0.25);
+  border-radius: 12px;
+  background: #111111;
+  color: #fff;
+  font: inherit;
+  font-size: 16px;
+  resize: vertical;
+}
+.opNoteField:focus {
+  border-color: #e8472f;
+  outline: none;
 }

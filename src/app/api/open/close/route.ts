@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     return apiError("PRESENCE_NOT_FOUND", "You're not open to SPILL.", 404);
   }
 
-  if (me.status === "OPEN") {
+  if (me.status === "OPEN" || me.status === "PAUSED") {
     await prisma.$transaction([
       prisma.openPresence.update({
         where: { id: me.id },

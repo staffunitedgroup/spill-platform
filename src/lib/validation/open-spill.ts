@@ -26,3 +26,22 @@ export const respondInviteSchema = z.object({
   token,
   accept: z.boolean(),
 });
+
+export const pauseSchema = z.object({
+  token,
+  paused: z.boolean(),
+});
+
+export const REPORT_REASONS = [
+  "UNCOMFORTABLE",
+  "INAPPROPRIATE_NAME",
+  "SPAM",
+  "OTHER",
+] as const;
+
+export const reportSchema = z.object({
+  token,
+  targetId: z.string().trim().min(1, "targetId is required").max(50),
+  reason: z.enum(REPORT_REASONS),
+  note: z.string().trim().max(300, "Keep it under 300 characters").optional(),
+});

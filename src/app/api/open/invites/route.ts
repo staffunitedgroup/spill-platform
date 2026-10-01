@@ -7,6 +7,7 @@ import {
   apiError,
   expireStale,
   lockPresences,
+  blockedPresenceIds,
   readJson,
 } from "@/lib/open-spill";
 
@@ -69,6 +70,12 @@ export async function POST(req: NextRequest) {
       target.expiresAt <= now ||
       target.table.venueId !== fresh.table.venueId
     ) {
+      return { ok: false as const, error: "TARGET_UNAVAILABLE" as const };
+    }
+
+    // Reported (either way) → never connect these two.
+    const blocked = await blockedPresenceIds(me.id, tx);
+    if (blocked.has(toId)) {
       return { ok: false as const, error: "TARGET_UNAVAILABLE" as const };
     }
 

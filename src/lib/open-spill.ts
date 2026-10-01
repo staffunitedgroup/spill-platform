@@ -9,16 +9,14 @@ export const OPEN_MINUTES = 45;
 export const INVITE_SECONDS = 120;
 /** "Linh isn't available right now" stays on the inviter's screen this long. */
 export const INVITE_RESULT_SECONDS = 60;
+/** This many different people reporting someone hides them automatically. */
+export const AUTO_HIDE_REPORTS = 2;
 
-/** Both phones show the same colour + code so the two people spot each other. */
-// export const MEET_COLORS = [
-//   { name: "Red", hex: "#E8472F" },
-//   { name: "Blue", hex: "#3D7BFF" },
-//   { name: "Green", hex: "#2FBF71" },
-//   { name: "Yellow", hex: "#F5C518" },
-//   { name: "Purple", hex: "#9B5CFF" },
-//   { name: "Pink", hex: "#FF4FA3" },
-// ] as const;
+/**
+ * Both phones show the same colour + code so the two people spot each other.
+ * SPILL Saigon palette only; the 2-character code does the real matching.
+ * `ink` = text colour that stays readable on top of the colour.
+ */
 export const MEET_COLORS = [
   { name: "Red", hex: "#E8472F", ink: "#111111" },
   { name: "Silver", hex: "#C0C4C8", ink: "#111111" },
@@ -62,7 +60,7 @@ export async function expireStale(
     data: { status: "EXPIRED" },
   });
   await db.openPresence.updateMany({
-    where: { status: "OPEN", expiresAt: { lt: now } },
+    where: { status: { in: ["OPEN", "PAUSED"] }, expiresAt: { lt: now } },
     data: { status: "CLOSED" },
   });
 }
@@ -88,3 +86,22 @@ export async function lockPresences(tx: TxLike, ids: string[]) {
 }
 
 export const TX_OPTIONS = { maxWait: 10_000, timeout: 20_000 };
+
+/**
+ * Everyone this person must never see or be invited by again tonight:
+ * people they reported, and people who reported them.
+ */
+export async function blockedPresenceIds(
+  presenceId: string,
+  db: Pick<typeof prisma, "spillReport"> = prisma,
+): Promise<Set<string>> {
+  const rows = await db.spillReport.findMany({
+    where: { OR: [{ reporterId: presenceId }, { reportedId: presenceId }] },
+    select: { reporterId: true, reportedId: true },
+  });
+  return new Set(
+    rows.map((r) =>
+      r.reporterId === presenceId ? r.reportedId : r.reporterId,
+    ),
+  );
+}
