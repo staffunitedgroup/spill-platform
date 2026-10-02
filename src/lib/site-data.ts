@@ -38,9 +38,9 @@ export const locations: Location[] = [
   },
 ];
 
-// Where "Play SPILL 42" buttons go (header dropdown, mobile menu, What's On).
-// Change it here once — e.g. to a real table code or a table picker page.
-export const SPILL42_PLAY_HREF = "/spill/table/TEST01";
+// Where "Play SPILL 42" buttons go (header dropdown, mobile menu, What's On):
+// the SPILL 42 start page — scan your table's QR or enter its code.
+export const SPILL42_PLAY_HREF = "/spill-42";
 
 export const globalNavigation = [
   {

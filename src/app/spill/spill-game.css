@@ -1517,3 +1517,140 @@ body:has(.s42App) .floatingContact {
   width: 100%;
   min-height: 48px;
 }
+
+/* /spill-42 — start page: scan the table QR or type its code */
+.stScanner {
+  position: relative;
+  width: min(420px, 100%);
+  margin-top: 8px;
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+  color: #c0c4c8;
+  font-size: 15px;
+}
+.stView {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 18px;
+  background: #000;
+}
+.stView video {
+  width: 100%;
+  aspect-ratio: 1;
+  display: block;
+  object-fit: cover;
+}
+.stFrame {
+  position: absolute;
+  inset: 19%;
+  border: 2px solid #ff5638;
+  border-radius: 16px;
+  box-shadow: 0 0 0 9999px rgba(17, 17, 17, 0.35);
+  pointer-events: none;
+}
+.stScanner p {
+  margin: 0;
+}
+.stCode {
+  width: min(520px, 100%);
+  margin-top: 28px;
+  display: grid;
+  gap: 10px;
+}
+.stCode label {
+  color: #c0c4c8;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.stCode div {
+  display: flex;
+  gap: 10px;
+}
+.stCode input {
+  min-width: 0;
+  min-height: 52px;
+  flex: 1;
+  padding: 0 18px;
+  border: 1px solid rgba(192, 196, 200, 0.35);
+  border-radius: 14px;
+  background: #171717;
+  color: #fff;
+  font: inherit;
+  font-size: 17px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.stCode input::placeholder {
+  letter-spacing: 0;
+  text-transform: none;
+}
+.stCode input:focus-visible {
+  border-color: #ff5638;
+  outline: none;
+}
+.stCode button {
+  min-width: 76px;
+  border: 1px solid #e8472f;
+  border-radius: 14px;
+  background: none;
+  color: #ff5638;
+  font: inherit;
+  font-size: 15px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+@media (hover: hover) {
+  .stCode button:not(:disabled):hover {
+    background: #e8472f;
+    color: #111;
+  }
+}
+.stCode button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.stSteps {
+  width: min(520px, 100%);
+  margin: 36px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 14px;
+  list-style: none;
+  counter-reset: st;
+}
+.stSteps li {
+  padding-left: 44px;
+  position: relative;
+  display: grid;
+  gap: 2px;
+  counter-increment: st;
+}
+.stSteps li::before {
+  content: counter(st);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(232, 71, 47, 0.6);
+  border-radius: 50%;
+  color: #ff5638;
+  font-size: 14px;
+}
+.stSteps b {
+  color: #fff;
+  font-weight: 500;
+}
+.stSteps small {
+  color: rgba(192, 196, 200, 0.75);
+  font-size: 15px;
+}
