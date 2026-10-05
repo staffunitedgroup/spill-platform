@@ -9,6 +9,8 @@ export function generateStaticParams() { return locations.flatMap(({ slug }) => 
 export default async function LocalSection({ params }: { params: Promise<{ location: string; section: string }> }) {
   const { location: slug, section } = await params;
   const location = getLocation(slug); const sectionContent = localPageContent[section];
+  // Old address without the hyphen — keep any shared links working.
+  if (location && section === "spill42") redirect(`/${slug}/spill-42`);
   if (!location || (section !== "menu" && !sectionContent)) notFound();
   if (section === "menu" && slug === "saigon") return <MenuPage location={location} />;
   // Only Saigon has a menu so far — other cities go to their "coming soon" page instead of a 404.
