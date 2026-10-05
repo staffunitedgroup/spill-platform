@@ -390,3 +390,28 @@ model SpillNotification {
   @@index([aboutGuestId, toGuestId, createdAt])
   @@map("spill_notifications")
 }
+
+// ─────────────────────────────────────────
+// WEBSITE · WAITLIST / COMMUNITY SIGN-UP
+// ─────────────────────────────────────────
+
+// Someone who asked for launch news from the website (before and after opening).
+// One row per email per location; signing up again updates the row.
+model WaitlistSignup {
+  id           String   @id @default(cuid())
+  email        String
+  name         String?
+  whatsapp     String?
+  // "saigon", "tokyo"… — the SPILL they want to hear about.
+  locationSlug String   @map("location_slug")
+  // e.g. ["Opening news", "Events", "SPILL 42"]
+  interests    String[] @default([])
+  // Where on the site they signed up ("saigon-hero", "saigon-footer"…).
+  source       String?
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@unique([email, locationSlug])
+  @@index([locationSlug, createdAt])
+  @@map("waitlist_signups")
+}
