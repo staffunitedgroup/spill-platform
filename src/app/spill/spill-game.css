@@ -1356,6 +1356,20 @@ body:has(.s42App) .floatingContact {
 .htQuiet {
   margin: 12px 0 0;
 }
+.htQuiet a {
+  display: inline-block;
+  padding: 6px 0;
+  border-bottom: 1px solid transparent;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+@media (hover: hover) {
+  .htQuiet a:hover {
+    border-bottom-color: #e8472f;
+    color: #fff;
+  }
+}
 
 /* "You SPILLed before" tag in the Open list */
 .opMatchTag {

@@ -7,8 +7,6 @@ import { liveSince } from "@/lib/open-spill";
 
 /** At most one "they're back" per connection per day (checklist). */
 export const NOTIFY_EVERY_HOURS = 24;
-/** "Here tonight" stays on the other person's screen this long. */
-export const HERE_TONIGHT_HOURS = 6;
 
 type Tx = Parameters<Parameters<typeof prisma.$transaction>[0]>[0];
 
@@ -197,51 +195,44 @@ export async function notifyConnectionsOpen(opts: {
 
 /**
  * "Linh, your SPILL match, is here tonight" — for the signed-in guest.
- * Only while Linh is actually open to SPILL right now: once she leaves (or
- * Open switches itself off) the line disappears. Also hidden if I removed
- * Linh or turned off "Tell me when they're back".
+ * Worked out live from who is open right now (not from past emails), so it
+ * shows every time Linh is open — even when the once-a-day email limit means
+ * no new email went out. Hidden while Linh isn't open, if I removed her,
+ * turned off "Tell me when they're back", or paused all notifications.
  */
 export async function hereTonight(guestId: string) {
-  const since = new Date(Date.now() - HERE_TONIGHT_HOURS * 60 * 60 * 1000);
-  const [notes, connections] = await Promise.all([
-    prisma.spillNotification.findMany({
-      where: { toGuestId: guestId, createdAt: { gte: since } },
-      orderBy: { createdAt: "desc" },
-      select: { id: true, aboutGuestId: true, aboutName: true, createdAt: true },
+  const [me, connections] = await Promise.all([
+    prisma.guest.findUnique({
+      where: { id: guestId },
+      select: { notificationsPaused: true },
     }),
     connectionsOf(guestId),
   ]);
-  const wanted = new Set(
-    connections.filter((c) => c.notify).map((c) => c.otherGuestId),
-  );
-  // One line per person, newest first.
-  const seen = new Set<string>();
-  const unique = notes.filter((n) =>
-    !wanted.has(n.aboutGuestId) || seen.has(n.aboutGuestId)
-      ? false
-      : (seen.add(n.aboutGuestId), true),
-  );
-  if (unique.length === 0) return [];
+  if (!me || me.notificationsPaused) return [];
+  const wanted = connections.filter((c) => c.notify);
+  if (wanted.length === 0) return [];
+
   const now = new Date();
-  const openNow = new Set(
-    (
-      await prisma.openPresence.findMany({
-        where: {
-          guestId: { in: unique.map((n) => n.aboutGuestId) },
-          status: "OPEN",
-          expiresAt: { gt: now },
-          updatedAt: { gte: liveSince(now) },
-        },
-        select: { guestId: true },
-      })
-    ).map((p) => p.guestId),
-  );
-  return unique
-    .filter((n) => openNow.has(n.aboutGuestId))
-    .map((n) => ({
-      id: n.id,
-      name: n.aboutName,
-      at: n.createdAt,
+  const open = await prisma.openPresence.findMany({
+    where: {
+      guestId: { in: wanted.map((c) => c.otherGuestId) },
+      status: "OPEN",
+      expiresAt: { gt: now },
+      updatedAt: { gte: liveSince(now) },
+    },
+    orderBy: { createdAt: "desc" },
+    select: { guestId: true, createdAt: true },
+  });
+  const since = new Map<string, Date>();
+  for (const p of open) {
+    if (p.guestId && !since.has(p.guestId)) since.set(p.guestId, p.createdAt);
+  }
+  return wanted
+    .filter((c) => since.has(c.otherGuestId))
+    .map((c) => ({
+      id: c.id,
+      name: c.name,
+      at: since.get(c.otherGuestId)!,
       openNow: true,
     }));
 }

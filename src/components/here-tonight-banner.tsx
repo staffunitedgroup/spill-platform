@@ -14,14 +14,23 @@ export function HereTonightBanner({
   tableCode: string;
   showOpenLink?: boolean;
 }) {
-  const [here, setHere] = useState<Here[] | null>(null);
+  // null = still checking · "signedOut" = no account on this phone yet
+  const [here, setHere] = useState<Here[] | "signedOut" | null>(null);
 
   useEffect(() => {
     let cancelled = false;
+    const timer: { id?: ReturnType<typeof setInterval> } = {};
     const load = async () => {
       try {
         const res = await fetch("/api/me", { cache: "no-store" });
-        if (!res.ok) return; // not signed in → nothing to show
+        if (res.status === 401) {
+          // Not signed in on this phone — still show the way to "Your SPILL",
+          // and stop asking (nothing will change until they sign in).
+          if (!cancelled) setHere("signedOut");
+          clearInterval(timer.id);
+          return;
+        }
+        if (!res.ok) return;
         const json = await res.json();
         if (!cancelled) setHere(json.hereTonight ?? []);
       } catch {
@@ -30,19 +39,27 @@ export function HereTonightBanner({
     };
     load();
     // Someone may arrive while this screen is open — check again now and then.
-    const id = setInterval(load, 15_000);
+    timer.id = setInterval(load, 15_000);
     return () => {
       cancelled = true;
-      clearInterval(id);
+      clearInterval(timer.id);
     };
   }, []);
 
   if (!here) return null;
 
+  if (here === "signedOut") {
+    return (
+      <p className="htQuiet">
+        <Link href="/spill/me">Your SPILL · Sign in</Link>
+      </p>
+    );
+  }
+
   if (here.length === 0) {
     return (
       <p className="htQuiet">
-        <Link href="/spill/me">Your SPILL connections</Link>
+        <Link href="/spill/me">Your SPILL</Link>
       </p>
     );
   }
