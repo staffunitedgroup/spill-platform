@@ -1,3 +1,4 @@
+import { isSupportedCountry, parsePhoneNumberFromString } from "libphonenumber-js";
 import { prisma } from "@/lib/prisma";
 import { waitlistSchema } from "@/lib/validation/waitlist";
 
@@ -26,13 +27,25 @@ export async function POST(request: Request) {
     return Response.json({ error: message && !message.startsWith("Invalid") ? message : "Please check the form and try again." }, { status: 400 });
   }
 
-  const { website, email, name, whatsapp, locationSlug, interests, source } = parsed.data;
+  const { website, email, name, whatsapp, whatsappCountry, locationSlug, interests, source } = parsed.data;
   // Bots fill the hidden field — pretend it worked.
   if (website) return Response.json({ ok: true });
 
+  // Number + picked country → "+84 90 123 4567". A number typed with its own
+  // "+code" wins over the picker; a leading 0 (e.g. 090…) is handled too.
+  let phone: string | null = null;
+  if (whatsapp) {
+    const country = whatsappCountry && isSupportedCountry(whatsappCountry) ? whatsappCountry : "VN";
+    const parsedPhone = parsePhoneNumberFromString(whatsapp, country);
+    if (!parsedPhone?.isPossible()) {
+      return Response.json({ error: "Please check your WhatsApp number." }, { status: 400 });
+    }
+    phone = parsedPhone.formatInternational();
+  }
+
   const details = {
     name: name || null,
-    whatsapp: whatsapp || null,
+    whatsapp: phone,
     interests,
     source: source ?? null,
   };
