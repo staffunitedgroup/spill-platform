@@ -12595,3 +12595,291 @@ body:has(.s42App) .siteFooter {
   background: var(--red);
   color: #fff;
 }
+
+/* ── Waitlist sign-up (location home) ───────────────────────── */
+.waitlistStrip {
+  align-items: center;
+  flex-wrap: wrap;
+}
+.waitlistStrip > div {
+  flex: 1 1 380px;
+}
+.waitlistForm {
+  flex: 0 1 560px;
+  width: 100%;
+  border: 1px solid #26272c;
+}
+.waitlistForm label small {
+  color: #666;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+.waitlistInterests {
+  margin: 28px 0 0;
+  padding: 0;
+  border: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.waitlistInterests legend {
+  margin-bottom: 14px;
+  color: #aaa;
+  font-size: 15px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.inquiryForm .waitlistInterests label {
+  margin: 0;
+  display: inline-flex;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  cursor: pointer;
+}
+.inquiryForm .waitlistInterests input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.waitlistInterests span {
+  padding: 10px 16px;
+  border: 1px solid #45464b;
+  border-radius: 999px;
+  color: #ccc;
+  font-size: 14px;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease;
+}
+.waitlistInterests input:checked + span {
+  border-color: var(--red);
+  background: var(--red);
+  color: #fff;
+}
+.waitlistInterests input:focus-visible + span {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+.waitlistStatus.ok {
+  color: var(--cyan);
+}
+.waitlistStatus.error {
+  color: var(--red);
+}
+@media (max-width: 980px) {
+  .waitlistStrip {
+    align-items: stretch;
+  }
+  .waitlistForm {
+    flex-basis: auto;
+  }
+}
+@media (max-width: 620px) {
+  .waitlistStrip {
+    padding: 56px 16px;
+  }
+  .waitlistForm {
+    padding: 24px 18px;
+  }
+}
+
+/* ── Admin · waitlist ───────────────────────────────────────── */
+.adminWaitlistHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 24px 0 36px;
+}
+.adminWaitlistHead h1 {
+  margin: 18px 0 8px;
+  font-size: clamp(38px, 6vw, 64px);
+}
+.adminWaitlistHead p,
+.adminWaitlistEmpty {
+  color: var(--grey);
+  font-size: 15px;
+}
+.adminWaitlistBack {
+  color: var(--grey);
+  font-size: 14px;
+}
+.adminWaitlistLogin {
+  max-width: 460px;
+}
+.adminWaitlistBar {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.adminWaitlistBar label {
+  display: grid;
+  gap: 8px;
+  color: #aaa;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.adminWaitlistBar select {
+  min-width: 200px;
+  padding: 10px 12px;
+  border: 1px solid #45464b;
+  background: #111216;
+  color: #fff;
+  font: inherit;
+  font-size: 15px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.adminWaitlistBar strong {
+  margin-left: auto;
+  color: var(--white);
+}
+.adminWaitlistBar .button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.adminWaitlistTableWrap {
+  overflow-x: auto;
+  border: 1px solid #26272c;
+}
+.adminWaitlistTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.adminWaitlistTable th,
+.adminWaitlistTable td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #26272c;
+  text-align: left;
+  white-space: nowrap;
+}
+.adminWaitlistTable th {
+  color: #aaa;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.adminWaitlistTable td a {
+  color: var(--cyan);
+}
+
+/* ── Phone input with country picker ────────────────────────── */
+.phoneField {
+  position: relative;
+  margin-top: 24px;
+}
+.inquiryForm .phoneField label {
+  margin-top: 0;
+}
+.phoneRow {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid #45464b;
+}
+.phoneRow:focus-within {
+  border-color: var(--red);
+}
+.inquiryForm .phoneRow input {
+  border-bottom: 0;
+  min-width: 0;
+  flex: 1;
+}
+.phoneCountry {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 14px;
+  padding: 0 4px 0 0;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.phoneCountry i {
+  color: #777;
+  font-size: 11px;
+  font-style: normal;
+}
+.phoneCountry:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+.phoneFlag {
+  flex: none;
+  width: 21px;
+  height: 14px;
+  border-radius: 2px;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+.phonePanel {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  max-width: 420px;
+  border: 1px solid #36373c;
+  background: #16171b;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+}
+.inquiryForm .phonePanel .phoneSearch {
+  padding: 14px 16px;
+  border-bottom: 1px solid #2c2d32;
+  font-size: 15px;
+}
+.phoneList {
+  max-height: 280px;
+  margin: 0;
+  padding: 6px 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  list-style: none;
+}
+.phoneList li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  color: #ddd;
+  font-size: 15px;
+  cursor: pointer;
+}
+.phoneList li.active {
+  background: #24252b;
+}
+.phoneList li[aria-selected="true"] b {
+  color: var(--red);
+}
+.phoneList li.divider {
+  margin-bottom: 6px;
+  border-bottom: 1px solid #2c2d32;
+}
+.phoneName {
+  flex: 1;
+  display: grid;
+  min-width: 0;
+}
+.phoneName small {
+  color: #777;
+  font-size: 12px;
+}
+.phoneList b {
+  color: #999;
+  font-weight: 500;
+}
+.phoneEmpty {
+  color: #777 !important;
+  cursor: default !important;
+}
