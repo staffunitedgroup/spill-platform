@@ -30,6 +30,13 @@ export const waitlistSchema = z.object({
     .regex(/^[+\d\s().-]*$/, "Please enter a valid WhatsApp number")
     .optional()
     .or(z.literal("")),
+  /** ISO country picked next to the number, e.g. "VN". */
+  whatsappCountry: z
+    .string()
+    .trim()
+    .regex(/^[A-Z]{2}$/)
+    .optional()
+    .or(z.literal("")),
   locationSlug: z.enum(locationSlugs),
   interests: z.array(z.enum(WAITLIST_INTERESTS)).max(WAITLIST_INTERESTS.length).default([]),
   source: z.string().trim().max(60).optional(),

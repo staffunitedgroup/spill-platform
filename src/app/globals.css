@@ -12770,3 +12770,116 @@ body:has(.s42App) .siteFooter {
 .adminWaitlistTable td a {
   color: var(--cyan);
 }
+
+/* ── Phone input with country picker ────────────────────────── */
+.phoneField {
+  position: relative;
+  margin-top: 24px;
+}
+.inquiryForm .phoneField label {
+  margin-top: 0;
+}
+.phoneRow {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid #45464b;
+}
+.phoneRow:focus-within {
+  border-color: var(--red);
+}
+.inquiryForm .phoneRow input {
+  border-bottom: 0;
+  min-width: 0;
+  flex: 1;
+}
+.phoneCountry {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 14px;
+  padding: 0 4px 0 0;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.phoneCountry i {
+  color: #777;
+  font-size: 11px;
+  font-style: normal;
+}
+.phoneCountry:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+.phoneFlag {
+  flex: none;
+  width: 21px;
+  height: 14px;
+  border-radius: 2px;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+.phonePanel {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  max-width: 420px;
+  border: 1px solid #36373c;
+  background: #16171b;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+}
+.inquiryForm .phonePanel .phoneSearch {
+  padding: 14px 16px;
+  border-bottom: 1px solid #2c2d32;
+  font-size: 15px;
+}
+.phoneList {
+  max-height: 280px;
+  margin: 0;
+  padding: 6px 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  list-style: none;
+}
+.phoneList li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  color: #ddd;
+  font-size: 15px;
+  cursor: pointer;
+}
+.phoneList li.active {
+  background: #24252b;
+}
+.phoneList li[aria-selected="true"] b {
+  color: var(--red);
+}
+.phoneList li.divider {
+  margin-bottom: 6px;
+  border-bottom: 1px solid #2c2d32;
+}
+.phoneName {
+  flex: 1;
+  display: grid;
+  min-width: 0;
+}
+.phoneName small {
+  color: #777;
+  font-size: 12px;
+}
+.phoneList b {
+  color: #999;
+  font-weight: 500;
+}
+.phoneEmpty {
+  color: #777 !important;
+  cursor: default !important;
+}
