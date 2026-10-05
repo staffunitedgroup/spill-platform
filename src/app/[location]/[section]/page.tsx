@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { MenuPage } from "@/components/menu-page";
 import { PortalPage } from "@/components/portal-page";
 import { getLocation, localNavigation, locations } from "@/lib/site-data";
@@ -11,6 +11,8 @@ export default async function LocalSection({ params }: { params: Promise<{ locat
   const location = getLocation(slug); const sectionContent = localPageContent[section];
   if (!location || (section !== "menu" && !sectionContent)) notFound();
   if (section === "menu" && slug === "saigon") return <MenuPage location={location} />;
+  // Only Saigon has a menu so far — other cities go to their "coming soon" page instead of a 404.
+  if (section === "menu") redirect(`/${slug}`);
   if (!sectionContent) notFound();
   return <PortalPage location={location} eyebrow={location.name} {...sectionContent} />;
 }
