@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { PhoneInput } from "@/components/phone-input";
 import { WAITLIST_INTERESTS } from "@/lib/validation/waitlist";
 
 type Status = { tone: "idle" | "ok" | "error"; text: string };
@@ -37,6 +38,7 @@ export function WaitlistForm({
           email: String(data.get("email") ?? ""),
           name: String(data.get("name") ?? ""),
           whatsapp: String(data.get("whatsapp") ?? ""),
+          whatsappCountry: String(data.get("whatsappCountry") ?? ""),
           interests: data.getAll("interests").map(String),
           locationSlug,
           source,
@@ -71,12 +73,7 @@ export function WaitlistForm({
           <input name="email" type="email" autoComplete="email" required maxLength={200} />
         </label>
       </div>
-      <label>
-        <span>
-          WhatsApp <small>(optional)</small>
-        </span>
-        <input name="whatsapp" type="tel" autoComplete="tel" inputMode="tel" maxLength={40} placeholder="+84" />
-      </label>
+      <PhoneInput name="whatsapp" label="WhatsApp" optional />
       <fieldset className="waitlistInterests">
         <legend>Tell me about</legend>
         {WAITLIST_INTERESTS.map((interest) => (
