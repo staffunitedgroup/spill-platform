@@ -220,7 +220,7 @@ export const localPageContent: Record<
       { title: "Upcoming", text: "Plan the next reason to come back." },
     ],
   },
-  spill42: {
+  "spill-42": {
     title: "SPILL 42",
     description:
       "Forty-two prompts. Four ways to connect. One signature experience designed to help people put the phones down and meet in the real world.",
