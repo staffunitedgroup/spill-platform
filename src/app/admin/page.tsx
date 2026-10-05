@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import { createPortal } from "react-dom";
 import { AdminFloor } from "@/components/admin-floor";
@@ -302,6 +303,20 @@ export default function AdminPage() {
               .
             </p>
           </div>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+          <Link
+            href="/admin/waitlist"
+            style={{
+              border: "1px solid #444",
+              color: "var(--white)",
+              padding: "10px 18px",
+              fontSize: 13,
+              letterSpacing: ".08em",
+              textTransform: "uppercase",
+            }}
+          >
+            Waitlist
+          </Link>
           <button
             onClick={handleLogout}
             className="adminLogoutBtn"
@@ -318,6 +333,7 @@ export default function AdminPage() {
           >
             Log Out
           </button>
+          </div>
         </div>
       </div>
 
