@@ -4,6 +4,7 @@ import { SmoothScroll } from "@/components/smooth-scroll";
 import { SiteFooter } from "@/components/site-footer";
 import { SectionNavigator } from "@/components/section-navigator";
 import { FloatingContact } from "@/components/floating-contact";
+import { HideOnAdmin } from "@/components/hide-on-admin";
 import { PageTransition } from "@/components/page-transition";
 import { cookies } from "next/headers";
 import { SITE_ACCESS_COOKIE, hasValidSiteAccess } from "@/lib/site-access";
@@ -39,10 +40,14 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <>
             <SmoothScroll>
               <PageTransition>{children}</PageTransition>
-              <SiteFooter />
+              <HideOnAdmin>
+                <SiteFooter />
+              </HideOnAdmin>
             </SmoothScroll>
-            <SectionNavigator />
-            <FloatingContact phone={process.env.NEXT_PUBLIC_CONTACT_PHONE} />
+            <HideOnAdmin>
+              <SectionNavigator />
+              <FloatingContact phone={process.env.NEXT_PUBLIC_CONTACT_PHONE} />
+            </HideOnAdmin>
           </>
         ) : (
           <SiteLockscreen />

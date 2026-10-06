@@ -12883,3 +12883,773 @@ body:has(.s42App) .siteFooter {
   color: #777 !important;
   cursor: default !important;
 }
+
+/* ── Admin · events ─────────────────────────────────────────── */
+.adminLinks {
+  display: flex;
+  gap: 18px;
+  font-size: 14px;
+}
+.adminLinks a {
+  color: var(--grey);
+}
+.adminLinks a:hover {
+  color: var(--white);
+}
+.eventEditor {
+  margin-bottom: 28px;
+  border: 1px solid #26272c;
+}
+.eventEditor label small {
+  color: #666;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+.inquiryForm.eventEditor input[type="datetime-local"] {
+  color-scheme: dark;
+}
+.eventToggles {
+  margin-top: 26px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+}
+.inquiryForm .eventToggles label {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #ddd;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  cursor: pointer;
+}
+.inquiryForm .eventToggles input {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  accent-color: var(--red);
+}
+.eventEditorActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.eventEditorActions .button {
+  margin-top: 28px;
+}
+.adminEventsTable td {
+  vertical-align: middle;
+}
+.adminEventsTable td small {
+  display: block;
+  margin-top: 4px;
+  color: #777;
+  font-size: 12px;
+}
+.adminEventsTable tr.isPast {
+  opacity: 0.5;
+}
+.adminEventCell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  white-space: normal !important;
+  min-width: 260px;
+}
+.adminEventCell img {
+  flex: none;
+  width: 64px;
+  height: 40px;
+  object-fit: cover;
+}
+.adminEventCell a,
+.adminEventCell b {
+  color: var(--white);
+  font-weight: 500;
+}
+.adminPill {
+  margin-right: 6px;
+  padding: 6px 10px;
+  border: 1px solid #45464b;
+  border-radius: 999px;
+  background: transparent;
+  color: #999;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.adminPill.on {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+.adminLinkBtn {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--cyan);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+.adminLinkBtn.danger {
+  color: #ff6b7f;
+}
+.adminRowActions {
+  display: flex;
+  gap: 14px;
+}
+.adminGuestRow td {
+  background: #0e0f12;
+  white-space: normal !important;
+}
+.adminGuestRow ul {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 6px;
+  color: #ccc;
+}
+.adminGuestRow a {
+  color: var(--cyan);
+}
+
+/* ── What's On · lists ──────────────────────────────────────── */
+.whatsOnHero {
+  min-height: 52svh;
+}
+.whatsOnFilters {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  padding: 16px clamp(16px, 5vw, 72px);
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-block: 1px solid #26272c;
+  background: rgba(9, 9, 9, 0.92);
+  backdrop-filter: blur(10px);
+}
+.whatsOnFilters::-webkit-scrollbar {
+  display: none;
+}
+.whatsOnFilters a {
+  flex: none;
+  padding: 10px 18px;
+  border: 1px solid #3a3b40;
+  border-radius: 999px;
+  color: #ccc;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease;
+}
+.whatsOnFilters a:hover {
+  border-color: #777;
+  color: #fff;
+}
+.whatsOnFilters a.active {
+  border-color: var(--red);
+  background: var(--red);
+  color: #fff;
+}
+.whatsOnBody {
+  padding: clamp(36px, 5vw, 72px) clamp(16px, 5vw, 72px) clamp(60px, 8vw, 110px);
+}
+.eventDays {
+  display: grid;
+  gap: clamp(44px, 6vw, 80px);
+}
+.eventDay h2 {
+  margin-bottom: 22px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #26272c;
+  font-size: clamp(26px, 3.4vw, 44px);
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+.eventGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: clamp(16px, 2vw, 26px);
+}
+.eventCard {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #26272c;
+  background: #111216;
+  color: inherit;
+  transition:
+    border-color 0.25s ease,
+    transform 0.25s ease;
+}
+.eventCard:hover {
+  border-color: #4a4b52;
+  transform: translateY(-3px);
+}
+.eventCardMedia {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: #1a1b20;
+}
+.eventCardMedia img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+.eventCard:hover .eventCardMedia img {
+  transform: scale(1.04);
+}
+.eventCardMedia .eventTag {
+  position: absolute;
+  left: 14px;
+  top: 14px;
+}
+.eventTag {
+  display: inline-block;
+  padding: 6px 11px;
+  border-radius: 999px;
+  background: rgba(9, 9, 9, 0.78);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  backdrop-filter: blur(6px);
+}
+.eventTag.cat-spill-42 {
+  background: var(--red);
+}
+.eventTag.cat-live {
+  background: var(--cyan);
+  color: #061316;
+}
+.eventTag.live {
+  background: var(--red);
+}
+.eventTag.past {
+  background: #333;
+  color: #bbb;
+}
+.eventCardBody {
+  flex: 1;
+  padding: 20px 22px 22px;
+  display: flex;
+  flex-direction: column;
+}
+.eventCardWhen {
+  margin-bottom: 10px;
+  color: var(--cyan);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.eventCardWhen span {
+  color: #888;
+}
+.eventCardBody h3 {
+  margin-bottom: 10px;
+  font-size: clamp(21px, 2vw, 26px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+.eventCardSummary {
+  margin-bottom: 18px;
+  color: #a9a9ae;
+  font-size: 15px;
+  line-height: 1.55;
+}
+.eventCardMore {
+  margin-top: auto;
+  color: #fff;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.eventCardMore span {
+  color: var(--red);
+}
+.eventsEmpty {
+  max-width: 640px;
+  padding: clamp(28px, 4vw, 48px);
+  border: 1px solid #26272c;
+  background: #111216;
+}
+.eventsEmpty h2 {
+  margin: 12px 0 14px;
+  font-size: clamp(26px, 3.4vw, 40px);
+  letter-spacing: -0.03em;
+}
+.eventsEmpty p:not(.eyebrow) {
+  margin-bottom: 26px;
+  color: #a9a9ae;
+  line-height: 1.6;
+}
+.eventsEmpty .button span,
+.whatsOnSpill42 .button span {
+  margin-left: 14px;
+}
+.whatsOnSpill42 {
+  margin: 0 clamp(16px, 5vw, 72px) clamp(60px, 8vw, 110px);
+  padding: clamp(26px, 4vw, 44px);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  border: 1px solid #3a1820;
+  background: radial-gradient(circle at 90% 50%, rgba(255, 24, 56, 0.2), transparent 45%), #111216;
+}
+.whatsOnSpill42 h2 {
+  margin: 10px 0 8px;
+  font-size: clamp(24px, 3vw, 36px);
+  letter-spacing: -0.02em;
+}
+.whatsOnSpill42 p:not(.eyebrow) {
+  margin: 0;
+  color: #a9a9ae;
+}
+
+/* ── What's On · event page ─────────────────────────────────── */
+.eventHero {
+  position: relative;
+  min-height: min(78svh, 760px);
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+.eventHeroMedia {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.eventHeroVeil {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(9, 9, 9, 0.35) 0%, rgba(9, 9, 9, 0.55) 45%, #090909 100%),
+    linear-gradient(90deg, rgba(9, 9, 9, 0.7), transparent 70%);
+}
+.eventHeroContent {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1100px;
+  padding: clamp(40px, 7vw, 100px) clamp(16px, 5vw, 72px) clamp(36px, 5vw, 64px);
+}
+.eventBack {
+  display: inline-block;
+  margin-bottom: 26px;
+  color: #ccc;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+}
+.eventBack:hover {
+  color: #fff;
+}
+.eventHeroTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+.eventHero h1 {
+  margin: 0 0 22px;
+  font-size: clamp(42px, 7.5vw, 104px);
+  line-height: 0.92;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+}
+.eventHeroWhen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin: 0;
+  color: #fff;
+  font-size: clamp(17px, 2vw, 22px);
+  font-weight: 600;
+}
+.eventHeroWhen span {
+  color: #bdbdc2;
+  font-weight: 400;
+}
+.eventHeroWhen span::before {
+  content: "·";
+  margin-right: 18px;
+  color: var(--red);
+}
+.eventHero .actions .button span {
+  margin-left: 14px;
+}
+.eventBody {
+  padding: clamp(36px, 5vw, 72px) clamp(16px, 5vw, 72px) clamp(70px, 9vw, 120px);
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(320px, 1fr);
+  gap: clamp(32px, 5vw, 72px);
+  align-items: start;
+}
+.eventAbout {
+  min-width: 0;
+}
+.eventAbout p {
+  max-width: 720px;
+  color: #c4c4c9;
+  font-size: 17px;
+  line-height: 1.75;
+}
+.eventAbout .eventLead {
+  color: #fff;
+  font-size: clamp(20px, 2.2vw, 26px);
+  line-height: 1.5;
+}
+.eventVideo {
+  position: relative;
+  margin: 30px 0;
+  aspect-ratio: 16 / 9;
+  border: 1px solid #26272c;
+  background: #000;
+}
+.eventVideo iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.shareEvent {
+  margin-top: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.shareEvent button,
+.shareEvent a {
+  padding: 11px 18px;
+  border: 1px solid #3a3b40;
+  background: transparent;
+  color: #ddd;
+  font: inherit;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+.shareEvent button:hover,
+.shareEvent a:hover {
+  border-color: #888;
+  color: #fff;
+}
+.eventSide {
+  position: sticky;
+  top: 24px;
+}
+.rsvpForm {
+  border: 1px solid #26272c;
+}
+.rsvpForm .phoneField {
+  margin-top: 24px;
+}
+.rsvpPair {
+  align-items: end;
+}
+.rsvpDone h3 {
+  margin: 14px 0 12px;
+  font-size: clamp(24px, 2.6vw, 32px);
+  letter-spacing: -0.02em;
+}
+.rsvpDone p:not(.eyebrow) {
+  color: #a9a9ae;
+  line-height: 1.6;
+}
+.rsvpDone .button {
+  margin-top: 18px;
+}
+@media (max-width: 900px) {
+  .eventBody {
+    grid-template-columns: 1fr;
+  }
+  .eventSide {
+    position: static;
+  }
+}
+@media (max-width: 600px) {
+  .rsvpPair {
+    gap: 0;
+  }
+  .eventHeroWhen span::before {
+    display: none;
+  }
+  .eventHeroWhen {
+    flex-direction: column;
+  }
+}
+
+/* Global homepage · real events are links */
+.eventListLink {
+  display: block;
+  color: inherit;
+}
+.eventListLink:hover h3 {
+  color: var(--red);
+}
+
+/* Location home · coming up */
+.upcomingStrip {
+  padding: clamp(50px, 7vw, 100px) clamp(16px, 5vw, 72px);
+  background: #090909;
+}
+.upcomingStripHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px 30px;
+  margin-bottom: clamp(24px, 3vw, 40px);
+}
+.upcomingStripHead h2 {
+  margin: 12px 0 0;
+  font-size: clamp(34px, 5vw, 70px);
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+}
+
+/* ── Dropdowns (all forms) ──────────────────────────────────────
+   Size to the selected text so the arrow sits right next to it,
+   instead of at the far edge of a full-width field. One custom
+   chevron so every browser looks the same. */
+.inquiryForm select,
+.podInquiryForm select,
+.portalFilters select,
+.adminWaitlistBar select {
+  appearance: none;
+  -webkit-appearance: none;
+  width: auto;
+  min-width: 12ch;
+  max-width: 100%;
+  /* Labels are grids — without this the select still stretches full width. */
+  justify-self: start;
+  align-self: start;
+  padding-right: 30px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23bbbbbb' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 12px 8px;
+  cursor: pointer;
+}
+.inquiryForm select:hover,
+.podInquiryForm select:hover,
+.portalFilters select:hover,
+.adminWaitlistBar select:hover {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23ff1838' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.inquiryForm select:focus-visible,
+.podInquiryForm select:focus-visible,
+.adminWaitlistBar select:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+}
+.inquiryForm select option,
+.adminWaitlistBar select option {
+  background: #111216;
+  color: #fff;
+}
+
+/* ── Admin polish ───────────────────────────────────────────── */
+.adminWaitlist {
+  padding-bottom: 80px;
+}
+.eventEditorHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.editorSection {
+  margin: 28px 0 0;
+  padding: 0 0 4px;
+  border: 0;
+  border-top: 1px solid #26272c;
+}
+.editorSection legend {
+  padding: 22px 0 0;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.inquiryForm .fieldLabel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+}
+.inquiryForm .fieldLabel small {
+  color: #6f7076;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+.editorImageRow {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 20px;
+  align-items: end;
+}
+.editorImageRow img {
+  width: 120px;
+  height: 75px;
+  object-fit: cover;
+  border: 1px solid #26272c;
+}
+.slugField {
+  display: flex;
+  align-items: baseline;
+  border-bottom: 1px solid #45464b;
+}
+.slugField > span {
+  color: #6f7076;
+  font-size: 14px;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: nowrap;
+}
+.inquiryForm .slugField input {
+  border-bottom: 0;
+  padding-left: 2px;
+}
+.slugField:focus-within {
+  border-color: var(--red);
+}
+.visibilityChoice {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.inquiryForm .visibilityChoice label {
+  margin: 0;
+  padding: 16px 18px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  border: 1px solid #36373c;
+  color: #ddd;
+  letter-spacing: 0;
+  text-transform: none;
+  cursor: pointer;
+}
+.inquiryForm .visibilityChoice input {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  padding: 0;
+  accent-color: var(--red);
+}
+.visibilityChoice span {
+  display: grid;
+  gap: 4px;
+}
+.visibilityChoice b {
+  font-size: 15px;
+}
+.visibilityChoice small {
+  color: #8a8b90;
+  font-size: 13px;
+}
+.inquiryForm .visibilityChoice label.on {
+  border-color: var(--red);
+  background: rgba(255, 24, 56, 0.08);
+}
+.adminPill.draft {
+  border-color: #b8862b;
+  color: #e8b339;
+}
+.adminEventsTable .adminActionsCell .adminRowActions {
+  justify-content: flex-end;
+}
+
+/* Admin tables become cards on phones (no sideways scrolling). */
+@media (max-width: 760px) {
+  .adminWaitlistTableWrap {
+    overflow: visible;
+    border: 0;
+  }
+  .adminWaitlistTable thead {
+    display: none;
+  }
+  .adminWaitlistTable,
+  .adminWaitlistTable tbody,
+  .adminWaitlistTable tr,
+  .adminWaitlistTable td {
+    display: block;
+    width: 100%;
+  }
+  .adminWaitlistTable tr {
+    margin-bottom: 12px;
+    padding: 14px 16px;
+    border: 1px solid #26272c;
+    background: #0e0f12;
+  }
+  .adminWaitlistTable td {
+    padding: 6px 0;
+    border: 0;
+    white-space: normal;
+  }
+  .adminWaitlistTable td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 2px;
+    color: #6f7076;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .adminEventCell {
+    min-width: 0;
+  }
+  .adminEventsTable .adminActionsCell .adminRowActions {
+    justify-content: flex-start;
+    padding-top: 6px;
+  }
+  .adminWaitlistBar strong {
+    margin-left: 0;
+  }
+  .visibilityChoice,
+  .editorImageRow {
+    grid-template-columns: 1fr;
+  }
+  .editorImageRow img {
+    width: 100%;
+    height: 140px;
+  }
+}
+
+/* Same chevron for the phone country picker */
+.phoneCountry i {
+  width: 12px;
+  height: 8px;
+  font-size: 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23bbbbbb' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+    no-repeat center / 12px 8px;
+  transition: transform 0.2s ease;
+}
+.phoneCountry[aria-expanded="true"] i {
+  transform: rotate(180deg);
+}
+/* Section titles sit under a full-width rule, not inside it */
+.editorSection {
+  border-top: 0;
+}
+.editorSection legend {
+  width: 100%;
+  border-top: 1px solid #26272c;
+}

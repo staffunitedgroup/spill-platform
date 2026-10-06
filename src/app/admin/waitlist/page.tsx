@@ -110,9 +110,10 @@ export default function WaitlistAdminPage() {
           <h1>Waitlist</h1>
           <p>People who asked for opening news from the website.</p>
         </div>
-        <Link href="/admin" className="adminWaitlistBack">
-          ← Active tables
-        </Link>
+        <nav className="adminLinks">
+          <Link href="/admin">← Active tables</Link>
+          <Link href="/admin/events">Events</Link>
+        </nav>
       </header>
 
       {!password ? (
@@ -158,19 +159,23 @@ export default function WaitlistAdminPage() {
                     <th>WhatsApp</th>
                     <th>Location</th>
                     <th>Interests</th>
+                    <th>Source</th>
                   </tr>
                 </thead>
                 <tbody>
                   {signups.map((s) => (
                     <tr key={s.id}>
-                      <td>{formatDate(s.createdAt)}</td>
-                      <td>{s.name || "—"}</td>
-                      <td>
+                      <td data-label="Signed up">{formatDate(s.createdAt)}</td>
+                      <td data-label="Name">{s.name || "—"}</td>
+                      <td data-label="Email">
                         <a href={`mailto:${s.email}`}>{s.email}</a>
                       </td>
-                      <td>{s.whatsapp || "—"}</td>
-                      <td>{s.locationSlug}</td>
-                      <td>{s.interests.join(", ") || "—"}</td>
+                      <td data-label="WhatsApp">{s.whatsapp || "—"}</td>
+                      <td data-label="Location">{s.locationSlug}</td>
+                      <td data-label="Interests">{s.interests.join(", ") || "—"}</td>
+                      <td data-label="Source">
+                        <SourceLabel source={s.source} location={s.locationSlug} />
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -181,4 +186,18 @@ export default function WaitlistAdminPage() {
       )}
     </main>
   );
+}
+
+/** "event:founder-night" → a link to that event; "saigon-home" → "Waitlist form". */
+function SourceLabel({ source, location }: { source: string | null; location: string }) {
+  if (source?.startsWith("event:")) {
+    const slug = source.slice("event:".length);
+    return (
+      <a href={`/${location}/whats-on/${slug}`} target="_blank" rel="noreferrer">
+        Event: {slug} ↗
+      </a>
+    );
+  }
+  if (source) return <>Waitlist form</>;
+  return <>—</>;
 }

@@ -317,6 +317,19 @@ export default function AdminPage() {
           >
             Waitlist
           </Link>
+          <Link
+            href="/admin/events"
+            style={{
+              border: "1px solid #444",
+              color: "var(--white)",
+              padding: "10px 18px",
+              fontSize: 13,
+              letterSpacing: ".08em",
+              textTransform: "uppercase",
+            }}
+          >
+            Events
+          </Link>
           <button
             onClick={handleLogout}
             className="adminLogoutBtn"
