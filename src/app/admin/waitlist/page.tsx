@@ -165,15 +165,15 @@ export default function WaitlistAdminPage() {
                 <tbody>
                   {signups.map((s) => (
                     <tr key={s.id}>
-                      <td>{formatDate(s.createdAt)}</td>
-                      <td>{s.name || "—"}</td>
-                      <td>
+                      <td data-label="Signed up">{formatDate(s.createdAt)}</td>
+                      <td data-label="Name">{s.name || "—"}</td>
+                      <td data-label="Email">
                         <a href={`mailto:${s.email}`}>{s.email}</a>
                       </td>
-                      <td>{s.whatsapp || "—"}</td>
-                      <td>{s.locationSlug}</td>
-                      <td>{s.interests.join(", ") || "—"}</td>
-                      <td>
+                      <td data-label="WhatsApp">{s.whatsapp || "—"}</td>
+                      <td data-label="Location">{s.locationSlug}</td>
+                      <td data-label="Interests">{s.interests.join(", ") || "—"}</td>
+                      <td data-label="Source">
                         <SourceLabel source={s.source} location={s.locationSlug} />
                       </td>
                     </tr>

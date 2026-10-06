@@ -13421,3 +13421,235 @@ body:has(.s42App) .siteFooter {
   letter-spacing: -0.05em;
   text-transform: uppercase;
 }
+
+/* ── Dropdowns (all forms) ──────────────────────────────────────
+   Size to the selected text so the arrow sits right next to it,
+   instead of at the far edge of a full-width field. One custom
+   chevron so every browser looks the same. */
+.inquiryForm select,
+.podInquiryForm select,
+.portalFilters select,
+.adminWaitlistBar select {
+  appearance: none;
+  -webkit-appearance: none;
+  width: auto;
+  min-width: 12ch;
+  max-width: 100%;
+  /* Labels are grids — without this the select still stretches full width. */
+  justify-self: start;
+  align-self: start;
+  padding-right: 30px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23bbbbbb' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 12px 8px;
+  cursor: pointer;
+}
+.inquiryForm select:hover,
+.podInquiryForm select:hover,
+.portalFilters select:hover,
+.adminWaitlistBar select:hover {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23ff1838' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.inquiryForm select:focus-visible,
+.podInquiryForm select:focus-visible,
+.adminWaitlistBar select:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+}
+.inquiryForm select option,
+.adminWaitlistBar select option {
+  background: #111216;
+  color: #fff;
+}
+
+/* ── Admin polish ───────────────────────────────────────────── */
+.adminWaitlist {
+  padding-bottom: 80px;
+}
+.eventEditorHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.editorSection {
+  margin: 28px 0 0;
+  padding: 0 0 4px;
+  border: 0;
+  border-top: 1px solid #26272c;
+}
+.editorSection legend {
+  padding: 22px 0 0;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.inquiryForm .fieldLabel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+}
+.inquiryForm .fieldLabel small {
+  color: #6f7076;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+.editorImageRow {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 20px;
+  align-items: end;
+}
+.editorImageRow img {
+  width: 120px;
+  height: 75px;
+  object-fit: cover;
+  border: 1px solid #26272c;
+}
+.slugField {
+  display: flex;
+  align-items: baseline;
+  border-bottom: 1px solid #45464b;
+}
+.slugField > span {
+  color: #6f7076;
+  font-size: 14px;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: nowrap;
+}
+.inquiryForm .slugField input {
+  border-bottom: 0;
+  padding-left: 2px;
+}
+.slugField:focus-within {
+  border-color: var(--red);
+}
+.visibilityChoice {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.inquiryForm .visibilityChoice label {
+  margin: 0;
+  padding: 16px 18px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  border: 1px solid #36373c;
+  color: #ddd;
+  letter-spacing: 0;
+  text-transform: none;
+  cursor: pointer;
+}
+.inquiryForm .visibilityChoice input {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  padding: 0;
+  accent-color: var(--red);
+}
+.visibilityChoice span {
+  display: grid;
+  gap: 4px;
+}
+.visibilityChoice b {
+  font-size: 15px;
+}
+.visibilityChoice small {
+  color: #8a8b90;
+  font-size: 13px;
+}
+.inquiryForm .visibilityChoice label.on {
+  border-color: var(--red);
+  background: rgba(255, 24, 56, 0.08);
+}
+.adminPill.draft {
+  border-color: #b8862b;
+  color: #e8b339;
+}
+.adminEventsTable .adminActionsCell .adminRowActions {
+  justify-content: flex-end;
+}
+
+/* Admin tables become cards on phones (no sideways scrolling). */
+@media (max-width: 760px) {
+  .adminWaitlistTableWrap {
+    overflow: visible;
+    border: 0;
+  }
+  .adminWaitlistTable thead {
+    display: none;
+  }
+  .adminWaitlistTable,
+  .adminWaitlistTable tbody,
+  .adminWaitlistTable tr,
+  .adminWaitlistTable td {
+    display: block;
+    width: 100%;
+  }
+  .adminWaitlistTable tr {
+    margin-bottom: 12px;
+    padding: 14px 16px;
+    border: 1px solid #26272c;
+    background: #0e0f12;
+  }
+  .adminWaitlistTable td {
+    padding: 6px 0;
+    border: 0;
+    white-space: normal;
+  }
+  .adminWaitlistTable td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 2px;
+    color: #6f7076;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .adminEventCell {
+    min-width: 0;
+  }
+  .adminEventsTable .adminActionsCell .adminRowActions {
+    justify-content: flex-start;
+    padding-top: 6px;
+  }
+  .adminWaitlistBar strong {
+    margin-left: 0;
+  }
+  .visibilityChoice,
+  .editorImageRow {
+    grid-template-columns: 1fr;
+  }
+  .editorImageRow img {
+    width: 100%;
+    height: 140px;
+  }
+}
+
+/* Same chevron for the phone country picker */
+.phoneCountry i {
+  width: 12px;
+  height: 8px;
+  font-size: 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23bbbbbb' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+    no-repeat center / 12px 8px;
+  transition: transform 0.2s ease;
+}
+.phoneCountry[aria-expanded="true"] i {
+  transform: rotate(180deg);
+}
+/* Section titles sit under a full-width rule, not inside it */
+.editorSection {
+  border-top: 0;
+}
+.editorSection legend {
+  width: 100%;
+  border-top: 1px solid #26272c;
+}

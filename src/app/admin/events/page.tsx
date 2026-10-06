@@ -228,87 +228,142 @@ export default function EventsAdminPage() {
 
           {editing && (
             <form className="inquiryForm eventEditor" onSubmit={save}>
-              <p className="eyebrow">{editing.id ? "Edit event" : "New event"}</p>
-              <div className="formPair">
-                <label>
-                  Location
-                  <select value={editing.form.locationSlug} onChange={(e) => set("locationSlug", e.target.value)}>
-                    {locations.map((l) => (
-                      <option key={l.slug} value={l.slug}>
-                        {l.name}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label>
-                  Type
-                  <select value={editing.form.category} onChange={(e) => set("category", e.target.value as EventCategoryKey)}>
-                    {EVENT_CATEGORIES.map((c) => (
-                      <option key={c} value={c}>
-                        {CATEGORY_META[c].label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
+              <div className="eventEditorHead">
+                <p className="eyebrow">{editing.id ? "Edit event" : "New event"}</p>
+                <button className="adminLinkBtn" type="button" onClick={() => setEditing(null)} aria-label="Close without saving">
+                  ✕ Close
+                </button>
               </div>
-              <label>
-                Title
-                <input value={editing.form.title} onChange={(e) => set("title", e.target.value)} required maxLength={120} />
-              </label>
-              <label>
-                Summary <small>(one or two lines — shown on cards and when the link is shared)</small>
-                <input value={editing.form.summary} onChange={(e) => set("summary", e.target.value)} required maxLength={240} />
-              </label>
-              <label>
-                Description <small>(optional)</small>
-                <textarea rows={5} value={editing.form.description} onChange={(e) => set("description", e.target.value)} maxLength={5000} />
-              </label>
-              <div className="formPair">
+
+              <fieldset className="editorSection">
+                <legend>The basics</legend>
+                <div className="formPair">
+                  <label>
+                    <span className="fieldLabel">Location</span>
+                    <select value={editing.form.locationSlug} onChange={(e) => set("locationSlug", e.target.value)}>
+                      {locations.map((l) => (
+                        <option key={l.slug} value={l.slug}>
+                          {l.name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label>
+                    <span className="fieldLabel">Type</span>
+                    <select value={editing.form.category} onChange={(e) => set("category", e.target.value as EventCategoryKey)}>
+                      {EVENT_CATEGORIES.map((c) => (
+                        <option key={c} value={c}>
+                          {CATEGORY_META[c].label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
                 <label>
-                  Starts <small>({tzOf(editing.form.locationSlug).split("/")[1].replace("_", " ")} time)</small>
-                  <input type="datetime-local" value={editing.form.startsAt} onChange={(e) => set("startsAt", e.target.value)} required />
+                  <span className="fieldLabel">Title</span>
+                  <input value={editing.form.title} onChange={(e) => set("title", e.target.value)} required maxLength={120} placeholder="Founder Night" />
                 </label>
                 <label>
-                  Ends <small>(optional)</small>
-                  <input type="datetime-local" value={editing.form.endsAt} onChange={(e) => set("endsAt", e.target.value)} />
-                </label>
-              </div>
-              <label>
-                Image <small>(optional — https:// link or /assets/… path; leave empty for the default {CATEGORY_META[editing.form.category].label} image)</small>
-                <input value={editing.form.imageUrl} onChange={(e) => set("imageUrl", e.target.value)} placeholder="https://…" />
-              </label>
-              <div className="formPair">
-                <label>
-                  Ticket / booking link <small>(optional)</small>
-                  <input value={editing.form.ticketUrl} onChange={(e) => set("ticketUrl", e.target.value)} placeholder="https://…" />
+                  <span className="fieldLabel">
+                    Summary <small>One or two lines — shown on cards and link previews</small>
+                  </span>
+                  <input value={editing.form.summary} onChange={(e) => set("summary", e.target.value)} required maxLength={240} />
                 </label>
                 <label>
-                  YouTube link <small>(for livestreams)</small>
-                  <input value={editing.form.youtubeUrl} onChange={(e) => set("youtubeUrl", e.target.value)} placeholder="https://youtube.com/live/…" />
+                  <span className="fieldLabel">
+                    Description <small>Optional · leave a blank line between paragraphs</small>
+                  </span>
+                  <textarea rows={4} value={editing.form.description} onChange={(e) => set("description", e.target.value)} maxLength={5000} />
                 </label>
-              </div>
-              <label>
-                Page link <small>(optional — made from the title if empty)</small>
-                <input value={editing.form.slug} onChange={(e) => set("slug", e.target.value)} placeholder="founder-night" />
-              </label>
-              <div className="eventToggles">
+              </fieldset>
+
+              <fieldset className="editorSection">
+                <legend>When · {getLocation(editing.form.locationSlug)?.city ?? ""} time</legend>
+                <div className="formPair">
+                  <label>
+                    <span className="fieldLabel">Starts</span>
+                    <input type="datetime-local" value={editing.form.startsAt} onChange={(e) => set("startsAt", e.target.value)} required />
+                  </label>
+                  <label>
+                    <span className="fieldLabel">
+                      Ends <small>Optional</small>
+                    </span>
+                    <input type="datetime-local" value={editing.form.endsAt} onChange={(e) => set("endsAt", e.target.value)} />
+                  </label>
+                </div>
+              </fieldset>
+
+              <fieldset className="editorSection">
+                <legend>Image & links</legend>
+                <div className="editorImageRow">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={editing.form.imageUrl || CATEGORY_META[editing.form.category].image} alt="" />
+                  <label>
+                    <span className="fieldLabel">
+                      Image <small>Optional · empty = default {CATEGORY_META[editing.form.category].label} image</small>
+                    </span>
+                    <input value={editing.form.imageUrl} onChange={(e) => set("imageUrl", e.target.value)} placeholder="https://… or /assets/…" />
+                  </label>
+                </div>
+                <div className="formPair">
+                  <label>
+                    <span className="fieldLabel">
+                      Ticket / booking link <small>Optional</small>
+                    </span>
+                    <input value={editing.form.ticketUrl} onChange={(e) => set("ticketUrl", e.target.value)} placeholder="https://…" />
+                  </label>
+                  <label>
+                    <span className="fieldLabel">
+                      YouTube link <small>For livestreams</small>
+                    </span>
+                    <input value={editing.form.youtubeUrl} onChange={(e) => set("youtubeUrl", e.target.value)} placeholder="https://youtube.com/live/…" />
+                  </label>
+                </div>
                 <label>
-                  <input type="checkbox" checked={editing.form.rsvpEnabled} onChange={(e) => set("rsvpEnabled", e.target.checked)} />
-                  <span>Guests can RSVP</span>
+                  <span className="fieldLabel">
+                    Page link <small>Optional · made from the title if empty</small>
+                  </span>
+                  <span className="slugField">
+                    <span>/{editing.form.locationSlug}/whats-on/</span>
+                    <input value={editing.form.slug} onChange={(e) => set("slug", e.target.value)} placeholder="founder-night" />
+                  </span>
                 </label>
-                <label>
-                  <input type="checkbox" checked={editing.form.featured} onChange={(e) => set("featured", e.target.checked)} />
-                  <span>Feature on the global homepage</span>
-                </label>
-                <label>
-                  <input type="checkbox" checked={editing.form.published} onChange={(e) => set("published", e.target.checked)} />
-                  <span>Published (visible on the website)</span>
-                </label>
-              </div>
+              </fieldset>
+
+              <fieldset className="editorSection">
+                <legend>On the website</legend>
+                <div className="visibilityChoice" role="radiogroup" aria-label="Visibility">
+                  <label className={!editing.form.published ? "on" : undefined}>
+                    <input type="radio" name="visibility" checked={!editing.form.published} onChange={() => set("published", false)} />
+                    <span>
+                      <b>Draft</b>
+                      <small>Hidden — only staff can see it here</small>
+                    </span>
+                  </label>
+                  <label className={editing.form.published ? "on" : undefined}>
+                    <input type="radio" name="visibility" checked={editing.form.published} onChange={() => set("published", true)} />
+                    <span>
+                      <b>Published</b>
+                      <small>Visible on What’s On straight away</small>
+                    </span>
+                  </label>
+                </div>
+                <div className="eventToggles">
+                  <label>
+                    <input type="checkbox" checked={editing.form.rsvpEnabled} onChange={(e) => set("rsvpEnabled", e.target.checked)} />
+                    <span>Guests can RSVP (“I’m coming”)</span>
+                  </label>
+                  <label>
+                    <input type="checkbox" checked={editing.form.featured} onChange={(e) => set("featured", e.target.checked)} />
+                    <span>★ Feature on the global homepage</span>
+                  </label>
+                </div>
+              </fieldset>
+
               {formError && <p className="formStatus waitlistStatus error">{formError}</p>}
               <div className="eventEditorActions">
                 <button className="button primary" type="submit" disabled={saving}>
-                  {saving ? "Saving…" : "Save event"}
+                  {saving ? "Saving…" : editing.form.published ? "Save & publish" : "Save as draft"}
                 </button>
                 <button className="button secondary" type="button" onClick={() => setEditing(null)}>
                   Cancel
@@ -338,7 +393,7 @@ export default function EventsAdminPage() {
                     return (
                       <Fragment key={e.id}>
                         <tr className={e.past ? "isPast" : undefined}>
-                          <td>
+                          <td data-label="When">
                             {formatEventWhen({ startsAt: new Date(e.startsAt), endsAt: e.endsAt ? new Date(e.endsAt) : null }, tz)}
                             <small>{getLocation(e.locationSlug)?.name}</small>
                           </td>
@@ -356,19 +411,19 @@ export default function EventsAdminPage() {
                               <small>{CATEGORY_META[e.category].label}</small>
                             </div>
                           </td>
-                          <td>
-                            <button type="button" className={`adminPill ${e.published ? "on" : ""}`} onClick={() => toggle(e, "published")}>
-                              {e.published ? "Published" : "Draft"}
+                          <td data-label="Status">
+                            <button type="button" className={`adminPill ${e.published ? "on" : "draft"}`} onClick={() => toggle(e, "published")} title={e.published ? "Click to hide (back to draft)" : "Click to publish"}>
+                              {e.published ? "● Published" : "Draft · hidden"}
                             </button>
                             <button type="button" className={`adminPill ${e.featured ? "on" : ""}`} onClick={() => toggle(e, "featured")}>
                               {e.featured ? "★ Featured" : "☆ Feature"}
                             </button>
                           </td>
-                          <td>
+                          <td data-label="RSVPs">
                             {e.rsvpEnabled ? (
                               e.rsvps ? (
                                 <button type="button" className="adminLinkBtn" onClick={() => showGuests(e)}>
-                                  {e.rsvps} · {e.people} people
+                                  {e.rsvps} sign-up{e.rsvps === 1 ? "" : "s"} · {e.people} {e.people === 1 ? "person" : "people"}
                                 </button>
                               ) : (
                                 "0"
@@ -377,7 +432,7 @@ export default function EventsAdminPage() {
                               "Off"
                             )}
                           </td>
-                          <td>
+                          <td className="adminActionsCell">
                             <div className="adminRowActions">
                             <button type="button" className="adminLinkBtn" onClick={() => { setFormError(""); setEditing({ id: e.id, form: toForm(e) }); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
                               Edit
