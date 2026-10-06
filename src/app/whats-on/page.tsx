@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { BrandedText } from "@/components/brand-text";
 import { EventDays, EventFilters } from "@/components/event-list";
+import { LiveNowBanner } from "@/components/live-now-banner";
 import { GlobalHeader } from "@/components/global-header";
 import { PortalPage } from "@/components/portal-page";
 import { EVENT_FILTERS } from "@/lib/event-meta";
@@ -43,6 +44,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ f
         </h1>
         <p>Events, SPILL 42 nights, music and livestreams across every SPILL location.</p>
       </section>
+      <LiveNowBanner />
       <EventFilters basePath="/whats-on" active={filter} />
       <div className="whatsOnBody">
         {events.length > 0 ? (

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BrandedText } from "@/components/brand-text";
 import { EventDays, EventFilters } from "@/components/event-list";
+import { LiveNowBanner } from "@/components/live-now-banner";
 import { LocalHeader } from "@/components/local-header";
 import { EVENT_FILTERS } from "@/lib/event-meta";
 import { listUpcomingEvents } from "@/lib/events";
@@ -54,6 +55,7 @@ export default async function LocationWhatsOn({ params, searchParams }: Props) {
         <p>Events, SPILL 42 nights, music and livestreams. What’s happening at SPILL tonight — and the next reason to come back.</p>
       </section>
 
+      <LiveNowBanner />
       {hasAnyEvents && <EventFilters basePath={basePath} active={filter} />}
 
       <div className="whatsOnBody">

@@ -10,8 +10,19 @@ import {
   locationStatus,
 } from "@/lib/site-data";
 import { NavArrow } from "./nav-arrow";
+import { getLiveStatus } from "@/lib/live";
 
-export function GlobalHeader() {
+export async function GlobalHeader() {
+  // SPILL Live joins the What's On menu once the first livestream has started.
+  const { launched, liveNow } = await getLiveStatus();
+  const liveLabel = liveNow ? "● Watch live now" : "Watch SPILL Live";
+  const navigation = launched
+    ? globalNavigation.map((item) =>
+        item.href === "/whats-on"
+          ? { ...item, items: [item.items[0], { label: liveLabel, href: "/live" }, ...item.items.slice(1)] }
+          : item,
+      )
+    : globalNavigation;
   return (
     <header className="siteHeader">
       <Link className="brand brandLogo" href="/" aria-label="SPILL home">
@@ -43,7 +54,7 @@ export function GlobalHeader() {
           </div>
         </HoverDropdown>
         <Link href="/album">Album</Link>
-        {globalNavigation.map((item) => (
+        {navigation.map((item) => (
           <HoverDropdown
             className="navDropdown"
             key={item.href}
@@ -90,7 +101,7 @@ export function GlobalHeader() {
             Locations
             <NavArrow direction="down" />
           </Link>
-          {globalNavigation.map((item) => (
+          {navigation.map((item) => (
             <Fragment key={item.href}>
               <Link href={item.href}>
                 {item.label}
@@ -100,6 +111,12 @@ export function GlobalHeader() {
               {item.href === "/whats-on" && (
                 <Link href={SPILL42_PLAY_HREF} className="mobileSpill42">
                   Play SPILL 42
+                  <NavArrow />
+                </Link>
+              )}
+              {item.href === "/whats-on" && launched && (
+                <Link href="/live" className="mobileSpill42">
+                  {liveLabel}
                   <NavArrow />
                 </Link>
               )}
