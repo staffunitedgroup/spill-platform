@@ -5,6 +5,7 @@ import Link from "next/link";
 import { GlobalHeader } from "@/components/global-header";
 import { LivestreamAnimations } from "@/components/livestream-animations";
 import { BrandedText } from "@/components/brand-text";
+import { getLiveStatus, youtubeChannelUrl } from "@/lib/live";
 
 export const metadata: Metadata = {
   title: "SPILL Livestream — Live People, Ideas & Culture",
@@ -60,7 +61,12 @@ const platformPillars = [
   ["Physical + digital venue", "Content brings people in; the room gives content energy."],
 ];
 
-export default function LivestreamPage() {
+export default async function LivestreamPage() {
+  // After our first livestream, "Watch SPILL live" keeps guests on the site (/live).
+  const { launched } = await getLiveStatus();
+  const watchLink = launched
+    ? { href: "/live" }
+    : { href: youtubeChannelUrl(), target: "_blank", rel: "noreferrer" };
   return <main className="livePage">
     <LivestreamAnimations />
     <section className="liveHero">
@@ -74,7 +80,7 @@ export default function LivestreamPage() {
           <h1>Appear<br />Share<br />Connect <em>Grow</em></h1>
           <p>Come to SPILL with something worth sharing. We give you the platform, production, audience, and opportunity to take it further.</p>
           <strong>Professional production. Real audience. Shareable content.</strong>
-          <div className="actions"><Link className="button primary" href="/create">Book your appearance <span>↗</span></Link><a className="button secondary" href="https://www.youtube.com/@NowWeSPILL" target="_blank" rel="noreferrer">Watch SPILL live</a></div>
+          <div className="actions"><Link className="button primary" href="/create">Book your appearance <span>↗</span></Link><a className="button secondary" {...watchLink}>Watch SPILL live</a></div>
         </div>
       </div>
       <div className="liveTicker"><span>Creators</span><i>•</i><span>Founders</span><i>•</i><span>Brands</span><i>•</i><span>Culture</span><i>•</i><span>Real stories</span><i>•</i><span>Live audience</span></div>
