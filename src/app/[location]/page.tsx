@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { LocalHeader } from "@/components/local-header";
 import { BrandedText } from "@/components/brand-text";
 import { WaitlistForm } from "@/components/waitlist-form";
+import { EventCard } from "@/components/event-card";
+import { listUpcomingEvents } from "@/lib/events";
 import { getLocation, locations } from "@/lib/site-data";
 
 const homeSections = [
@@ -24,7 +26,10 @@ export default async function LocationHome({ params }: { params: Promise<{ locat
   if (!location) notFound();
   if (location.status === "coming-soon") return <main className="comingSoon"><LocalHeader location={location} /><section><p className="eyebrow">Coming soon</p><h1><BrandedText text={location.name} /></h1><p>{location.strapline}</p><Link className="button primary" href="/partner">Bring SPILL to your market</Link></section></main>;
 
+  const upcoming = await listUpcomingEvents({ locationSlug: location.slug, timeZone: location.timezone, limit: 3 });
+
   return <main><section className="hero localHero"><video className="localHeroMedia" autoPlay muted loop playsInline preload="metadata" poster="/assets/spill/home/hero-v2-poster.jpg" aria-hidden="true"><source src="/assets/spill/home/hero-v2.mp4" type="video/mp4" />Your browser does not support background video.</video><div className="localHeroVeil" /><LocalHeader location={location} /><div className="heroContent"><p className="eyebrow">Launching soon</p><h1><BrandedText text="SPILL Saigon" /></h1><p className="intro">Eat. Drink. Meet. Create.</p><div className="actions"><a className="button primary" href="#waitlist">Join the waitlist</a><Link className="button secondary" href={`/${slug}/whats-on`}>What’s on</Link></div></div><p className="heroNote">Good people · Brighter conversations</p></section>
+    {upcoming.length > 0 && <section className="upcomingStrip" id="upcoming-events"><div className="upcomingStripHead"><div><p className="eyebrow">Coming up at {location.name}</p><h2>What’s on</h2></div><Link className="textLink" href={`/${slug}/whats-on`}>View all events <span>→</span></Link></div><div className="eventGrid">{upcoming.map((event) => <EventCard key={event.slug} event={event} />)}</div></section>}
     <section className="localDashboard localHomeSections">{homeSections.map((section, index) => <Link id={section.eyebrow.toLowerCase().replaceAll(" ", "-")} href={section.href} key={section.eyebrow}><Image src={section.image} alt="" fill sizes="(max-width: 980px) 100vw, 50vw" /><i aria-hidden="true" /><div><span>{String(index + 1).padStart(2, "0")} / {section.eyebrow}</span><h2>{section.title}</h2><p>{section.text}</p><b>Explore <strong>→</strong></b></div></Link>)}</section>
     <section className="visitStrip waitlistStrip"><div><p className="eyebrow">{location.name}</p><h2>The room is only<br />the beginning.</h2><p className="conceptNotice">Join the list for opening news, first events, creator opportunities, and booking access.</p></div><WaitlistForm locationSlug={location.slug} locationName={location.name} source={`${location.slug}-home`} /></section></main>;
 }

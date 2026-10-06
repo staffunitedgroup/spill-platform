@@ -5,6 +5,8 @@ export type Location = {
   city: string;
   status: "pre-launch" | "coming-soon";
   strapline: string;
+  /** IANA time zone — event times are shown in the venue's local time. */
+  timezone: string;
 };
 
 export const locations: Location[] = [
@@ -14,6 +16,7 @@ export const locations: Location[] = [
     city: "Saigon",
     status: "pre-launch",
     strapline: "Eat. Drink. Meet. Create.",
+    timezone: "Asia/Ho_Chi_Minh",
   },
   {
     slug: "tokyo",
@@ -21,6 +24,7 @@ export const locations: Location[] = [
     city: "Tokyo",
     status: "coming-soon",
     strapline: "A new SPILL is taking shape.",
+    timezone: "Asia/Tokyo",
   },
   {
     slug: "hanoi",
@@ -28,6 +32,7 @@ export const locations: Location[] = [
     city: "Hanoi",
     status: "coming-soon",
     strapline: "A new SPILL is taking shape.",
+    timezone: "Asia/Ho_Chi_Minh",
   },
   {
     slug: "bangkok",
@@ -35,6 +40,7 @@ export const locations: Location[] = [
     city: "Bangkok",
     status: "coming-soon",
     strapline: "A new SPILL is taking shape.",
+    timezone: "Asia/Bangkok",
   },
 ];
 

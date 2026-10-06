@@ -1,15 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isAdmin } from "@/lib/admin-auth";
+import { csvResponse } from "@/lib/csv";
 import { prisma } from "@/lib/prisma";
-
-function csvCell(value: string | null | undefined) {
-  const text = value ?? "";
-  // Quote everything; neutralise spreadsheet formulas (=, @, or +/- not followed
-  // by a plain phone number like "+84 90 123 4567").
-  const isFormula = /^[=@\t\r]/.test(text) || (/^[+-]/.test(text) && !/^[+-][\d\s().-]*$/.test(text));
-  const safe = isFormula ? `'${text}` : text;
-  return `"${safe.replaceAll('"', '""')}"`;
-}
 
 // GET /api/admin/waitlist[?location=saigon][&format=csv]
 export async function GET(req: NextRequest) {
@@ -27,9 +19,10 @@ export async function GET(req: NextRequest) {
   });
 
   if (req.nextUrl.searchParams.get("format") === "csv") {
-    const header = ["Signed up", "Location", "Name", "Email", "WhatsApp", "Interests", "Source"];
-    const rows = signups.map((s) =>
-      [
+    return csvResponse(
+      `spill-waitlist${location ? `-${location}` : ""}.csv`,
+      ["Signed up", "Location", "Name", "Email", "WhatsApp", "Interests", "Source"],
+      signups.map((s) => [
         s.createdAt.toISOString(),
         s.locationSlug,
         s.name,
@@ -37,16 +30,8 @@ export async function GET(req: NextRequest) {
         s.whatsapp,
         s.interests.join("; "),
         s.source,
-      ].map(csvCell).join(","),
+      ]),
     );
-    const csv = "﻿" + [header.map(csvCell).join(","), ...rows].join("\r\n");
-    return new NextResponse(csv, {
-      headers: {
-        "Content-Type": "text/csv; charset=utf-8",
-        "Content-Disposition": `attachment; filename="spill-waitlist${location ? `-${location}` : ""}.csv"`,
-        "Cache-Control": "no-store",
-      },
-    });
   }
 
   return NextResponse.json({ signups, total: signups.length });

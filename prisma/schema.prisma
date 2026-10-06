@@ -415,3 +415,70 @@ model WaitlistSignup {
   @@index([locationSlug, createdAt])
   @@map("waitlist_signups")
 }
+
+// ─────────────────────────────────────────
+// WEBSITE · WHAT'S ON (events + livestreams)
+// ─────────────────────────────────────────
+
+enum EventCategory {
+  SPILL42
+  MUSIC
+  LIVE
+  FOOD_DRINK
+  COMMUNITY
+  SPECIAL
+}
+
+// One thing happening at a SPILL location. Livestreams are events too
+// (category LIVE), so the team keeps a single calendar.
+model Event {
+  id           String        @id @default(cuid())
+  // "saigon", "tokyo"… — matches the website's location slug.
+  locationSlug String        @map("location_slug")
+  // URL part: /saigon/whats-on/<slug>. Unique per location.
+  slug         String
+  title        String
+  // One or two lines for cards and link previews.
+  summary      String
+  description  String        @default("")
+  category     EventCategory
+  startsAt     DateTime      @map("starts_at")
+  endsAt       DateTime?     @map("ends_at")
+  // /assets/... or https://… — falls back to a category image.
+  imageUrl     String?       @map("image_url")
+  // External ticket / booking page, if any.
+  ticketUrl    String?       @map("ticket_url")
+  // YouTube watch/live link — shown as a player on the event page.
+  youtubeUrl   String?       @map("youtube_url")
+  rsvpEnabled  Boolean       @default(true) @map("rsvp_enabled")
+  // Shown on the global homepage / global What's On.
+  featured     Boolean       @default(false)
+  // Drafts stay hidden from the website.
+  published    Boolean       @default(false)
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+
+  rsvps EventRsvp[]
+
+  @@unique([locationSlug, slug])
+  @@index([locationSlug, published, startsAt])
+  @@map("events")
+}
+
+// "I'm coming" on an event page. The guest is also added to the waitlist.
+model EventRsvp {
+  id        String   @id @default(cuid())
+  eventId   String   @map("event_id")
+  email     String
+  name      String
+  whatsapp  String?
+  // Including the person signing up.
+  partySize Int      @default(1) @map("party_size")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, email])
+  @@map("event_rsvps")
+}

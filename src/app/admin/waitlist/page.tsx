@@ -110,9 +110,10 @@ export default function WaitlistAdminPage() {
           <h1>Waitlist</h1>
           <p>People who asked for opening news from the website.</p>
         </div>
-        <Link href="/admin" className="adminWaitlistBack">
-          ← Active tables
-        </Link>
+        <nav className="adminLinks">
+          <Link href="/admin">← Active tables</Link>
+          <Link href="/admin/events">Events</Link>
+        </nav>
       </header>
 
       {!password ? (

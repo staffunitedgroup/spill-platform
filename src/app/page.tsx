@@ -1,11 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
-import { EventsProgramming } from "@/components/events-programming";
+import {
+  EventsProgramming,
+  type ProgrammingItem,
+} from "@/components/events-programming";
 import { GlobalHeader } from "@/components/global-header";
 import { HomeAnimations } from "@/components/home-animations";
 import { BrandedText, SpillWordmark } from "@/components/brand-text";
 import { EcosystemCarousel } from "@/components/ecosystem-carousel";
 import { NavArrow } from "@/components/nav-arrow";
+import { CATEGORY_META, formatEventWhen } from "@/lib/event-meta";
+import { listUpcomingEvents } from "@/lib/events";
+import { getLocation } from "@/lib/site-data";
 
 const journey = [
   {
@@ -83,7 +89,30 @@ const storyPath = [
   },
 ];
 
-export default function HomePage() {
+/** Featured upcoming events for "What's happening at SPILL?" (empty → the preview list). */
+async function featuredProgramming(): Promise<ProgrammingItem[]> {
+  const events = await listUpcomingEvents({
+    timeZone: "Asia/Ho_Chi_Minh",
+    featuredOnly: true,
+    limit: 6,
+  });
+  return events.map((event) => {
+    const location = getLocation(event.locationSlug);
+    return {
+      city: location?.city ?? event.locationSlug,
+      type: CATEGORY_META[event.category].label,
+      title: event.title,
+      note: formatEventWhen(
+        { startsAt: event.startsAt },
+        location?.timezone ?? "Asia/Ho_Chi_Minh",
+      ),
+      href: `/${event.locationSlug}/whats-on/${event.slug}`,
+    };
+  });
+}
+
+export default async function HomePage() {
+  const programming = await featuredProgramming();
   return (
     <main className="masterHome">
       <HomeAnimations />
@@ -664,7 +693,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <EventsProgramming />
+      <EventsProgramming events={programming} />
 
       <section className="masterSection chooseSection" id="future-locations">
         <div className="chooseHeading" data-reveal>

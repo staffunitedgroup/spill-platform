@@ -189,37 +189,6 @@ export const localPageContent: Record<
     sections: PortalSection[];
   }
 > = {
-  "whats-on": {
-    title: "What’s on",
-    description:
-      "The local entertainment and events calendar. Start with the question: what’s happening at SPILL tonight?",
-    sections: [
-      {
-        title: "Tonight",
-        text: "The fastest way to see what is happening in the room right now.",
-      },
-      {
-        title: "This Week",
-        text: "Seven days of conversations, performances, broadcasts, and social experiences.",
-      },
-      {
-        title: "Events",
-        text: "Panels, launches, community gatherings, workshops, music, comedy, and more.",
-      },
-      {
-        title: "SPILL 42",
-        text: "Upcoming editions of the signature SPILL social experience.",
-        href: SPILL42_PLAY_HREF,
-        cta: "Play SPILL 42",
-        featured: true,
-      },
-      {
-        title: "Live",
-        text: "Watch live broadcasts and performances from SPILL Saigon.",
-      },
-      { title: "Upcoming", text: "Plan the next reason to come back." },
-    ],
-  },
   "spill-42": {
     title: "SPILL 42",
     description:
