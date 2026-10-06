@@ -151,5 +151,5 @@ export const socialLinks = [
     label: "LinkedIn",
     href: "https://www.linkedin.com/company/spill-saigon/about/",
   },
-  { label: "YouTube", href: "https://www.youtube.com/@spillsaigon" },
+  { label: "YouTube", href: "https://www.youtube.com/@NowWeSPILL" },
 ];

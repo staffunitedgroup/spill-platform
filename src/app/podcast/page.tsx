@@ -207,14 +207,14 @@ export default function PodcastPage() {
     </section>
 
     <section className="podSection podWatch" id="watch">
-      <div className="podWatchHeading" data-pod-reveal><div><SectionLabel>15 / Featured SPILL Podcast</SectionLabel><h2>Watch<br /><em><SpillWordmark /> Podcast.</em></h2></div><a className="podArrowLink" href="https://www.youtube.com/@spillsaigon" target="_blank" rel="noreferrer">Watch all episodes <b>↗</b></a></div>
+      <div className="podWatchHeading" data-pod-reveal><div><SectionLabel>15 / Featured SPILL Podcast</SectionLabel><h2>Watch<br /><em><SpillWordmark /> Podcast.</em></h2></div><a className="podArrowLink" href="https://www.youtube.com/@NowWeSPILL" target="_blank" rel="noreferrer">Watch all episodes <b>↗</b></a></div>
       <div className="podEpisodeGrid">
         {[
           { title: "Founders at SPILL", tag: "Coming soon", img: "/assets/spill/podcast/featured-founders.jpg" },
           { title: "Culture in conversation", tag: "SPILL Podcast", img: "/assets/spill/podcast/featured-culture.jpg" },
           { title: "People worth knowing", tag: "SPILL Podcast", img: "/assets/spill/podcast/featured-people.jpg" },
         ].map((ep) => (
-          <a key={ep.title} href="https://www.youtube.com/@spillsaigon" target="_blank" rel="noreferrer" data-pod-reveal>
+          <a key={ep.title} href="https://www.youtube.com/@NowWeSPILL" target="_blank" rel="noreferrer" data-pod-reveal>
             <Image src={ep.img} alt={ep.title} fill sizes="(max-width: 760px) 100vw, 33vw" />
             <div>
               <span>{ep.tag}</span>

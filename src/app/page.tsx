@@ -538,7 +538,7 @@ export default async function HomePage() {
               ecosystem can be invited back for deeper conversations.
             </p>
             <a
-              href="https://www.youtube.com/@spillsaigon"
+              href="https://www.youtube.com/@NowWeSPILL"
               target="_blank"
               rel="noreferrer"
             >
@@ -565,7 +565,7 @@ export default async function HomePage() {
           </p>
           <a
             className="button primary"
-            href="https://www.youtube.com/@spillsaigon"
+            href="https://www.youtube.com/@NowWeSPILL"
             target="_blank"
             rel="noreferrer"
           >
