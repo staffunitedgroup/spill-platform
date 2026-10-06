@@ -106,6 +106,8 @@ export async function getChannelVideos(): Promise<ChannelVideo[]> {
       url = `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`;
     }
     const res = await fetch(url, { next: { revalidate: FEED_REVALIDATE_SECONDS } });
+    // YouTube answers 404 while a channel has no public videos yet — that's normal, not an error.
+    if (res.status === 404) return [];
     if (!res.ok) {
       console.error(`[live] video feed returned ${res.status}`);
       return [];
