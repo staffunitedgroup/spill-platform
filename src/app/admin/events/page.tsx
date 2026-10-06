@@ -10,6 +10,7 @@ import {
   formatEventWhen,
   toLocalInputValue,
   type EventCategoryKey,
+  youtubeId,
 } from "@/lib/event-meta";
 import { getLocation, locations } from "@/lib/site-data";
 
@@ -297,10 +298,13 @@ export default function EventsAdminPage() {
                 <legend>Image & links</legend>
                 <div className="editorImageRow">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={editing.form.imageUrl || CATEGORY_META[editing.form.category].image} alt="" />
+                  <img src={eventImage(editing.form)} alt="" />
                   <label>
                     <span className="fieldLabel">
-                      Image <small>Optional · empty = default {CATEGORY_META[editing.form.category].label} image</small>
+                      Image{" "}
+                      <small>
+                        Optional · empty = {youtubeId(editing.form.youtubeUrl) ? "YouTube thumbnail" : `default ${CATEGORY_META[editing.form.category].label} image`}
+                      </small>
                     </span>
                     <input value={editing.form.imageUrl} onChange={(e) => set("imageUrl", e.target.value)} placeholder="https://… or /assets/…" />
                   </label>
@@ -316,7 +320,7 @@ export default function EventsAdminPage() {
                     <span className="fieldLabel">
                       YouTube link <small>For livestreams</small>
                     </span>
-                    <input value={editing.form.youtubeUrl} onChange={(e) => set("youtubeUrl", e.target.value)} placeholder="https://youtube.com/live/…" />
+                    <input value={editing.form.youtubeUrl} onChange={(e) => set("youtubeUrl", e.target.value)} placeholder="https://youtu.be/… or youtube.com/live/…" />
                   </label>
                 </div>
                 <label>

@@ -31,8 +31,12 @@ export const DEFAULT_EVENT_HOURS = 3;
 /** A SPILL "day" runs 05:00 → 05:00, so a 1am set still counts as tonight. */
 const DAY_START_HOUR = 5;
 
-export function eventImage(event: { imageUrl?: string | null; category: EventCategoryKey }) {
-  return event.imageUrl || CATEGORY_META[event.category].image;
+/** Card image: the uploaded one, else the YouTube thumbnail, else the category's default. */
+export function eventImage(event: { imageUrl?: string | null; youtubeUrl?: string | null; category: EventCategoryKey }) {
+  if (event.imageUrl && !youtubeId(event.imageUrl)) return event.imageUrl;
+  const video = youtubeId(event.youtubeUrl);
+  if (video) return `https://i.ytimg.com/vi/${video}/hqdefault.jpg`;
+  return CATEGORY_META[event.category].image;
 }
 
 export function eventEnd(event: { startsAt: Date; endsAt?: Date | null }) {

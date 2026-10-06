@@ -13709,8 +13709,10 @@ body:has(.s42App) .siteFooter {
 .liveNowFallback {
   position: absolute;
   inset: 0;
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   color: #fff;
   font-size: 18px;
   letter-spacing: 0.08em;
