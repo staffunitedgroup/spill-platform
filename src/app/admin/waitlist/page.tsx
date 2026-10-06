@@ -159,6 +159,7 @@ export default function WaitlistAdminPage() {
                     <th>WhatsApp</th>
                     <th>Location</th>
                     <th>Interests</th>
+                    <th>Source</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -172,6 +173,9 @@ export default function WaitlistAdminPage() {
                       <td>{s.whatsapp || "—"}</td>
                       <td>{s.locationSlug}</td>
                       <td>{s.interests.join(", ") || "—"}</td>
+                      <td>
+                        <SourceLabel source={s.source} location={s.locationSlug} />
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -182,4 +186,18 @@ export default function WaitlistAdminPage() {
       )}
     </main>
   );
+}
+
+/** "event:founder-night" → a link to that event; "saigon-home" → "Waitlist form". */
+function SourceLabel({ source, location }: { source: string | null; location: string }) {
+  if (source?.startsWith("event:")) {
+    const slug = source.slice("event:".length);
+    return (
+      <a href={`/${location}/whats-on/${slug}`} target="_blank" rel="noreferrer">
+        Event: {slug} ↗
+      </a>
+    );
+  }
+  if (source) return <>Waitlist form</>;
+  return <>—</>;
 }
