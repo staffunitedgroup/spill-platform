@@ -6,8 +6,8 @@ import { SectionNavigator } from "@/components/section-navigator";
 import { FloatingContact } from "@/components/floating-contact";
 import { HideOnAdmin } from "@/components/hide-on-admin";
 import { PageTransition } from "@/components/page-transition";
-import { cookies } from "next/headers";
-import { SITE_ACCESS_COOKIE, hasValidSiteAccess } from "@/lib/site-access";
+import { cookies, headers } from "next/headers";
+import { SITE_ACCESS_COOKIE, hasValidSiteAccess, isSpill42Path, spill42Public } from "@/lib/site-access";
 import { SiteLockscreen } from "@/components/site-lockscreen";
 import "lenis/dist/lenis.css";
 import "./globals.css";
@@ -32,6 +32,8 @@ export const viewport: Viewport = {
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const cookieStore = await cookies();
   const authorized = hasValidSiteAccess(cookieStore.get(SITE_ACCESS_COOKIE)?.value);
+  // Launch-day switch: the game opens to everyone while the rest of the site stays private.
+  const gameOnly = !authorized && spill42Public() && isSpill42Path((await headers()).get("x-spill-path") ?? "");
 
   return (
     <html lang="en">
@@ -49,6 +51,9 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
               <FloatingContact phone={process.env.NEXT_PUBLIC_CONTACT_PHONE} />
             </HideOnAdmin>
           </>
+        ) : gameOnly ? (
+          // Just the game: no site footer or menus that would lead back to the private screen.
+          <PageTransition>{children}</PageTransition>
         ) : (
           <SiteLockscreen />
         )}
