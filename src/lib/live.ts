@@ -59,7 +59,7 @@ const FEED_REVALIDATE_SECONDS = 15 * 60;
 
 /** The channel to show: YOUTUBE_CHANNEL_ID, or worked out from the @handle. */
 export function youtubeChannelUrl() {
-  return socialLinks.find((link) => link.label === "YouTube")?.href ?? "https://www.youtube.com/@spillsaigon";
+  return socialLinks.find((link) => link.label === "YouTube")?.href ?? "https://www.youtube.com/@NowWeSPILL";
 }
 
 function handleFromUrl(url: string) {

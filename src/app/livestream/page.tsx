@@ -74,7 +74,7 @@ export default function LivestreamPage() {
           <h1>Appear<br />Share<br />Connect <em>Grow</em></h1>
           <p>Come to SPILL with something worth sharing. We give you the platform, production, audience, and opportunity to take it further.</p>
           <strong>Professional production. Real audience. Shareable content.</strong>
-          <div className="actions"><Link className="button primary" href="/create">Book your appearance <span>↗</span></Link><a className="button secondary" href="https://www.youtube.com/@spillsaigon" target="_blank" rel="noreferrer">Watch SPILL live</a></div>
+          <div className="actions"><Link className="button primary" href="/create">Book your appearance <span>↗</span></Link><a className="button secondary" href="https://www.youtube.com/@NowWeSPILL" target="_blank" rel="noreferrer">Watch SPILL live</a></div>
         </div>
       </div>
       <div className="liveTicker"><span>Creators</span><i>•</i><span>Founders</span><i>•</i><span>Brands</span><i>•</i><span>Culture</span><i>•</i><span>Real stories</span><i>•</i><span>Live audience</span></div>
