@@ -29,6 +29,7 @@ export const eventInputSchema = z.object({
     .trim()
     .max(500)
     .refine((v) => v.startsWith("/") || /^https:\/\//.test(v), "Image must be a /assets/… path or an https:// link")
+    .refine((v) => !youtubeId(v), "That's a YouTube link — paste it in the YouTube field instead")
     .optional()
     .or(z.literal("")),
   ticketUrl: z.string().trim().max(500).url().startsWith("https://", "Ticket link must start with https://").optional().or(z.literal("")),

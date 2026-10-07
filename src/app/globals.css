@@ -12672,6 +12672,8 @@ body:has(.s42App) .siteFooter {
   .waitlistStrip {
     align-items: stretch;
   }
+  /* Stacked: the 380px basis would become height and leave a gap above the form. */
+  .waitlistStrip > div,
   .waitlistForm {
     flex-basis: auto;
   }
@@ -13707,8 +13709,10 @@ body:has(.s42App) .siteFooter {
 .liveNowFallback {
   position: absolute;
   inset: 0;
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   color: #fff;
   font-size: 18px;
   letter-spacing: 0.08em;
@@ -13953,4 +13957,16 @@ main > .liveNowBanner {
   .videoMeta b {
     font-size: 13px;
   }
+}
+
+/* ── Global homepage · Join the SPILL Community ─────────────── */
+.communityStrip {
+  min-height: 0;
+  border-top: 1px solid #1d1e22;
+}
+.communityStrip .sectionNumber {
+  margin-bottom: 22px;
+}
+.communityStrip h2 {
+  margin: 0 0 22px;
 }
