@@ -1,6 +1,9 @@
+import { after } from "next/server";
+import { emailConfigured, sendWaitlistEmail } from "@/lib/guest-emails";
 import { normalizePhone } from "@/lib/phone";
 import { clientIp, rateLimited } from "@/lib/rate-limit";
 import { waitlistSchema } from "@/lib/validation/waitlist";
+import { siteOrigin } from "@/lib/spill-email";
 import { addToWaitlist } from "@/lib/waitlist";
 
 export const runtime = "nodejs";
@@ -25,12 +28,20 @@ export async function POST(request: Request) {
     return Response.json({ error: "Please check your WhatsApp number." }, { status: 400 });
   }
 
+  let updated = false;
   try {
-    await addToWaitlist({ email, locationSlug, name, whatsapp: phone, interests, source });
+    const { created } = await addToWaitlist({ email, locationSlug, name, whatsapp: phone, interests, source });
+    updated = !created;
+    const origin = siteOrigin(request);
+    after(() =>
+      sendWaitlistEmail({ to: email, name, locationSlug, updated, origin }).catch((error) =>
+        console.error("[waitlist] confirmation email failed", error),
+      ),
+    );
   } catch (error) {
     console.error("[waitlist] could not save sign-up", error);
     return Response.json({ error: "We couldn't save that just now. Please try again in a moment." }, { status: 500 });
   }
 
-  return Response.json({ ok: true });
+  return Response.json({ ok: true, updated, emailed: emailConfigured() });
 }

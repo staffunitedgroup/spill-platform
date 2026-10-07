@@ -36,7 +36,7 @@ type AdminEvent = {
   past?: boolean;
 };
 
-type Rsvp = { id: string; name: string; email: string; whatsapp: string | null; partySize: number; createdAt: string };
+type Rsvp = { id: string; name: string; email: string; whatsapp: string | null; partySize: number; createdAt: string; updatedAt: string };
 
 const EMPTY_FORM = {
   locationSlug: "saigon",
@@ -460,6 +460,9 @@ export default function EventsAdminPage() {
                                   <li key={r.id}>
                                     <b>{r.name}</b> · {r.partySize} · <a href={`mailto:${r.email}`}>{r.email}</a>
                                     {r.whatsapp ? ` · ${r.whatsapp}` : ""}
+                                    {new Date(r.updatedAt).getTime() - new Date(r.createdAt).getTime() > 60_000 && (
+                                      <small className="adminUpdated"> ↻ updated</small>
+                                    )}
                                   </li>
                                 ))}
                               </ul>

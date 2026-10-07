@@ -47,9 +47,16 @@ export function WaitlistForm({
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.error || "We couldn't add you just now. Please try again.");
+      const email = String(data.get("email") ?? "");
       form.reset();
       setDone(true);
-      setStatus({ tone: "ok", text: `You're on the list. We'll be in touch before ${locationName} opens.` });
+      const confirmation = result.emailed ? ` A confirmation is on its way to ${email}.` : "";
+      setStatus({
+        tone: "ok",
+        text: result.updated
+          ? `You're already on the list, so we've updated your details.${confirmation}`
+          : `You're on the list. We'll be in touch before ${locationName} opens.${confirmation}`,
+      });
     } catch (error) {
       setStatus({
         tone: "error",
