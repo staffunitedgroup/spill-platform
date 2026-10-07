@@ -13,7 +13,13 @@ type Signup = {
   interests: string[];
   source: string | null;
   createdAt: string;
+  updatedAt: string;
 };
+
+/** Signed up again (or RSVP'd to an event) after joining — worth a second look. */
+function wasUpdated(s: { createdAt: string; updatedAt: string }) {
+  return new Date(s.updatedAt).getTime() - new Date(s.createdAt).getTime() > 60_000;
+}
 
 // Shared with /admin so staff only sign in once.
 const PASSWORD_KEY = "spill-admin-password";
@@ -165,7 +171,10 @@ export default function WaitlistAdminPage() {
                 <tbody>
                   {signups.map((s) => (
                     <tr key={s.id}>
-                      <td data-label="Signed up">{formatDate(s.createdAt)}</td>
+                      <td data-label="Signed up">
+                        {formatDate(s.createdAt)}
+                        {wasUpdated(s) && <small className="adminUpdated">↻ Updated {formatDate(s.updatedAt)}</small>}
+                      </td>
                       <td data-label="Name">{s.name || "—"}</td>
                       <td data-label="Email">
                         <a href={`mailto:${s.email}`}>{s.email}</a>

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 /**
  * Add someone to a location's waitlist, or refresh their details if they're
  * already on it. Interests are merged, never removed.
+ * Returns whether this email is new to that location's list.
  * Used by the waitlist form and by event RSVPs.
  */
 export async function addToWaitlist(input: {
@@ -12,7 +13,7 @@ export async function addToWaitlist(input: {
   whatsapp?: string | null;
   interests?: string[];
   source?: string | null;
-}) {
+}): Promise<{ created: boolean }> {
   const { email, locationSlug } = input;
   const interests = input.interests ?? [];
   const existing = await prisma.waitlistSignup.findUnique({
@@ -35,4 +36,5 @@ export async function addToWaitlist(input: {
       interests: Array.from(new Set([...(existing?.interests ?? []), ...interests])),
     },
   });
+  return { created: !existing };
 }

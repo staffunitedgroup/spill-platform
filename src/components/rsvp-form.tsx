@@ -5,7 +5,7 @@ import { PhoneInput } from "@/components/phone-input";
 
 export function RsvpForm({ eventId, eventTitle }: { eventId: string; eventTitle: string }) {
   const [sending, setSending] = useState(false);
-  const [done, setDone] = useState(false);
+  const [done, setDone] = useState<{ updated: boolean; emailed: boolean; email: string; partySize: number } | null>(null);
   const [error, setError] = useState("");
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -28,7 +28,12 @@ export function RsvpForm({ eventId, eventTitle }: { eventId: string; eventTitle:
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.error || "We couldn't save that. Please try again.");
-      setDone(true);
+      setDone({
+        updated: Boolean(result.updated),
+        emailed: Boolean(result.emailed),
+        email: String(data.get("email") ?? ""),
+        partySize: Number(data.get("partySize") ?? 1),
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : "We couldn't save that. Please try again.");
     } finally {
@@ -39,9 +44,15 @@ export function RsvpForm({ eventId, eventTitle }: { eventId: string; eventTitle:
   if (done) {
     return (
       <div className="inquiryForm rsvpForm rsvpDone" role="status">
-        <p className="eyebrow">You’re on the list</p>
+        <p className="eyebrow">{done.updated ? "Already on the list" : "You’re on the list"}</p>
         <h3>See you at {eventTitle}.</h3>
-        <p>Your spot is saved. Plans changed? Sign up again with the same email to update it.</p>
+        <p>
+          {done.updated
+            ? `You’d already signed up with this email, so we’ve updated your details (${done.partySize} ${done.partySize === 1 ? "person" : "people"}).`
+            : "Your spot is saved."}{" "}
+          {done.emailed ? `A confirmation is on its way to ${done.email}.` : ""}
+        </p>
+        <p>Plans changed? Sign up again with the same email to update it.</p>
       </div>
     );
   }

@@ -15,15 +15,17 @@ export async function GET(req: NextRequest) {
   const location = req.nextUrl.searchParams.get("location") || undefined;
   const signups = await prisma.waitlistSignup.findMany({
     where: location ? { locationSlug: location } : undefined,
-    orderBy: { createdAt: "desc" },
+    // Latest activity first, so someone signing up again shows at the top.
+    orderBy: { updatedAt: "desc" },
   });
 
   if (req.nextUrl.searchParams.get("format") === "csv") {
     return csvResponse(
       `spill-waitlist${location ? `-${location}` : ""}.csv`,
-      ["Signed up", "Location", "Name", "Email", "WhatsApp", "Interests", "Source"],
+      ["Signed up", "Last updated", "Location", "Name", "Email", "WhatsApp", "Interests", "Source"],
       signups.map((s) => [
         s.createdAt.toISOString(),
+        s.updatedAt.toISOString(),
         s.locationSlug,
         s.name,
         s.email,

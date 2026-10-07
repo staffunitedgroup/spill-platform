@@ -13970,3 +13970,15 @@ main > .liveNowBanner {
 .communityStrip h2 {
   margin: 0 0 22px;
 }
+
+/* Admin: someone signed up again after joining. */
+.adminUpdated {
+  display: block;
+  margin-top: 4px;
+  color: var(--cyan);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+}
+.adminGuestRow .adminUpdated {
+  display: inline;
+}

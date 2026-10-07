@@ -1,7 +1,10 @@
+import { after } from "next/server";
 import { eventEnd } from "@/lib/event-meta";
+import { emailConfigured, sendRsvpEmail } from "@/lib/guest-emails";
 import { normalizePhone } from "@/lib/phone";
 import { prisma } from "@/lib/prisma";
 import { clientIp, rateLimited } from "@/lib/rate-limit";
+import { siteOrigin } from "@/lib/spill-email";
 import { rsvpSchema } from "@/lib/validation/event";
 import { addToWaitlist } from "@/lib/waitlist";
 
@@ -25,16 +28,19 @@ export async function POST(request: Request, { params }: { params: Promise<{ eve
   if (phone === "invalid") return Response.json({ error: "Please check your WhatsApp number." }, { status: 400 });
 
   const { eventId } = await params;
+  let updated = false;
   try {
     const event = await prisma.event.findUnique({
       where: { id: eventId },
-      select: { id: true, slug: true, locationSlug: true, published: true, rsvpEnabled: true, startsAt: true, endsAt: true },
+      select: { id: true, slug: true, title: true, locationSlug: true, published: true, rsvpEnabled: true, startsAt: true, endsAt: true },
     });
     if (!event || !event.published) return Response.json({ error: "This event isn’t available." }, { status: 404 });
     if (!event.rsvpEnabled) return Response.json({ error: "Sign-ups aren’t open for this event." }, { status: 400 });
     if (eventEnd(event) < new Date()) return Response.json({ error: "This event has already finished." }, { status: 400 });
 
-    // Signing up again just updates the details.
+    // Signing up again just updates the details — and we tell the guest so.
+    const existing = await prisma.eventRsvp.findUnique({ where: { eventId_email: { eventId, email } }, select: { id: true } });
+    updated = Boolean(existing);
     await prisma.eventRsvp.upsert({
       where: { eventId_email: { eventId, email } },
       create: { eventId, email, name, whatsapp: phone, partySize },
@@ -48,10 +54,18 @@ export async function POST(request: Request, { params }: { params: Promise<{ eve
       interests: ["Events"],
       source: `event:${event.slug}`,
     });
+
+    // Confirmation email after the response, so the guest never waits for it.
+    const origin = siteOrigin(request);
+    after(() =>
+      sendRsvpEmail({ to: email, name, partySize, updated, origin, event }).catch((error) =>
+        console.error("[rsvp] confirmation email failed", error),
+      ),
+    );
   } catch (error) {
     console.error("[rsvp] could not save", error);
     return Response.json({ error: "We couldn't save that just now. Please try again in a moment." }, { status: 500 });
   }
 
-  return Response.json({ ok: true });
+  return Response.json({ ok: true, updated, emailed: emailConfigured() });
 }

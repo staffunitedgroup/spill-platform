@@ -19,6 +19,8 @@ export async function sendEmail(input: {
   subject: string;
   text: string;
   html: string;
+  /** Resend tag to tell emails apart, e.g. "event-rsvp". */
+  tag?: string;
 }): Promise<boolean> {
   const apiKey = process.env.RESEND_API_KEY?.trim();
   const from = fromAddress();
@@ -36,7 +38,7 @@ export async function sendEmail(input: {
         subject: input.subject,
         text: input.text,
         html: input.html,
-        tags: [{ name: "source", value: "spill-42" }],
+        tags: [{ name: "source", value: input.tag ?? "spill-42" }],
       }),
     });
     if (!res.ok) {
@@ -74,13 +76,15 @@ export function emailHtml(opts: {
   body: string;
   cta?: { label: string; href: string };
   footer?: string;
+  /** Small label above the heading. */
+  brand?: string;
 }) {
   return `<!doctype html><html><body style="margin:0;background:#111111;font-family:Arial,Helvetica,sans-serif;color:#ffffff">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#111111;padding:32px 16px"><tr><td align="center">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px">
-<tr><td style="font-size:13px;letter-spacing:4px;color:#E8472F;padding-bottom:18px">SPILL 42</td></tr>
+<tr><td style="font-size:13px;letter-spacing:4px;color:#E8472F;padding-bottom:18px">${esc(opts.brand ?? "SPILL 42")}</td></tr>
 <tr><td style="font-size:26px;line-height:1.2;font-weight:bold;padding-bottom:14px">${esc(opts.heading)}</td></tr>
-<tr><td style="font-size:16px;line-height:1.6;color:#C0C4C8;padding-bottom:24px">${esc(opts.body)}</td></tr>
+<tr><td style="font-size:16px;line-height:1.6;color:#C0C4C8;padding-bottom:24px">${esc(opts.body).replace(/\n/g, "<br>")}</td></tr>
 ${opts.cta ? `<tr><td style="padding-bottom:28px"><a href="${esc(opts.cta.href)}" style="display:inline-block;background:#E8472F;color:#111111;text-decoration:none;font-weight:bold;letter-spacing:1px;padding:14px 22px">${esc(opts.cta.label)} &rarr;</a></td></tr>` : ""}
 ${opts.footer ? `<tr><td style="font-size:13px;line-height:1.5;color:#8a8e92">${esc(opts.footer)}</td></tr>` : ""}
 </table></td></tr></table></body></html>`;
