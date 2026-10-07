@@ -50,3 +50,16 @@ export function hasValidSiteAccess(candidate?: string): boolean {
   const token = siteAccessToken();
   return Boolean(candidate && token) && secureEqual(candidate!, token!);
 }
+
+// ── SPILL 42 launch switch ─────────────────────────────────────
+// While the site is private, SPILL42_PUBLIC=true opens just the game pages
+// (/spill-42 and /spill/…) so guests scanning a table QR can play.
+// Everything else stays behind the private-access screen.
+
+export function spill42Public(): boolean {
+  return process.env.SPILL42_PUBLIC?.trim().toLowerCase() === "true";
+}
+
+export function isSpill42Path(pathname: string): boolean {
+  return pathname === "/spill-42" || pathname.startsWith("/spill-42/") || pathname.startsWith("/spill/");
+}
