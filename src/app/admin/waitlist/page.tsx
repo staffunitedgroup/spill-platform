@@ -188,7 +188,7 @@ export default function WaitlistAdminPage() {
   );
 }
 
-/** "event:founder-night" → a link to that event; "saigon-home" → "Waitlist form". */
+/** "event:founder-night" → a link to that event; "global-home" → "Homepage sign-up"; "saigon-home" → "Waitlist form". */
 function SourceLabel({ source, location }: { source: string | null; location: string }) {
   if (source?.startsWith("event:")) {
     const slug = source.slice("event:".length);
@@ -198,6 +198,7 @@ function SourceLabel({ source, location }: { source: string | null; location: st
       </a>
     );
   }
+  if (source === "global-home") return <>Homepage sign-up</>;
   if (source) return <>Waitlist form</>;
   return <>—</>;
 }

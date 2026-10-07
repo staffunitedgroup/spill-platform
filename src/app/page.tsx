@@ -9,6 +9,7 @@ import { HomeAnimations } from "@/components/home-animations";
 import { BrandedText, SpillWordmark } from "@/components/brand-text";
 import { EcosystemCarousel } from "@/components/ecosystem-carousel";
 import { NavArrow } from "@/components/nav-arrow";
+import { WaitlistForm } from "@/components/waitlist-form";
 import { CATEGORY_META, formatEventWhen } from "@/lib/event-meta";
 import { listUpcomingEvents } from "@/lib/events";
 import { getLocation } from "@/lib/site-data";
@@ -746,6 +747,27 @@ export default async function HomePage() {
             <Link href="/partner">Discover what’s next →</Link>
           </div>
         </div>
+      </section>
+
+      <section className="visitStrip waitlistStrip communityStrip" id="join">
+        <div data-reveal>
+          <div className="sectionNumber">13 / Join the SPILL Community</div>
+          <h2>
+            Be first
+            <br />
+            in the room.
+          </h2>
+          <p className="conceptNotice">
+            Opening news, first events, SPILL 42 nights and creator
+            opportunities at SPILL Saigon.
+          </p>
+        </div>
+        <WaitlistForm
+          locationSlug="saigon"
+          locationName="SPILL Saigon"
+          source="global-home"
+          cta="Join the community"
+        />
       </section>
 
       <section className="brandStatement">
