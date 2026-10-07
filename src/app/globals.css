@@ -13982,3 +13982,18 @@ main > .liveNowBanner {
 .adminGuestRow .adminUpdated {
   display: inline;
 }
+
+/* Admin waitlist: events someone RSVP'd to, with party size. */
+.adminRsvpList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+.adminRsvpList b {
+  display: block;
+  color: #f7f7f4;
+  font-size: 12px;
+  font-weight: 600;
+}
