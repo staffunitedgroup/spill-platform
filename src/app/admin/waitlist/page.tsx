@@ -14,6 +14,8 @@ type Signup = {
   source: string | null;
   createdAt: string;
   updatedAt: string;
+  /** Events they've RSVP'd to at this location. */
+  rsvps?: { title: string; slug: string; startsAt: string; partySize: number }[];
 };
 
 /** Signed up again (or RSVP'd to an event) after joining — worth a second look. */
@@ -165,6 +167,7 @@ export default function WaitlistAdminPage() {
                     <th>WhatsApp</th>
                     <th>Location</th>
                     <th>Interests</th>
+                    <th>Event RSVPs</th>
                     <th>Source</th>
                   </tr>
                 </thead>
@@ -182,6 +185,24 @@ export default function WaitlistAdminPage() {
                       <td data-label="WhatsApp">{s.whatsapp || "—"}</td>
                       <td data-label="Location">{s.locationSlug}</td>
                       <td data-label="Interests">{s.interests.join(", ") || "—"}</td>
+                      <td data-label="Event RSVPs">
+                        {s.rsvps?.length ? (
+                          <ul className="adminRsvpList">
+                            {s.rsvps.map((r) => (
+                              <li key={r.slug}>
+                                <a href={`/${s.locationSlug}/whats-on/${r.slug}`} target="_blank" rel="noreferrer">
+                                  {r.title}
+                                </a>
+                                <b>
+                                  {r.partySize} {r.partySize === 1 ? "person" : "people"}
+                                </b>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          "—"
+                        )}
+                      </td>
                       <td data-label="Source">
                         <SourceLabel source={s.source} location={s.locationSlug} />
                       </td>

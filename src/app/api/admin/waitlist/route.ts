@@ -19,11 +19,24 @@ export async function GET(req: NextRequest) {
     orderBy: { updatedAt: "desc" },
   });
 
+  // Each person's event RSVPs at that location, with how many people they're bringing.
+  const rsvps = await prisma.eventRsvp.findMany({
+    where: { email: { in: [...new Set(signups.map((s) => s.email))] } },
+    select: { email: true, partySize: true, event: { select: { title: true, slug: true, locationSlug: true, startsAt: true } } },
+    orderBy: { event: { startsAt: "asc" } },
+  });
+  const withRsvps = signups.map((s) => ({
+    ...s,
+    rsvps: rsvps
+      .filter((r) => r.email === s.email && r.event.locationSlug === s.locationSlug)
+      .map((r) => ({ title: r.event.title, slug: r.event.slug, startsAt: r.event.startsAt, partySize: r.partySize })),
+  }));
+
   if (req.nextUrl.searchParams.get("format") === "csv") {
     return csvResponse(
       `spill-waitlist${location ? `-${location}` : ""}.csv`,
-      ["Signed up", "Last updated", "Location", "Name", "Email", "WhatsApp", "Interests", "Source"],
-      signups.map((s) => [
+      ["Signed up", "Last updated", "Location", "Name", "Email", "WhatsApp", "Interests", "Event RSVPs", "Source"],
+      withRsvps.map((s) => [
         s.createdAt.toISOString(),
         s.updatedAt.toISOString(),
         s.locationSlug,
@@ -31,10 +44,11 @@ export async function GET(req: NextRequest) {
         s.email,
         s.whatsapp,
         s.interests.join("; "),
+        s.rsvps.map((r) => `${r.title} (${r.partySize} ${r.partySize === 1 ? "person" : "people"})`).join("; "),
         s.source,
       ]),
     );
   }
 
-  return NextResponse.json({ signups, total: signups.length });
+  return NextResponse.json({ signups: withRsvps, total: signups.length });
 }
