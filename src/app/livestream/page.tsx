@@ -5,6 +5,7 @@ import Link from "next/link";
 import { GlobalHeader } from "@/components/global-header";
 import { LivestreamAnimations } from "@/components/livestream-animations";
 import { BrandedText } from "@/components/brand-text";
+import { BookingForm } from "@/components/booking-form";
 import { getLiveStatus, youtubeChannelUrl } from "@/lib/live";
 
 export const metadata: Metadata = {
@@ -80,7 +81,7 @@ export default async function LivestreamPage() {
           <h1>Appear<br />Share<br />Connect <em>Grow</em></h1>
           <p>Come to SPILL with something worth sharing. We give you the platform, production, audience, and opportunity to take it further.</p>
           <strong>Professional production. Real audience. Shareable content.</strong>
-          <div className="actions"><Link className="button primary" href="/create">Book your appearance <span>↗</span></Link><a className="button secondary" {...watchLink}>Watch SPILL live</a></div>
+          <div className="actions"><a className="button primary" href="#book">Book your appearance <span>↓</span></a><a className="button secondary" {...watchLink}>Watch SPILL live</a></div>
         </div>
       </div>
       <div className="liveTicker"><span>Creators</span><i>•</i><span>Founders</span><i>•</i><span>Brands</span><i>•</i><span>Culture</span><i>•</i><span>Real stories</span><i>•</i><span>Live audience</span></div>
@@ -88,7 +89,7 @@ export default async function LivestreamPage() {
 
     <section className="liveEntryPreview" id="participate">
       <div data-live-reveal><p className="liveKicker">01 / The core model</p><h2>Your way<br /><em>onto the platform.</em></h2><p className="liveLead">Come to SPILL. Get on camera. Have a great conversation. Reach an audience. Leave with content worth sharing.</p></div>
-      <div className="liveEntryPreviewGrid">{entryPaths.map(([number, title, copy], index) => <article key={title} data-live-reveal><span>{number}</span><h3>{title}</h3><div><p>{copy}</p>{index === 0 && <Link href="/create">Book an appearance →</Link>}{index === 2 && <Link href="/partner">Fund a community series →</Link>}</div></article>)}</div>
+      <div className="liveEntryPreviewGrid">{entryPaths.map(([number, title, copy], index) => <article key={title} data-live-reveal><span>{number}</span><h3>{title}</h3><div><p>{copy}</p>{index === 0 && <a href="#book">Book an appearance →</a>}{index === 2 && <Link href="/partner">Fund a community series →</Link>}</div></article>)}</div>
     </section>
 
     <section className="liveBusiness">
@@ -276,10 +277,19 @@ export default async function LivestreamPage() {
       <div className="livePillarGrid">{platformPillars.map(([title, copy], index) => <article key={title} data-live-reveal><span>{String(index + 1).padStart(2, "0")}</span><h3>{title}</h3><p>{copy}</p></article>)}</div>
     </section>
 
+    <section className="visitStrip waitlistStrip bookingStrip">
+      <div>
+        <p className="eyebrow">Work with SPILL</p>
+        <h2>Got something<br />to share?</h2>
+        <p className="conceptNotice">Tell us who you are and what you’d like to do on SPILL Livestream. The team will get back to you, usually within 2 working days.</p>
+      </div>
+      <BookingForm kind="LIVESTREAM" />
+    </section>
+
     <section className="liveFinal">
       <Image src="/assets/spill/livestream/live-audience.jpg" alt="" fill sizes="100vw" />
       <div className="liveFinalVeil" />
-      <div data-live-reveal><p className="liveKicker">The simple promise</p><h2>Come with something<br /><em>worth sharing.</em></h2><p>SPILL gives you the platform, production, audience, and opportunity to take it further.</p><strong>Appear. Share. Connect. Grow.</strong><div className="actions"><Link className="button primary" href="/create">Book your appearance</Link><Link className="button secondary" href="/podcast">See where it can lead</Link></div></div>
+      <div data-live-reveal><p className="liveKicker">The simple promise</p><h2>Come with something<br /><em>worth sharing.</em></h2><p>SPILL gives you the platform, production, audience, and opportunity to take it further.</p><strong>Appear. Share. Connect. Grow.</strong><div className="actions"><a className="button primary" href="#book">Book your appearance</a><Link className="button secondary" href="/podcast">See where it can lead</Link></div></div>
     </section>
   </main>;
 }

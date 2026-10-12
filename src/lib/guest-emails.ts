@@ -2,6 +2,7 @@
 // They go through the same Resend account as the contact form. If email isn't
 // set up, sign-ups still work — the guest just doesn't get an email.
 import "server-only";
+import { KIND_META, type RequestField, type RequestKindKey } from "@/lib/booking-meta";
 import { formatEventWhen } from "@/lib/event-meta";
 import { getLocation } from "@/lib/site-data";
 import { emailConfigured, emailHtml, sendEmail } from "@/lib/spill-email";
@@ -65,5 +66,63 @@ export async function sendWaitlistEmail(input: {
     text: `${heading}\n\n${body}\n\nSee what's on: ${page}\n\n${FOOTER}`,
     html: emailHtml({ brand: where.toUpperCase(), heading, body, cta: { label: "See what's on", href: page }, footer: FOOTER }),
     tag: "waitlist",
+  });
+}
+
+// ── Work with SPILL: booking requests ─────────────────────────
+
+type BookingEmail = {
+  id: string;
+  kind: RequestKindKey;
+  name: string;
+  email: string;
+  whatsapp: string | null;
+  summary: string;
+  fields: RequestField[];
+};
+
+/** Who gets told about new requests (BOOKING_NOTIFY_EMAIL, else hello@). */
+export function bookingNotifyAddress() {
+  return process.env.BOOKING_NOTIFY_EMAIL?.trim() || "hello@spillcafebar.com";
+}
+
+export async function sendBookingConfirmation(request: BookingEmail, origin: string) {
+  const what = KIND_META[request.kind].label;
+  const firstName = request.name.trim().split(/\s+/)[0] || "there";
+  const heading = "We've got your request.";
+  const body = `Hi ${firstName}, thanks for your ${what.toLowerCase()} request${request.summary ? `:\n${request.summary}` : "."}\n\nThe SPILL team will get back to you soon, usually within 2 working days.`;
+  const page = `${origin}${KIND_META[request.kind].page}`;
+  return sendEmail({
+    to: request.email,
+    subject: `Your SPILL ${what.toLowerCase()} request`,
+    text: `${heading}\n\n${body}\n\n${FOOTER}`,
+    html: emailHtml({ brand: "SPILL", heading, body, cta: { label: "Back to SPILL", href: page }, footer: FOOTER }),
+    tag: "booking-request",
+  });
+}
+
+export async function sendBookingToTeam(request: BookingEmail, origin: string) {
+  const what = KIND_META[request.kind].label;
+  const lines = [
+    `Name: ${request.name}`,
+    `Email: ${request.email}`,
+    request.whatsapp ? `WhatsApp: ${request.whatsapp}` : "",
+    ...request.fields.map((f) => `${f.label}: ${f.value}`),
+  ].filter(Boolean);
+  const admin = `${origin}/admin/requests`;
+  const body = `${request.summary ? `${request.summary}\n\n` : ""}${lines.join("\n")}`;
+  return sendEmail({
+    to: bookingNotifyAddress(),
+    replyTo: request.email,
+    subject: `New ${what.toLowerCase()} request — ${request.name}`,
+    text: `New ${what.toLowerCase()} request\n\n${body}\n\nOpen in Admin: ${admin}\nReply to this email to answer ${request.name} directly.`,
+    html: emailHtml({
+      brand: "SPILL ADMIN",
+      heading: `New ${what.toLowerCase()} request`,
+      body,
+      cta: { label: "Open in Admin", href: admin },
+      footer: `Reply to this email to answer ${request.name} directly.`,
+    }),
+    tag: "booking-request-team",
   });
 }

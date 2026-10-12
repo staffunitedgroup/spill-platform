@@ -1,7 +1,6 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { submitInquiry } from "@/lib/submit-inquiry";
 
 export function PodcastInquiryForm() {
   const [message, setMessage] = useState("");
@@ -17,9 +16,26 @@ export function PodcastInquiryForm() {
     setSending(true);
     setMessage("Sending your production brief…");
     try {
-      await submitInquiry({ subject: `SPILL Podcast inquiry — ${fields.Name}`, fields });
+      // Saved for the team in Admin → Requests, and emailed to them and to you.
+      const { Name: name, Email: email, ...rest } = fields;
+      const response = await fetch("/api/requests", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          kind: "PODCAST",
+          name,
+          email,
+          summary: [fields["Project type"], fields.Format, fields["Recording frequency"]].filter(Boolean).join(" · "),
+          fields: Object.entries(rest).map(([label, value]) => ({ label, value: value === "Not supplied" ? "" : value })),
+          website: String(data.get("website") ?? ""),
+        }),
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.error || "Your enquiry could not be sent. Please try again.");
       form.reset();
-      setMessage("Thank you. Your podcast enquiry has been sent to the SPILL team.");
+      setMessage(
+        `Thank you. Your podcast enquiry has been sent to the SPILL team.${result.emailed ? ` A copy is on its way to ${email}.` : ""}`,
+      );
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Your enquiry could not be sent. Please try again.");
     } finally {
@@ -44,6 +60,7 @@ export function PodcastInquiryForm() {
     </div>
     <label className="podFormWide"><span>Tell us about your idea or show *</span><textarea name="idea" rows={5} required /></label>
     <label className="podFormWide"><span>Additional information</span><textarea name="additional" rows={3} /></label>
+    <label className="formHoneypot" aria-hidden="true">Website<input name="website" tabIndex={-1} autoComplete="off" /></label>
     <div className="podFormSubmit"><button className="button primary" type="submit" disabled={sending}>{sending ? "Sending…" : "Start the conversation"} <span>↗</span></button><p aria-live="polite">{message || "Your production brief will be sent directly to the SPILL team."}</p></div>
   </form>;
 }
