@@ -14193,3 +14193,11 @@ main > .liveNowBanner {
     align-items: stretch;
   }
 }
+
+/* Podcast: real episode thumbnails from YouTube fill the card like the preview images. */
+.podEpisodeGrid .podEpisodeThumb {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}

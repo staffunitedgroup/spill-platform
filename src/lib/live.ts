@@ -95,26 +95,60 @@ async function resolveChannelId(): Promise<string | null> {
   }
 }
 
-/** Latest videos from the channel (up to 15). Empty when YouTube can't be reached. */
-export async function getChannelVideos(): Promise<ChannelVideo[]> {
+/** Fetch and read a YouTube feed. Empty when YouTube can't be reached. */
+async function fetchFeed(url: string, label: string): Promise<ChannelVideo[]> {
   try {
-    // YOUTUBE_FEED_URL lets a test or staging site point at a saved feed.
-    let url = process.env.YOUTUBE_FEED_URL?.trim();
-    if (!url) {
-      const channelId = await resolveChannelId();
-      if (!channelId) return [];
-      url = `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`;
-    }
     const res = await fetch(url, { next: { revalidate: FEED_REVALIDATE_SECONDS } });
-    // YouTube answers 404 while a channel has no public videos yet — that's normal, not an error.
+    // YouTube answers 404 while a channel or playlist has no public videos yet — that's normal.
     if (res.status === 404) return [];
     if (!res.ok) {
-      console.error(`[live] video feed returned ${res.status}`);
+      console.error(`[live] ${label} feed returned ${res.status}`);
       return [];
     }
     return parseChannelFeed(await res.text());
   } catch (error) {
-    console.error("[live] video feed failed", error);
+    console.error(`[live] ${label} feed failed`, error);
     return [];
   }
+}
+
+/** Latest videos from the channel (up to 15). Empty when YouTube can't be reached. */
+export async function getChannelVideos(): Promise<ChannelVideo[]> {
+  // YOUTUBE_FEED_URL lets a test or staging site point at a saved feed.
+  let url = process.env.YOUTUBE_FEED_URL?.trim();
+  if (!url) {
+    const channelId = await resolveChannelId();
+    if (!channelId) return [];
+    url = `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`;
+  }
+  return fetchFeed(url, "video");
+}
+
+// ── SPILL Podcast episodes (a playlist on the channel) ───────
+
+/** Playlist ID from a link like youtube.com/playlist?list=PL… or the ID itself. */
+export function playlistIdFrom(value?: string | null) {
+  const v = value?.trim();
+  if (!v) return null;
+  try {
+    const list = new URL(v).searchParams.get("list");
+    if (list) return list;
+  } catch {
+    /* not a link */
+  }
+  return /^[\w-]{10,}$/.test(v) ? v : null;
+}
+
+/** The "SPILL Podcast" playlist, set with YOUTUBE_PODCAST_PLAYLIST (link or ID). */
+export function podcastPlaylistId() {
+  return playlistIdFrom(process.env.YOUTUBE_PODCAST_PLAYLIST);
+}
+
+/** Latest episodes in the podcast playlist (empty until it's set up and has public videos). */
+export async function getPodcastEpisodes(): Promise<ChannelVideo[]> {
+  const test = process.env.YOUTUBE_PODCAST_FEED_URL?.trim();
+  if (test) return fetchFeed(test, "podcast");
+  const id = podcastPlaylistId();
+  if (!id) return [];
+  return fetchFeed(`https://www.youtube.com/feeds/videos.xml?playlist_id=${id}`, "podcast");
 }
