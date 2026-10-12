@@ -89,6 +89,19 @@ export default function WaitlistAdminPage() {
     setPassword(value);
   }
 
+  async function removeSignup(s: Signup) {
+    if (!password) return;
+    const where = locations.find((l) => l.slug === s.locationSlug)?.name ?? s.locationSlug;
+    const rsvpNote = s.rsvps?.length ? "\n\nTheir event RSVPs stay — remove those in Admin → Events." : "";
+    if (!confirm(`Remove ${s.email} from the ${where} list?${rsvpNote}`)) return;
+    const res = await fetch(`/api/admin/waitlist/${s.id}`, { method: "DELETE", headers: { "x-admin-password": password } });
+    if (!res.ok && res.status !== 404) {
+      setError("Could not remove that sign-up. Please try again.");
+      return;
+    }
+    setSignups((list) => list?.filter((x) => x.id !== s.id) ?? null);
+  }
+
   async function downloadCsv() {
     if (!password) return;
     const params = new URLSearchParams({ format: "csv" });
@@ -181,6 +194,9 @@ export default function WaitlistAdminPage() {
                       <td data-label="Name">{s.name || "—"}</td>
                       <td data-label="Email">
                         <a href={`mailto:${s.email}`}>{s.email}</a>
+                        <button type="button" className="adminLinkBtn danger adminRowRemove" onClick={() => removeSignup(s)}>
+                          Remove
+                        </button>
                       </td>
                       <td data-label="WhatsApp">{s.whatsapp || "—"}</td>
                       <td data-label="Location">{s.locationSlug}</td>
