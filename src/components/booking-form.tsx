@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { PhoneInput } from "@/components/phone-input";
 import { CONFESSIONAL_PACKAGES, type RequestField } from "@/lib/booking-meta";
 
@@ -14,6 +15,23 @@ export function BookingForm({ kind }: { kind: Kind }) {
   const [sent, setSent] = useState<Sent | null>(null);
   const [error, setError] = useState("");
   const [pkg, setPkg] = useState<string>(CONFESSIONAL_PACKAGES[0].name);
+  const boxRef = useRef<HTMLElement | null>(null);
+  const firstRender = useRef(true);
+
+  // The form is much taller than the "thank you" box. When one swaps for the other,
+  // re-measure the page's scroll animations (otherwise sections further down stay
+  // hidden and the screen looks blank) and bring the message into view.
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    const frame = requestAnimationFrame(() => {
+      ScrollTrigger.refresh();
+      boxRef.current?.scrollIntoView({ block: "center" });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [sent]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -50,7 +68,7 @@ export function BookingForm({ kind }: { kind: Kind }) {
 
   if (sent) {
     return (
-      <div className="inquiryForm bookingForm rsvpDone" role="status">
+      <div className="inquiryForm bookingForm rsvpDone" role="status" ref={(el) => void (boxRef.current = el)}>
         <p className="eyebrow">Request sent</p>
         <h3>Thank you — we’ve got it.</h3>
         <p>
@@ -65,7 +83,7 @@ export function BookingForm({ kind }: { kind: Kind }) {
   }
 
   return (
-    <form className="inquiryForm bookingForm" onSubmit={handleSubmit} id="book">
+    <form className="inquiryForm bookingForm" onSubmit={handleSubmit} id="book" ref={(el) => void (boxRef.current = el)}>
       <p className="eyebrow">{kind === "LIVESTREAM" ? "Book your appearance" : "Book a Confessional"}</p>
       <div className="formPair">
         <label>
