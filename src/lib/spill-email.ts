@@ -21,6 +21,8 @@ export async function sendEmail(input: {
   html: string;
   /** Resend tag to tell emails apart, e.g. "event-rsvp". */
   tag?: string;
+  /** Where replies go, e.g. the guest's email on a team notification. */
+  replyTo?: string;
 }): Promise<boolean> {
   const apiKey = process.env.RESEND_API_KEY?.trim();
   const from = fromAddress();
@@ -39,6 +41,7 @@ export async function sendEmail(input: {
         text: input.text,
         html: input.html,
         tags: [{ name: "source", value: input.tag ?? "spill-42" }],
+        ...(input.replyTo ? { reply_to: input.replyTo } : {}),
       }),
     });
     if (!res.ok) {

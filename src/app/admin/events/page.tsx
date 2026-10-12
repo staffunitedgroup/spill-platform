@@ -202,6 +202,7 @@ export default function EventsAdminPage() {
         <nav className="adminLinks">
           <Link href="/admin">← Active tables</Link>
           <Link href="/admin/waitlist">Waitlist</Link>
+          <Link href="/admin/requests">Requests</Link>
         </nav>
       </header>
 

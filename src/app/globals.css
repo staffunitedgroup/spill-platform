@@ -13431,7 +13431,8 @@ body:has(.s42App) .siteFooter {
 .inquiryForm select,
 .podInquiryForm select,
 .portalFilters select,
-.adminWaitlistBar select {
+.adminWaitlistBar select,
+.requestStatus select {
   appearance: none;
   -webkit-appearance: none;
   width: auto;
@@ -13450,12 +13451,14 @@ body:has(.s42App) .siteFooter {
 .inquiryForm select:hover,
 .podInquiryForm select:hover,
 .portalFilters select:hover,
-.adminWaitlistBar select:hover {
+.adminWaitlistBar select:hover,
+.requestStatus select:hover {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23ff1838' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 .inquiryForm select:focus-visible,
 .podInquiryForm select:focus-visible,
-.adminWaitlistBar select:focus-visible {
+.adminWaitlistBar select:focus-visible,
+.requestStatus select:focus-visible {
   outline: 2px solid var(--cyan);
   outline-offset: 3px;
 }
@@ -14007,4 +14010,186 @@ main > .liveNowBanner {
   margin-top: 4px;
   padding: 0;
   font-size: 12px;
+}
+
+/* ── Work with SPILL · booking forms ────────────────────────── */
+.bookingStrip {
+  min-height: 0;
+  border-top: 1px solid #1d1e22;
+}
+.bookingStrip h2 {
+  margin: 14px 0 22px;
+}
+.bookingForm textarea {
+  resize: vertical;
+}
+.bookingForm input,
+.bookingForm select,
+.bookingForm textarea {
+  letter-spacing: 0.01em;
+  text-transform: none;
+}
+.bookingForm label small {
+  color: #666;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+.bookingPackages span b {
+  margin-left: 6px;
+  color: inherit;
+  font-weight: 600;
+  opacity: 0.75;
+}
+.inquiryForm .bookingNote {
+  margin: 22px 0 0;
+  color: #8a8e92;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ── Admin · requests ───────────────────────────────────────── */
+.adminNewBadge {
+  margin-left: 10px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--red);
+  color: #fff;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+.requestList {
+  display: grid;
+  gap: 16px;
+}
+.requestCard {
+  padding: 22px 24px;
+  border: 1px solid #26272c;
+  border-left: 3px solid #45464b;
+  background: #111216;
+}
+.requestCard.status-new {
+  border-left-color: var(--red);
+}
+.requestCard.status-contacted {
+  border-left-color: #e8b04a;
+}
+.requestCard.status-confirmed {
+  border-left-color: var(--cyan);
+}
+.requestCard.status-closed {
+  opacity: 0.6;
+}
+.requestCard > header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+.requestKind {
+  margin: 0 0 6px;
+  color: #8a8e92;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.requestCard h2 {
+  margin: 0 0 6px;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+}
+.requestContact {
+  margin: 0;
+  color: #aaa;
+  font-size: 14px;
+}
+.requestContact a {
+  color: var(--cyan);
+}
+.requestStatus {
+  display: grid;
+  gap: 6px;
+  color: #8a8e92;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.requestStatus select {
+  padding: 8px 34px 8px 12px;
+  background-position: right 12px center;
+  border: 1px solid #45464b;
+  background-color: #0b0c0f;
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.requestSummary {
+  margin: 16px 0 0;
+  color: #f7f7f4;
+  font-size: 16px;
+}
+.requestFields {
+  margin: 16px 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px 24px;
+}
+.requestFields div {
+  min-width: 0;
+}
+.requestFields dt {
+  color: #8a8e92;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.requestFields dd {
+  margin: 4px 0 0;
+  color: #ddd;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.requestCard > footer {
+  margin-top: 18px;
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+}
+.requestNotes {
+  flex: 1;
+  display: grid;
+  gap: 6px;
+  color: #8a8e92;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.requestNotes textarea {
+  padding: 10px 12px;
+  border: 1px solid #2d2e33;
+  background: #0b0c0f;
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  letter-spacing: 0;
+  text-transform: none;
+  resize: vertical;
+}
+.requestActions {
+  display: flex;
+  gap: 14px;
+  white-space: nowrap;
+}
+@media (max-width: 620px) {
+  .requestCard {
+    padding: 18px 16px;
+  }
+  .requestCard > header,
+  .requestCard > footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }

@@ -482,3 +482,41 @@ model EventRsvp {
   @@unique([eventId, email])
   @@map("event_rsvps")
 }
+
+// ── Work with SPILL: booking requests ─────────────────────────
+// Livestream appearances, podcast productions and Confessional sessions.
+// The team follows each one up from /admin/requests.
+
+enum RequestKind {
+  LIVESTREAM
+  PODCAST
+  CONFESSIONAL
+}
+
+enum RequestStatus {
+  NEW
+  CONTACTED
+  CONFIRMED
+  CLOSED
+}
+
+model BookingRequest {
+  id           String        @id @default(cuid())
+  kind         RequestKind
+  locationSlug String        @default("saigon") @map("location_slug")
+  name         String
+  email        String
+  whatsapp     String?
+  // One line for the Admin list, e.g. "Two-Person Confessional · Sat 18 Oct, evening".
+  summary      String        @default("")
+  // Everything else from the form, as [{ label, value }] in form order.
+  fields       Json          @default("[]")
+  status       RequestStatus @default(NEW)
+  // Team-only notes.
+  notes        String        @default("")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+
+  @@index([status, createdAt])
+  @@map("booking_requests")
+}
