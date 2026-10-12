@@ -4,6 +4,7 @@ import Link from "next/link";
 import { GlobalHeader } from "@/components/global-header";
 import { PodcastAnimations } from "@/components/podcast-animations";
 import { PodcastInquiryForm } from "@/components/podcast-inquiry-form";
+import { getPodcastEpisodes, podcastPlaylistId, youtubeChannelUrl } from "@/lib/live";
 import { BrandedText, SpillWordmark } from "@/components/brand-text";
 
 export const metadata: Metadata = {
@@ -65,7 +66,15 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   return <p className="podSectionLabel">{children}</p>;
 }
 
-export default function PodcastPage() {
+function episodeDate(iso: string) {
+  return new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric" }).format(new Date(iso));
+}
+
+export default async function PodcastPage() {
+  // Real episodes from the "SPILL Podcast" playlist once it has some; until then, the preview cards.
+  const playlist = podcastPlaylistId();
+  const episodes = (await getPodcastEpisodes()).slice(0, 3);
+  const allEpisodesUrl = playlist ? `https://www.youtube.com/playlist?list=${playlist}` : youtubeChannelUrl();
   return <main className="podcastPage">
     <PodcastAnimations />
 
@@ -207,14 +216,24 @@ export default function PodcastPage() {
     </section>
 
     <section className="podSection podWatch" id="watch">
-      <div className="podWatchHeading" data-pod-reveal><div><SectionLabel>15 / Featured SPILL Podcast</SectionLabel><h2>Watch<br /><em><SpillWordmark /> Podcast.</em></h2></div><a className="podArrowLink" href="https://www.youtube.com/@NowWeSPILL" target="_blank" rel="noreferrer">Watch all episodes <b>↗</b></a></div>
+      <div className="podWatchHeading" data-pod-reveal><div><SectionLabel>15 / Featured SPILL Podcast</SectionLabel><h2>Watch<br /><em><SpillWordmark /> Podcast.</em></h2></div><a className="podArrowLink" href={allEpisodesUrl} target="_blank" rel="noreferrer">Watch all episodes <b>↗</b></a></div>
       <div className="podEpisodeGrid">
-        {[
+        {episodes.length > 0 ? episodes.map((ep) => (
+          <a key={ep.id} href={`https://www.youtube.com/watch?v=${ep.id}${playlist ? `&list=${playlist}` : ""}`} target="_blank" rel="noreferrer" data-pod-reveal>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img className="podEpisodeThumb" src={ep.thumbnail} alt="" loading="lazy" />
+            <div>
+              <span>{episodeDate(ep.publishedAt)}</span>
+              <h3>{ep.title}</h3>
+              <b>Play ↗</b>
+            </div>
+          </a>
+        )) : [
           { title: "Founders at SPILL", tag: "Coming soon", img: "/assets/spill/podcast/featured-founders.jpg" },
           { title: "Culture in conversation", tag: "SPILL Podcast", img: "/assets/spill/podcast/featured-culture.jpg" },
           { title: "People worth knowing", tag: "SPILL Podcast", img: "/assets/spill/podcast/featured-people.jpg" },
         ].map((ep) => (
-          <a key={ep.title} href="https://www.youtube.com/@NowWeSPILL" target="_blank" rel="noreferrer" data-pod-reveal>
+          <a key={ep.title} href={allEpisodesUrl} target="_blank" rel="noreferrer" data-pod-reveal>
             <Image src={ep.img} alt={ep.title} fill sizes="(max-width: 760px) 100vw, 33vw" />
             <div>
               <span>{ep.tag}</span>
