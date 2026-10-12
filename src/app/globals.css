@@ -13997,3 +13997,14 @@ main > .liveNowBanner {
   font-size: 12px;
   font-weight: 600;
 }
+
+.adminGuestRow .adminGuestRemove {
+  margin-left: 10px;
+  font-size: 12px;
+}
+.adminWaitlistTable .adminRowRemove {
+  display: block;
+  margin-top: 4px;
+  padding: 0;
+  font-size: 12px;
+}

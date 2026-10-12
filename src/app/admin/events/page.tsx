@@ -166,6 +166,14 @@ export default function EventsAdminPage() {
     if (res.ok) setGuestList({ eventId: e.id, rsvps: (await res.json()).rsvps });
   }
 
+  async function removeGuest(e: AdminEvent, r: Rsvp) {
+    if (!confirm(`Remove ${r.name} (${r.email}) from “${e.title}”? They stay on the waitlist.`)) return;
+    const res = await api(`/api/admin/events/${e.id}/rsvps/${r.id}`, { method: "DELETE" });
+    if (!res.ok && res.status !== 404) return setError("Could not remove that guest. Please try again.");
+    setGuestList((g) => (g && g.eventId === e.id ? { ...g, rsvps: g.rsvps.filter((x) => x.id !== r.id) } : g));
+    load();
+  }
+
   async function downloadGuests(e: AdminEvent) {
     const res = await api(`/api/admin/events/${e.id}/rsvps?format=csv`);
     if (!res.ok) return setError("Could not export the guest list.");
@@ -463,6 +471,9 @@ export default function EventsAdminPage() {
                                     {new Date(r.updatedAt).getTime() - new Date(r.createdAt).getTime() > 60_000 && (
                                       <small className="adminUpdated"> ↻ updated</small>
                                     )}
+                                    <button type="button" className="adminLinkBtn danger adminGuestRemove" onClick={() => removeGuest(e, r)}>
+                                      Remove
+                                    </button>
                                   </li>
                                 ))}
                               </ul>
