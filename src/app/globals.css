@@ -716,16 +716,31 @@ h2 em {
 .locationSwitcher {
   position: relative;
 }
-.navDropdown summary,
-.locationSwitcher summary {
-  list-style: none;
+.dropdownHead {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
   cursor: pointer;
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
-.navDropdown summary::-webkit-details-marker,
-.locationSwitcher summary::-webkit-details-marker {
-  display: none;
+button.dropdownHead,
+.dropdownCaret {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.dropdownCaret {
+  /* Comfortable tap target without changing the look. */
+  min-width: 28px;
+  min-height: 32px;
+  margin: -8px -6px -8px -4px;
 }
 .dropdownPanel {
   display: none;
@@ -745,15 +760,16 @@ h2 em {
   inset: auto 0 100%;
 }
 
-.navDropdown[open] > .dropdownPanel,
-.locationSwitcher[open] > .dropdownPanel {
+/* Open state: .isOpen (set by HoverDropdown on tap/click/keyboard). The pure-CSS
+   hover reveal is only for devices with a real mouse - on phones and tablets a
+   "sticky" :hover kept panels stuck open and made iOS swallow taps. */
+.navDropdown.isOpen > .dropdownPanel,
+.locationSwitcher.isOpen > .dropdownPanel {
   display: block;
 }
 @media (hover: hover) and (pointer: fine) {
   .navDropdown:hover > .dropdownPanel,
-  .navDropdown:focus-within > .dropdownPanel,
-  .locationSwitcher:hover > .dropdownPanel,
-  .locationSwitcher:focus-within > .dropdownPanel {
+  .locationSwitcher:hover > .dropdownPanel {
     display: block;
   }
 }
@@ -890,7 +906,7 @@ h2 em {
   flex: 0 0 auto;
   margin-left: -12px;
 }
-.locationSwitcher summary {
+.locationSwitcher .dropdownHead {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -907,27 +923,27 @@ h2 em {
     border-color 0.2s ease,
     background-color 0.2s ease;
 }
-.locationSwitcher summary i {
+.locationSwitcher .dropdownHead i {
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background: var(--red);
   box-shadow: 0 0 8px rgba(232, 71, 47, 0.8);
 }
-.locationSwitcher summary b {
+.locationSwitcher .dropdownHead b {
   font-weight: inherit;
 }
-.locationSwitcher summary span {
+.locationSwitcher .dropdownHead span {
   font-size: 11px;
   opacity: 0.7;
   transform: translateY(-2px);
 }
-.locationSwitcher[open] summary {
+.locationSwitcher.isOpen .dropdownHead {
   border-color: var(--red);
   background: rgba(232, 71, 47, 0.12);
 }
 @media (hover: hover) and (pointer: fine) {
-  .locationSwitcher:hover summary {
+  .locationSwitcher:hover .dropdownHead {
     border-color: var(--red);
     background: rgba(232, 71, 47, 0.12);
   }
