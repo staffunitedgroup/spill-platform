@@ -877,12 +877,65 @@ h2 em {
 .localBrandLogo {
   flex: 0 0 auto;
 }
+/* Location switcher: a compact pill beside the logo, not a headline. */
+.localHeader .localNav {
+  margin-left: auto;
+}
+.localHeader .locationSwitcher {
+  flex: 0 0 auto;
+  margin-left: -12px;
+}
 .locationSwitcher summary {
-  font-size: clamp(18px, 2.4vw, 28px);
-  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 12px 0 11px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  white-space: nowrap;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+.locationSwitcher summary i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 0 8px rgba(232, 71, 47, 0.8);
+}
+.locationSwitcher summary b {
+  font-weight: inherit;
+}
+.locationSwitcher summary span {
+  font-size: 11px;
+  opacity: 0.7;
+  transform: translateY(-2px);
+}
+.locationSwitcher:hover summary,
+.locationSwitcher:focus-within summary,
+.locationSwitcher[open] summary {
+  border-color: var(--red);
+  background: rgba(232, 71, 47, 0.12);
 }
 .locationSwitcher .dropdownPanel {
-  top: calc(100% + 20px);
+  top: calc(100% + 12px);
+}
+.locationSwitcher .dropdownPanel a[aria-current="page"] {
+  color: var(--red);
+}
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 .localHero {
   background: #080808 url("/assets/spill/home/hero-v2-poster.jpg") center/cover;
@@ -1073,6 +1126,7 @@ h2 em {
   }
   .localHeader .mobileMenu {
     display: block;
+    margin-left: auto;
   }
   .splitFeature {
     grid-template-columns: 1fr;
@@ -1630,8 +1684,16 @@ h2 em {
   .localHeader {
     justify-content: flex-start;
   }
-  .locationSwitcher {
-    margin-left: auto;
+  .localHeader {
+    gap: 16px;
+  }
+  .localHeader .locationSwitcher {
+    margin-left: 0;
+  }
+  .locationSwitcher .dropdownPanel {
+    left: 50%;
+    min-width: 250px;
+    transform: translateX(-50%);
   }
   .menuBookTop {
     grid-template-columns: 1fr;
