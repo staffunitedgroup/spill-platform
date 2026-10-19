@@ -744,13 +744,20 @@ h2 em {
   position: absolute;
   inset: auto 0 100%;
 }
-.navDropdown:hover > .dropdownPanel,
-.navDropdown:focus-within > .dropdownPanel,
+/* Open state comes from [open] (set by HoverDropdown). Pure-CSS hover/focus
+   reveal only on devices with a real mouse: on phones a "sticky" :hover kept the
+   panel stuck open and made iOS swallow the first tap. */
 .navDropdown[open] > .dropdownPanel,
-.locationSwitcher:hover > .dropdownPanel,
-.locationSwitcher:focus-within > .dropdownPanel,
 .locationSwitcher[open] > .dropdownPanel {
   display: block;
+}
+@media (hover: hover) and (pointer: fine) {
+  .navDropdown:hover > .dropdownPanel,
+  .navDropdown:focus-within > .dropdownPanel,
+  .locationSwitcher:hover > .dropdownPanel,
+  .locationSwitcher:focus-within > .dropdownPanel {
+    display: block;
+  }
 }
 .dropdownPanel a {
   display: flex;
@@ -917,11 +924,15 @@ h2 em {
   opacity: 0.7;
   transform: translateY(-2px);
 }
-.locationSwitcher:hover summary,
-.locationSwitcher:focus-within summary,
 .locationSwitcher[open] summary {
   border-color: var(--red);
   background: rgba(232, 71, 47, 0.12);
+}
+@media (hover: hover) and (pointer: fine) {
+  .locationSwitcher:hover summary {
+    border-color: var(--red);
+    background: rgba(232, 71, 47, 0.12);
+  }
 }
 .locationSwitcher .dropdownPanel {
   top: calc(100% + 12px);
@@ -2300,6 +2311,73 @@ h2 em {
   font-family: var(--font-display);
   font-size: 15px;
   text-transform: uppercase;
+}
+/* Mobile menu items with sub-pages open in place (accordion). */
+.mobileGroup {
+  border-top: 1px solid #2d2d2f;
+}
+.mobileGroup > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 15px 0;
+  font-family: var(--font-display);
+  font-size: 15px;
+  text-transform: uppercase;
+  list-style: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.mobileGroup > summary::-webkit-details-marker {
+  display: none;
+}
+.mobileChevron {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  padding: 2px;
+  fill: none;
+  stroke: #ddd;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  border: 1px solid #45464b;
+  border-radius: 3px;
+  transition: transform 0.25s ease;
+}
+.mobileGroup[open] > summary {
+  color: var(--red);
+}
+.mobileGroup[open] .mobileChevron {
+  transform: rotate(180deg);
+  stroke: var(--red);
+  border-color: var(--red);
+}
+.mobileGroupItems {
+  margin: 0 0 12px;
+  padding-left: 14px;
+  border-left: 1px solid var(--red);
+}
+.mobileMenu nav .mobileGroupItems a {
+  align-items: baseline;
+  padding: 11px 0;
+  border-top: 0;
+  font-family: inherit;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: none;
+  color: #d8d8da;
+}
+.mobileMenu nav .mobileGroupItems a small {
+  color: #77787c;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.mobileMenu nav .mobileGroupItems a.mobileGroupOverview,
+.mobileMenu nav .mobileGroupItems a[aria-current="page"] {
+  color: var(--red);
 }
 .mobileMenu nav a.mobileCorpLink {
   color: var(--red);

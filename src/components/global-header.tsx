@@ -10,6 +10,7 @@ import {
   locationStatus,
 } from "@/lib/site-data";
 import { NavArrow } from "./nav-arrow";
+import { MobileMenu, MobileNavGroup } from "./mobile-menu";
 import { getLiveStatus } from "@/lib/live";
 
 export async function GlobalHeader() {
@@ -82,11 +83,7 @@ export async function GlobalHeader() {
           ))}
         </div>
       </nav>
-      <details className="mobileMenu">
-        <summary aria-label="Open navigation">
-          <span />
-          <span />
-        </summary>
+      <MobileMenu label="Open navigation">
         <nav aria-label="Mobile navigation">
           <p>Navigate SPILL</p>
           <Link href="/">
@@ -97,26 +94,19 @@ export async function GlobalHeader() {
             Album
             <NavArrow />
           </Link>
-          <Link href="/#locations">
-            Locations
-            <NavArrow direction="down" />
-          </Link>
+          <MobileNavGroup
+            label="Locations"
+            href="/#locations"
+            overview="All locations"
+            items={locations.map((location) => ({ label: location.name, href: `/${location.slug}`, note: locationStatus(location) }))}
+          />
           {navigation.map((item) => (
             <Fragment key={item.href}>
-              <Link href={item.href}>
-                {item.label}
-                <NavArrow />
-              </Link>
-              {/* Mobile has no hover dropdown, so surface SPILL 42 directly. */}
+              <MobileNavGroup label={item.label} href={item.href} items={item.items} />
+              {/* Keep SPILL 42 one tap away on phones. */}
               {item.href === "/whats-on" && (
                 <Link href={SPILL42_PLAY_HREF} className="mobileSpill42">
                   Play SPILL 42
-                  <NavArrow />
-                </Link>
-              )}
-              {item.href === "/whats-on" && launched && (
-                <Link href="/live" className="mobileSpill42">
-                  {liveLabel}
                   <NavArrow />
                 </Link>
               )}
@@ -129,7 +119,7 @@ export async function GlobalHeader() {
             </Link>
           ))}
         </nav>
-      </details>
+      </MobileMenu>
     </header>
   );
 }
