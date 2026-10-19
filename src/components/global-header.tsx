@@ -1,9 +1,7 @@
-import { Fragment } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { HoverDropdown } from "./hover-dropdown";
 import {
-  SPILL42_PLAY_HREF,
   corporateNavigation,
   globalNavigation,
   locations,
@@ -38,9 +36,9 @@ export async function GlobalHeader() {
       <nav className="desktopNav" aria-label="Global navigation">
         <HoverDropdown
           className="navDropdown"
-          summary={
+          label={
             <>
-              Locations <span>⌄</span>
+              Locations <span aria-hidden="true">⌄</span>
             </>
           }
         >
@@ -59,11 +57,8 @@ export async function GlobalHeader() {
           <HoverDropdown
             className="navDropdown"
             key={item.href}
-            summary={
-              <>
-                <Link href={item.href}>{item.label}</Link> <span>⌄</span>
-              </>
-            }
+            label={item.label}
+            href={item.href}
           >
             <div className="dropdownPanel">
               {item.items.map((child) => (
@@ -101,16 +96,7 @@ export async function GlobalHeader() {
             items={locations.map((location) => ({ label: location.name, href: `/${location.slug}`, note: locationStatus(location) }))}
           />
           {navigation.map((item) => (
-            <Fragment key={item.href}>
-              <MobileNavGroup label={item.label} href={item.href} items={item.items} />
-              {/* Keep SPILL 42 one tap away on phones. */}
-              {item.href === "/whats-on" && (
-                <Link href={SPILL42_PLAY_HREF} className="mobileSpill42">
-                  Play SPILL 42
-                  <NavArrow />
-                </Link>
-              )}
-            </Fragment>
+            <MobileNavGroup key={item.href} label={item.label} href={item.href} items={item.items} />
           ))}
           {corporateNavigation.map((item) => (
             <Link key={item.href} href={item.href} className="mobileCorpLink">

@@ -23,12 +23,12 @@ export async function LocalHeader({ location }: { location: Location }) {
   return <header className="localHeader">
     <Link className="brand brandLogo localBrandLogo" href="/" aria-label="SPILL global home"><Image src="/assets/spill/brand/wordmark-bright.png" alt="SPILL" width={1580} height={250} /></Link>
     {/* The logo already says SPILL — the switcher only names the city, as a small pill. */}
-    <HoverDropdown className="locationSwitcher" summary={<><i aria-hidden="true" /><b>{cityName(location)}</b><span aria-hidden="true">⌄</span><em className="srOnly">Change location</em></>}><div className="dropdownPanel">
+    <HoverDropdown className="locationSwitcher" label={<><i aria-hidden="true" /><b>{cityName(location)}</b><span aria-hidden="true">⌄</span><em className="srOnly">Change location</em></>}><div className="dropdownPanel">
       <Link href="/">Global SPILL</Link>
       {locations.map((item) => <Link key={item.slug} href={`/${item.slug}`} aria-current={item.slug === location.slug ? "page" : undefined}>{item.name}<small>{item.slug === location.slug ? "You're here" : locationStatus(item)}</small></Link>)}
     </div></HoverDropdown>
     <nav className="localNav" aria-label={`${location.name} navigation`}>
-      {localNavigation.map((item) => item.path === "create" ? <HoverDropdown className="navDropdown localCreateDropdown" key={item.path} summary={<><Link href={`/${location.slug}/create`}>{item.label}</Link> <span>⌄</span></>}><div className="dropdownPanel">{localCreateNavigation.map((child) => <Link key={child.label} href={locationCreateHref(child.href, location)}>{child.label}<NavArrow /></Link>)}</div></HoverDropdown> : [<Link key={item.path || "home"} href={`/${location.slug}${item.path ? `/${item.path}` : ""}`}>{item.label}</Link>, item.path === "whats-on" ? liveLink : null])}
+      {localNavigation.map((item) => item.path === "create" ? <HoverDropdown className="navDropdown localCreateDropdown" key={item.path} label={item.label} href={`/${location.slug}/create`}><div className="dropdownPanel">{localCreateNavigation.map((child) => <Link key={child.label} href={locationCreateHref(child.href, location)}>{child.label}<NavArrow /></Link>)}</div></HoverDropdown> : [<Link key={item.path || "home"} href={`/${location.slug}${item.path ? `/${item.path}` : ""}`}>{item.label}</Link>, item.path === "whats-on" ? liveLink : null])}
     </nav>
     <MobileMenu className="localMobileMenu" label={`Open ${location.name} navigation`}><nav aria-label={`${location.name} mobile navigation`}>
       <p>{location.name}</p>
