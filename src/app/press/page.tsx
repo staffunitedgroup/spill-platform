@@ -4,5 +4,5 @@ export default function Page() { return <PortalPage eyebrow="Press + media" titl
   { title: "Press Releases", text: "Official announcements covering locations, partnerships, programming, and expansion." },
   { title: "Leadership", text: "Founder and leadership biographies for profiles, interviews, and speaking opportunities." },
   { title: "Brand Assets", text: "Approved brand descriptions, logos, and venue photography for editorial use." },
-  { title: "Media Contact", text: "For press enquiries, interviews, and asset requests, email press@spillcafebar.com." },
+  { title: "Media Contact", text: "For press enquiries, interviews, and asset requests, email spill@nowwespill.com." },
 ]} />; }

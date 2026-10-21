@@ -308,7 +308,7 @@ export const localPageContent: Record<
       },
       {
         title: "Contact",
-        text: "Email hello@spillcafebar.com or connect with @spillsaigon.",
+        text: "Email spill@nowwespill.com or connect with @spillsaigon.",
       },
       {
         title: "FAQ",

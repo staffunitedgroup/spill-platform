@@ -1,0 +1,140 @@
+diff --git a/.env.example b/.env.example
+index 5ca1d5c..6d4516e 100644
+--- a/.env.example
++++ b/.env.example
+@@ -12,7 +12,7 @@ INVESTOR_SESSION_SECRET=""
+ 
+ # Email (Resend) — contact form + SPILL 42 sign-in links and "they're back" emails
+ RESEND_API_KEY=""
+-INQUIRY_FROM_EMAIL="SPILL Website <hello@spillcafebar.com>"
++INQUIRY_FROM_EMAIL="SPILL Website <spill@nowwespill.com>"
+ # Optional: sender for SPILL 42 emails (defaults to INQUIRY_FROM_EMAIL)
+ SPILL_FROM_EMAIL=""
+ 
+@@ -36,5 +36,5 @@ YOUTUBE_CHANNEL_ID=""
+ # SPILL Podcast: the "SPILL Podcast" playlist (link or ID). Its latest episodes show on /podcast.
+ YOUTUBE_PODCAST_PLAYLIST=""
+ 
+-# Work with SPILL: who gets new booking requests (optional, defaults to hello@spillcafebar.com)
++# Work with SPILL: who gets new booking requests (optional, defaults to spill@nowwespill.com)
+ BOOKING_NOTIFY_EMAIL=""
+diff --git a/src/app/api/requests/route.ts b/src/app/api/requests/route.ts
+index 761360d..cd771cf 100644
+--- a/src/app/api/requests/route.ts
++++ b/src/app/api/requests/route.ts
+@@ -41,7 +41,7 @@ export async function POST(request: Request) {
+     });
+   } catch (error) {
+     console.error("[requests] could not save", error);
+-    return Response.json({ error: "We couldn't send that just now. Please try again or email hello@spillcafebar.com." }, { status: 500 });
++    return Response.json({ error: "We couldn't send that just now. Please try again or email spill@nowwespill.com." }, { status: 500 });
+   }
+ 
+   return Response.json({ ok: true, emailed: emailConfigured() });
+diff --git a/src/app/careers/page.tsx b/src/app/careers/page.tsx
+index 0faf097..98ec3a1 100644
+--- a/src/app/careers/page.tsx
++++ b/src/app/careers/page.tsx
+@@ -4,4 +4,4 @@ export default function Page() { return <PortalPage eyebrow="Join SPILL" title="
+   { title: "Tokyo", text: "Register interest in future location and market-building roles in Tokyo." },
+   { title: "Future Markets", text: "Help bring SPILL to new cities with local knowledge and entrepreneurial energy." },
+   { title: "Corporate", text: "Build the global platform across brand, operations, growth, partnerships, media, and technology." },
+-]} note="No suitable role yet? Introduce yourself at careers@spillcafebar.com." />; }
++]} note="No suitable role yet? Introduce yourself at spill@nowwespill.com." />; }
+diff --git a/src/app/contact/page.tsx b/src/app/contact/page.tsx
+index 753dfa8..22dc7eb 100644
+--- a/src/app/contact/page.tsx
++++ b/src/app/contact/page.tsx
+@@ -1,6 +1,6 @@
+ import { PortalPage } from "@/components/portal-page";
+ export default function Page() { return <PortalPage eyebrow="Talk to SPILL" title="Contact" description="Choose the conversation you want to start and we’ll connect you with the right SPILL team." sections={[
+-  { title: "SPILL Saigon", text: "Venue address and opening hours will be announced ahead of launch. Email hello@spillcafebar.com or follow @spillsaigon." },
++  { title: "SPILL Saigon", text: "Venue address and opening hours will be announced ahead of launch. Email spill@nowwespill.com or follow @spillsaigon." },
+   { title: "General Enquiries", text: "Questions about SPILL, locations, events, bookings, and the wider network." },
+   { title: "Partner Enquiry", text: "Brands, sponsors, companies, organizations, property partners, and venue opportunities.", href: "/partner" },
+   { title: "Investor Enquiry", text: "Start a confidential conversation about investment and expansion.", href: "/partner/investors" },
+diff --git a/src/app/partner/investors/overview/page.tsx b/src/app/partner/investors/overview/page.tsx
+index db2476b..58f7442 100644
+--- a/src/app/partner/investors/overview/page.tsx
++++ b/src/app/partner/investors/overview/page.tsx
+@@ -9,7 +9,7 @@ export default async function InvestorOverview({ searchParams }: { searchParams:
+   const store = await cookies();
+   const authorized = validInvestorAccessToken(store.get(investorCookieName)?.value);
+   const { error } = await searchParams;
+-  if (!authorized) return <main className="investorGate"><div className="portalHeaderWrap"><GlobalHeader /></div><section><p className="eyebrow">Restricted investor materials</p><h1>Investor<br /><em>overview.</em></h1><p>This overview contains confidential concept and commercial information. Enter the access password supplied by the SPILL team.</p><form action={unlockInvestorOverview}><label htmlFor="investor-password">Access password</label><input id="investor-password" name="password" type="password" autoComplete="current-password" required /><button className="button primary" type="submit">Open overview <span>→</span></button>{error === "invalid" && <p className="gateError">That password is not correct.</p>}{error === "configuration" && <p className="gateError">Secure access has not yet been configured. Please contact hello@spillcafebar.com.</p>}</form><Link href="/partner/investors">← Back to investor enquiry</Link></section></main>;
++  if (!authorized) return <main className="investorGate"><div className="portalHeaderWrap"><GlobalHeader /></div><section><p className="eyebrow">Restricted investor materials</p><h1>Investor<br /><em>overview.</em></h1><p>This overview contains confidential concept and commercial information. Enter the access password supplied by the SPILL team.</p><form action={unlockInvestorOverview}><label htmlFor="investor-password">Access password</label><input id="investor-password" name="password" type="password" autoComplete="current-password" required /><button className="button primary" type="submit">Open overview <span>→</span></button>{error === "invalid" && <p className="gateError">That password is not correct.</p>}{error === "configuration" && <p className="gateError">Secure access has not yet been configured. Please contact spill@nowwespill.com.</p>}</form><Link href="/partner/investors">← Back to investor enquiry</Link></section></main>;
+ 
+   const sections = [
+     { number: "01", title: "A new kind of social venue", text: "SPILL combines a hospitality destination with experiences, content creation, audience growth, and media distribution. The venue is the physical front door to a much larger ecosystem." },
+diff --git a/src/app/press/page.tsx b/src/app/press/page.tsx
+index e89919b..22b071d 100644
+--- a/src/app/press/page.tsx
++++ b/src/app/press/page.tsx
+@@ -4,5 +4,5 @@ export default function Page() { return <PortalPage eyebrow="Press + media" titl
+   { title: "Press Releases", text: "Official announcements covering locations, partnerships, programming, and expansion." },
+   { title: "Leadership", text: "Founder and leadership biographies for profiles, interviews, and speaking opportunities." },
+   { title: "Brand Assets", text: "Approved brand descriptions, logos, and venue photography for editorial use." },
+-  { title: "Media Contact", text: "For press enquiries, interviews, and asset requests, email press@spillcafebar.com." },
++  { title: "Media Contact", text: "For press enquiries, interviews, and asset requests, email spill@nowwespill.com." },
+ ]} />; }
+diff --git a/src/components/floating-contact.tsx b/src/components/floating-contact.tsx
+index 80d274f..2497d54 100644
+--- a/src/components/floating-contact.tsx
++++ b/src/components/floating-contact.tsx
+@@ -28,7 +28,7 @@ export function FloatingContact({ phone }: { phone?: string }) {
+   }
+ 
+   return <div className={`floatingContact ${open ? "open" : ""}`}>
+-    {open && <section className="floatingContactPanel" aria-label="Contact SPILL"><button className="floatingContactClose" type="button" onClick={() => setOpen(false)} aria-label="Close contact form">×</button><p className="eyebrow">Contact SPILL</p><h2>Start a conversation.</h2><a href="mailto:hello@spillcafebar.com">hello@spillcafebar.com</a>{phone && <a href={`tel:${phone.replace(/[^+\d]/g, "")}`}>Call {phone}</a>}<form onSubmit={handleSubmit}><label>Name<input name="name" autoComplete="name" required /></label><label>Email<input name="email" type="email" autoComplete="email" required /></label><label>Message<textarea name="message" rows={3} required /></label><label className="formHoneypot" aria-hidden="true">Website<input name="website" tabIndex={-1} autoComplete="off" /></label><button type="submit" disabled={sending}>{sending ? "Sending…" : "Send message"}<span>→</span></button><p aria-live="polite">{status}</p></form></section>}
++    {open && <section className="floatingContactPanel" aria-label="Contact SPILL"><button className="floatingContactClose" type="button" onClick={() => setOpen(false)} aria-label="Close contact form">×</button><p className="eyebrow">Contact SPILL</p><h2>Start a conversation.</h2><a href="mailto:spill@nowwespill.com">spill@nowwespill.com</a>{phone && <a href={`tel:${phone.replace(/[^+\d]/g, "")}`}>Call {phone}</a>}<form onSubmit={handleSubmit}><label>Name<input name="name" autoComplete="name" required /></label><label>Email<input name="email" type="email" autoComplete="email" required /></label><label>Message<textarea name="message" rows={3} required /></label><label className="formHoneypot" aria-hidden="true">Website<input name="website" tabIndex={-1} autoComplete="off" /></label><button type="submit" disabled={sending}>{sending ? "Sending…" : "Send message"}<span>→</span></button><p aria-live="polite">{status}</p></form></section>}
+     <button className="floatingContactTrigger" type="button" onClick={() => setOpen((current) => !current)} aria-expanded={open} aria-label={open ? "Close contact form" : "Contact SPILL"}><Image src="/assets/spill/ui/contact-arrow.png" alt="" width={128} height={128} aria-hidden="true" /></button>
+   </div>;
+ }
+diff --git a/src/components/site-footer.tsx b/src/components/site-footer.tsx
+index 2281ad4..f559180 100644
+--- a/src/components/site-footer.tsx
++++ b/src/components/site-footer.tsx
+@@ -58,7 +58,7 @@ export function SiteFooter() {
+         ))}
+       </div>
+       <div className="footerContact">
+-        <a href="mailto:hello@spillcafebar.com">hello@spillcafebar.com</a>
++        <a href="mailto:spill@nowwespill.com">spill@nowwespill.com</a>
+         <p>Saigon · Hanoi · Tokyo · The world</p>
+       </div>
+     </footer>
+diff --git a/src/lib/guest-emails.ts b/src/lib/guest-emails.ts
+index 79d4ddc..a75bb42 100644
+--- a/src/lib/guest-emails.ts
++++ b/src/lib/guest-emails.ts
+@@ -9,7 +9,7 @@ import { emailConfigured, emailHtml, sendEmail } from "@/lib/spill-email";
+ 
+ export { emailConfigured };
+ 
+-const FOOTER = "You're receiving this because you signed up on the SPILL website. Questions? Email hello@spillcafebar.com.";
++const FOOTER = "You're receiving this because you signed up on the SPILL website. Questions? Email spill@nowwespill.com.";
+ 
+ export async function sendRsvpEmail(input: {
+   to: string;
+@@ -83,7 +83,7 @@ type BookingEmail = {
+ 
+ /** Who gets told about new requests (BOOKING_NOTIFY_EMAIL, else hello@). */
+ export function bookingNotifyAddress() {
+-  return process.env.BOOKING_NOTIFY_EMAIL?.trim() || "hello@spillcafebar.com";
++  return process.env.BOOKING_NOTIFY_EMAIL?.trim() || "spill@nowwespill.com";
+ }
+ 
+ export async function sendBookingConfirmation(request: BookingEmail, origin: string) {
+diff --git a/src/lib/page-content.ts b/src/lib/page-content.ts
+index f0de4fe..4419c0d 100644
+--- a/src/lib/page-content.ts
++++ b/src/lib/page-content.ts
+@@ -308,7 +308,7 @@ export const localPageContent: Record<
+       },
+       {
+         title: "Contact",
+-        text: "Email hello@spillcafebar.com or connect with @spillsaigon.",
++        text: "Email spill@nowwespill.com or connect with @spillsaigon.",
+       },
+       {
+         title: "FAQ",
