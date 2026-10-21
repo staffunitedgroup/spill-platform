@@ -14510,3 +14510,34 @@ li {
 .mobileMenu nav a[aria-current="page"] {
   color: var(--red);
 }
+
+/* Home "Real connection starts offline" chips: never one chip alone on a line.
+   One row when there's room, otherwise 3 + 2, and on small phones 2 + 2 + one
+   full-width chip. Sized from the text column's own width (container query). */
+.connectionsCopy {
+  container-type: inline-size;
+  container-name: connections;
+}
+.tagCloud {
+  flex-wrap: nowrap;
+}
+.tagCloud span {
+  text-align: center;
+  white-space: nowrap;
+}
+@container connections (max-width: 619px) {
+  .tagCloud {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    justify-content: start;
+  }
+}
+@container connections (max-width: 419px) {
+  .tagCloud {
+    grid-template-columns: 1fr 1fr;
+    justify-content: stretch;
+  }
+  .tagCloud span:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}
