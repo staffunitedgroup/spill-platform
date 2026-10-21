@@ -14,6 +14,12 @@ type Group = { cards: string; parts: string[] };
 const GROUPS: Group[] = [
   // Home: "One room. An entire ecosystem." carousel
   { cards: ".ecosystemCard", parts: [".ecosystemCardCopy h3", ".ecosystemCardCopy p"] },
+  // Home: "How far do you want to SPILL?" journey cards
+  { cards: ".journeyCard", parts: [".journeyCardBody h3", ".journeyDetail p", ".journeyDetail a"] },
+  // Home: podcast "Create your podcast / Be part of SPILL Podcast"
+  { cards: ".podcastChoices > article", parts: ["h3", "p", "a"] },
+  // Home: SPILL Originals board
+  { cards: ".originalsBoard > article", parts: ["h3"] },
   // About, Careers, Contact, Create, Partner, Press, What's On, Book, Visit…
   { cards: ".portalCard", parts: [":scope > div > .eyebrow", ":scope > div > h2", ":scope > div > p:not(.eyebrow)", ":scope > div"] },
   // Location home (e.g. /saigon) section cards
@@ -28,6 +34,15 @@ const GROUPS: Group[] = [
   { cards: ".confMetricGrid > article", parts: ["h3"] },
   { cards: ".confPriceTable > article", parts: ["h3", "strong", "p"] },
   { cards: ".confCities > div", parts: ["h3"] },
+  { cards: ".confSponsorIdeas > article", parts: ["h3"] },
+  { cards: ".confConsentGrid > article", parts: ["h3", "p"] },
+  // Podcast
+  { cards: ".podPathGrid > article", parts: [":scope > span", "h3", "p", "ul", "a"] },
+  { cards: ".podEntry > article", parts: [":scope > span", "h2", "p", "a"] },
+  { cards: ".podProductionGrid > div", parts: ["p"] },
+  { cards: ".podContentFlow > div", parts: ["strong"] },
+  { cards: ".podBenefitsGrid > article", parts: ["h3", "p"] },
+  { cards: ".podCapabilityGrid > article", parts: ["h3", "p"] },
   // Investors
   { cards: ".investorLater article", parts: ["h3", "p"] },
 ];

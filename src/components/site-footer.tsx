@@ -20,10 +20,11 @@ export function SiteFooter() {
             height={250}
           />
         </Link>
-        {/* <p>Spill Your Story. But Don’t Spill Your Drink.</p> */}
-        <p>
-          Spill Your Story. But <span className="--red">Don’t</span>
-          Spill Your Drink.
+        {/* Two lines on purpose; "Don’t" in SPILL red. */}
+        <p className="footerTagline">
+          Spill your story.
+          <br />
+          But <span>Don’t</span> spill your drink.
         </p>
       </div>
       <nav className="footerLinks" aria-label="Corporate links">
