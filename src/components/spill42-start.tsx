@@ -1,6 +1,6 @@
 "use client";
 
-// spillcafebar.com/spill-42 — the way into SPILL 42 from the website.
+// nowwespill.com/spill-42 — the way into SPILL 42 from the website.
 // The game always starts at a table: scan the table's QR (here, or with the
 // phone's own camera) or type the code printed on the table card.
 import {

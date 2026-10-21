@@ -41,7 +41,7 @@ export const REAL_TABLES: VenueTables[] = [
 ];
 
 /** Link mà mã QR trỏ tới. Đổi nếu dùng tên miền khác. */
-export const DEFAULT_BASE_URL = "https://spillcafebar.com";
+export const DEFAULT_BASE_URL = "https://www.nowwespill.com";
 
 export function tableUrl(baseUrl: string, tableCode: string) {
   return `${baseUrl.replace(/\/+$/, "")}/spill/table/${tableCode}`;

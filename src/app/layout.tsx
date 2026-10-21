@@ -21,7 +21,7 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata: Metadata = {
   title: { default: "SPILL — Café Bar, Social Experience & Media Platform", template: "%s | SPILL" },
   description: "A new kind of social venue. Coffee, cocktails, conversation, livestreams, podcasts, and original media—built to bring people together.",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://spill-cafe-bar.masx-world-7829.chatgpt.site"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.nowwespill.com"),
   icons: { icon: "/favicon.png" },
 };
 
