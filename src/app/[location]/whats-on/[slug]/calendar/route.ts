@@ -37,7 +37,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ loca
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     "BEGIN:VEVENT",
-    `UID:${event.id}@spillcafebar.com`,
+    `UID:${event.id}@nowwespill.com`,
     `DTSTAMP:${icsTime(new Date())}`,
     `DTSTART:${icsTime(event.startsAt)}`,
     `DTEND:${icsTime(eventEnd(event))}`,
