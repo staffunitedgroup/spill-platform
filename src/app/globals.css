@@ -1309,6 +1309,8 @@ button.dropdownHead,
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0 28px;
+  /* Span both rows so the email + cities sit right under the socials. */
+  grid-row: span 2;
 }
 .footerLinks a {
   padding: 10px 0;
@@ -1383,6 +1385,7 @@ button.dropdownHead,
     align-items: start;
   }
   .footerIdentity,
+  .footerLinks,
   .footerContact {
     grid-row: auto;
     grid-column: auto;
