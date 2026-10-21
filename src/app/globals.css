@@ -760,9 +760,6 @@ button.dropdownHead,
   inset: auto 0 100%;
 }
 
-/* Open state: .isOpen (set by HoverDropdown on tap/click/keyboard). The pure-CSS
-   hover reveal is only for devices with a real mouse - on phones and tablets a
-   "sticky" :hover kept panels stuck open and made iOS swallow taps. */
 .navDropdown.isOpen > .dropdownPanel,
 .locationSwitcher.isOpen > .dropdownPanel {
   display: block;
@@ -1295,7 +1292,9 @@ button.dropdownHead,
   background: rgba(0, 0, 0, 0.1);
 }
 .siteFooter {
-  padding: 55px clamp(22px, 5vw, 72px);
+  /* Extra room at the bottom so the floating Contact and Back-to-top buttons
+     sit over empty space, not over the email and city line. */
+  padding: 55px clamp(22px, 5vw, 72px) 150px;
   display: grid;
   grid-template-columns: 1fr 1.4fr 1fr;
   gap: 38px;
@@ -1333,15 +1332,17 @@ button.dropdownHead,
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
+/* All 7 socials on one row at every width: the icons shrink a little in narrow
+   columns instead of wrapping and leaving one alone on a second line. */
 .footerSocials {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 42px));
+  justify-content: end;
+  gap: 8px;
 }
 .footerSocialIcon {
-  width: 42px;
-  height: 42px;
+  width: 100%;
+  aspect-ratio: 1;
   display: grid;
   place-items: center;
   border: 1px solid #2f3135;
@@ -1358,8 +1359,8 @@ button.dropdownHead,
   transform: translateY(-3px);
 }
 .footerSocialIcon img {
-  width: 20px;
-  height: 20px;
+  width: 48%;
+  height: 48%;
   object-fit: contain;
 }
 .footerContact a {
@@ -1386,8 +1387,12 @@ button.dropdownHead,
     grid-row: auto;
     grid-column: auto;
   }
+  .siteFooter {
+    padding-bottom: 140px;
+  }
   .footerSocials {
-    justify-content: flex-start;
+    justify-content: start;
+    grid-template-columns: repeat(7, minmax(0, 48px));
   }
   .footerContact {
     text-align: left;
