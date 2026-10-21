@@ -4,6 +4,7 @@ import { SmoothScroll } from "@/components/smooth-scroll";
 import { SiteFooter } from "@/components/site-footer";
 import { SectionNavigator } from "@/components/section-navigator";
 import { FloatingContact } from "@/components/floating-contact";
+import { AlignCards } from "@/components/align-cards";
 import { HideOnAdmin } from "@/components/hide-on-admin";
 import { PageTransition } from "@/components/page-transition";
 import { cookies, headers } from "next/headers";
@@ -49,6 +50,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             <HideOnAdmin>
               <SectionNavigator />
               <FloatingContact phone={process.env.NEXT_PUBLIC_CONTACT_PHONE} />
+              <AlignCards />
             </HideOnAdmin>
           </>
         ) : gameOnly ? (
