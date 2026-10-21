@@ -30,11 +30,14 @@ const GROUPS: Group[] = [
   { cards: ".liveFlywheelMiniCard", parts: ["h3"] },
   { cards: ".liveSponsorGrid > article", parts: ["h3", "p"] },
   { cards: ".livePillarGrid > article", parts: ["h3", "p"] },
+  // "50 people. Then 100." next to "I was on SPILL."
+  { cards: ".liveNetwork > div", parts: [":scope > :nth-child(1)", ":scope > :nth-child(2)", ":scope > :nth-child(3)"] },
   // Confessional
   { cards: ".confMetricGrid > article", parts: ["h3"] },
   { cards: ".confPriceTable > article", parts: ["h3", "strong", "p"] },
   { cards: ".confCities > div", parts: ["h3"] },
   { cards: ".confSponsorIdeas > article", parts: ["h3"] },
+  { cards: ".confFormatCompare > article", parts: ["h3", "p", "a"] },
   { cards: ".confConsentGrid > article", parts: ["h3", "p"] },
   // Podcast
   { cards: ".podPathGrid > article", parts: [":scope > span", "h3", "p", "ul", "a"] },

@@ -17,7 +17,7 @@ export function HomeAnimations() {
         .from(".heroCityRail a", { y: 18, opacity: 0, duration: 0.55, stagger: 0.08 }, "-=0.4");
 
       gsap.to(".globalHero .masterHeroContent", { yPercent: 10, opacity: 0.4, ease: "none", scrollTrigger: { trigger: ".globalHero", start: "top top", end: "bottom top", scrub: 0.8 } });
-      gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((element) => gsap.from(element, { y: 64, opacity: 0, duration: 1, ease: "power3.out", scrollTrigger: { trigger: element, start: "top 86%", once: true } }));
+      gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((element) => gsap.from(element, { y: 64, opacity: 0, duration: 1, ease: "power3.out", clearProps: "transform,opacity", scrollTrigger: { trigger: element, start: "top 86%", once: true } }));
       // clearProps: once in, the cards sit exactly level (no leftover inline offsets).
       gsap.from(".journeyCard", { y: 70, opacity: 0, duration: 0.8, stagger: 0.09, ease: "power3.out", clearProps: "transform,opacity", scrollTrigger: { trigger: ".journeyGrid", start: "top 80%", once: true } });
     });
