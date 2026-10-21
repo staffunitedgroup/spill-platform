@@ -30,6 +30,8 @@ export function LivestreamAnimations() {
           opacity: 0,
           duration: 0.9,
           ease: "power3.out",
+          // Remove the inline transform once in, so CSS hover effects can move the card.
+          clearProps: "transform,opacity",
           scrollTrigger: { trigger: element, start: "top 87%", once: true },
         });
       });

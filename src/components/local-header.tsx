@@ -3,6 +3,7 @@ import Image from "next/image";
 import { HoverDropdown } from "./hover-dropdown";
 import { localCreateNavigation, localNavigation, locations, locationStatus, type Location } from "@/lib/site-data";
 import { NavArrow } from "./nav-arrow";
+import { LocalNavLink } from "./local-nav-link";
 import { MobileMenu, MobileNavGroup } from "./mobile-menu";
 import { getLiveStatus } from "@/lib/live";
 
@@ -28,13 +29,13 @@ export async function LocalHeader({ location }: { location: Location }) {
       {locations.map((item) => <Link key={item.slug} href={`/${item.slug}`} aria-current={item.slug === location.slug ? "page" : undefined}>{item.name}<small>{item.slug === location.slug ? "You're here" : locationStatus(item)}</small></Link>)}
     </div></HoverDropdown>
     <nav className="localNav" aria-label={`${location.name} navigation`}>
-      {localNavigation.map((item) => item.path === "create" ? <HoverDropdown className="navDropdown localCreateDropdown" key={item.path} label={item.label} href={`/${location.slug}/create`}><div className="dropdownPanel">{localCreateNavigation.map((child) => <Link key={child.label} href={locationCreateHref(child.href, location)}>{child.label}<NavArrow /></Link>)}</div></HoverDropdown> : [<Link key={item.path || "home"} href={`/${location.slug}${item.path ? `/${item.path}` : ""}`}>{item.label}</Link>, item.path === "whats-on" ? liveLink : null])}
+      {localNavigation.map((item) => item.path === "create" ? <HoverDropdown className="navDropdown localCreateDropdown" key={item.path} label={item.label} href={`/${location.slug}/create`}><div className="dropdownPanel">{localCreateNavigation.map((child) => <Link key={child.label} href={locationCreateHref(child.href, location)}>{child.label}<NavArrow /></Link>)}</div></HoverDropdown> : [<LocalNavLink key={item.path || "home"} href={`/${location.slug}${item.path ? `/${item.path}` : ""}`}>{item.label}</LocalNavLink>, item.path === "whats-on" ? liveLink : null])}
     </nav>
     <MobileMenu className="localMobileMenu" label={`Open ${location.name} navigation`}><nav aria-label={`${location.name} mobile navigation`}>
       <p>{location.name}</p>
       {localNavigation.map((item) => item.path === "create"
         ? <MobileNavGroup key="create" label={item.label} href={`/${location.slug}/create`} items={localCreateNavigation.map((child) => ({ label: child.label, href: locationCreateHref(child.href, location) }))} />
-        : [<Link key={item.path || "home"} href={`/${location.slug}${item.path ? `/${item.path}` : ""}`}>{item.label}<NavArrow /></Link>, item.path === "whats-on" ? liveMobile : null])}
+        : [<LocalNavLink key={item.path || "home"} href={`/${location.slug}${item.path ? `/${item.path}` : ""}`}>{item.label}<NavArrow /></LocalNavLink>, item.path === "whats-on" ? liveMobile : null])}
       <MobileNavGroup label="Change location" href="/" overview="Global SPILL" items={locations.map((item) => ({ label: item.name, href: `/${item.slug}`, note: item.slug === location.slug ? "You're here" : locationStatus(item), current: item.slug === location.slug }))} />
     </nav></MobileMenu>
   </header>;

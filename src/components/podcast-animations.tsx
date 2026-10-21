@@ -29,6 +29,8 @@ export function PodcastAnimations() {
           opacity: 0,
           duration: 0.95,
           ease: "power3.out",
+          // Remove the inline transform once in, so CSS hover effects can move the card.
+          clearProps: "transform,opacity",
           scrollTrigger: { trigger: element, start: "top 87%", once: true },
         });
       });

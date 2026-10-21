@@ -14393,3 +14393,156 @@ main > .liveNowBanner {
   width: 100%;
   height: 100%;
 }
+
+/* ── Polish, 21 Oct ──────────────────────────────────────────── */
+
+/* No single word left alone on the last line of a heading or paragraph. */
+h1,
+h2,
+h3,
+h4,
+blockquote,
+.confTrustLine {
+  text-wrap: balance;
+}
+p,
+li {
+  text-wrap: pretty;
+}
+
+/* Livestream "A network effect": both halves start at the top and line up
+   (kicker with kicker, headline with headline, text with text). */
+.liveNetworkStatement,
+.liveSocialCurrency {
+  justify-content: flex-start;
+}
+.liveNetworkStatement h2,
+.liveSocialCurrency blockquote {
+  margin: 35px 0;
+}
+
+/* /live: the YouTube link in SPILL colours, not the default link blue. */
+.liveEmpty a {
+  color: var(--red);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  transition: color 0.2s ease;
+}
+.liveEmpty a:hover {
+  color: #fff;
+}
+
+/* Confessional "Visit. Stay." cards: a visible hover on every card.
+   (translate, not transform — the scroll-in animation uses transform.) */
+.confFormatCompare article {
+  transition:
+    translate 0.45s ease,
+    box-shadow 0.45s ease,
+    outline-color 0.45s ease;
+  outline: 1px solid transparent;
+  outline-offset: -1px;
+}
+.confFormatCompare article:hover {
+  translate: 0 -10px;
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.55);
+  outline-color: var(--red);
+}
+.confFormatCompare article a {
+  width: fit-content;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition:
+    color 0.25s ease,
+    padding-left 0.25s ease;
+}
+.confFormatCompare article:hover a {
+  color: var(--red);
+  padding-left: 6px;
+}
+
+/* Confessional city row: "SPILL Singapore" stays on one line. */
+.confCities h3 {
+  font-size: clamp(16px, 1.65vw, 28px);
+  white-space: nowrap;
+}
+
+/* Enquiry pages (Private events, Franchise): the list reads like the
+   paragraph above it — same edge, same type — as a tidy ruled list. */
+.inquiryCopy ul {
+  margin: 26px 0 0;
+  padding-left: 0;
+  list-style: none;
+  border-top: 1px solid rgba(17, 18, 22, 0.14);
+}
+.inquiryCopy li {
+  padding: 12px 0 12px 26px;
+  position: relative;
+  border-bottom: 1px solid rgba(17, 18, 22, 0.14);
+}
+.inquiryCopy li::before {
+  content: "";
+  width: 10px;
+  height: 2px;
+  position: absolute;
+  left: 0;
+  top: calc(12px + 0.8em);
+  background: var(--red);
+}
+
+/* Enquiry forms, fields side by side: the labels start on the same line, the
+   fields sit on the same line (even when one label wraps onto two lines), and
+   a dropdown next to a text field is as wide as it. */
+.inquiryForm .formPair {
+  align-items: stretch;
+}
+.inquiryForm .formPair label {
+  align-content: space-between;
+}
+.inquiryForm .formPair select {
+  width: 100%;
+  justify-self: stretch;
+  align-self: end;
+}
+
+/* Location menu: show which page you're on. */
+.localNav a[aria-current="page"] {
+  color: var(--red);
+}
+.mobileMenu nav a[aria-current="page"] {
+  color: var(--red);
+}
+
+/* Home "Real connection starts offline" chips: never one chip alone on a line.
+   One row when there's room, otherwise 3 + 2, and on small phones 2 + 2 + one
+   full-width chip. Sized from the text column's own width (container query). */
+.connectionsCopy {
+  container-type: inline-size;
+  container-name: connections;
+}
+.tagCloud {
+  flex-wrap: nowrap;
+}
+.tagCloud span {
+  text-align: center;
+  white-space: nowrap;
+}
+@container connections (max-width: 619px) {
+  .tagCloud {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    justify-content: start;
+  }
+}
+@container connections (max-width: 419px) {
+  .tagCloud {
+    grid-template-columns: 1fr 1fr;
+    justify-content: stretch;
+  }
+  .tagCloud span:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}
