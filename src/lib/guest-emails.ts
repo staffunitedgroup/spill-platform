@@ -9,7 +9,7 @@ import { emailConfigured, emailHtml, sendEmail } from "@/lib/spill-email";
 
 export { emailConfigured };
 
-const FOOTER = "You're receiving this because you signed up on the SPILL website. Questions? Email hello@spillcafebar.com.";
+const FOOTER = "You're receiving this because you signed up on the SPILL website. Questions? Email spill@nowwespill.com.";
 
 export async function sendRsvpEmail(input: {
   to: string;
@@ -83,7 +83,7 @@ type BookingEmail = {
 
 /** Who gets told about new requests (BOOKING_NOTIFY_EMAIL, else hello@). */
 export function bookingNotifyAddress() {
-  return process.env.BOOKING_NOTIFY_EMAIL?.trim() || "hello@spillcafebar.com";
+  return process.env.BOOKING_NOTIFY_EMAIL?.trim() || "spill@nowwespill.com";
 }
 
 export async function sendBookingConfirmation(request: BookingEmail, origin: string) {

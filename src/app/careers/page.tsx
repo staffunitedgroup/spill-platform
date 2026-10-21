@@ -4,4 +4,4 @@ export default function Page() { return <PortalPage eyebrow="Join SPILL" title="
   { title: "Tokyo", text: "Register interest in future location and market-building roles in Tokyo." },
   { title: "Future Markets", text: "Help bring SPILL to new cities with local knowledge and entrepreneurial energy." },
   { title: "Corporate", text: "Build the global platform across brand, operations, growth, partnerships, media, and technology." },
-]} note="No suitable role yet? Introduce yourself at careers@spillcafebar.com." />; }
+]} note="No suitable role yet? Introduce yourself at spill@nowwespill.com." />; }

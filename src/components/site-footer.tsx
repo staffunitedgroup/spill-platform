@@ -58,7 +58,7 @@ export function SiteFooter() {
         ))}
       </div>
       <div className="footerContact">
-        <a href="mailto:hello@spillcafebar.com">hello@spillcafebar.com</a>
+        <a href="mailto:spill@nowwespill.com">spill@nowwespill.com</a>
         <p>Saigon · Hanoi · Tokyo · The world</p>
       </div>
     </footer>

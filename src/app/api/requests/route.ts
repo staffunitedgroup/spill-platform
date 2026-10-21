@@ -41,7 +41,7 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     console.error("[requests] could not save", error);
-    return Response.json({ error: "We couldn't send that just now. Please try again or email hello@spillcafebar.com." }, { status: 500 });
+    return Response.json({ error: "We couldn't send that just now. Please try again or email spill@nowwespill.com." }, { status: 500 });
   }
 
   return Response.json({ ok: true, emailed: emailConfigured() });
