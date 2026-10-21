@@ -14493,14 +14493,19 @@ li {
   background: var(--red);
 }
 
-/* Enquiry forms: fields side by side sit on the same line, and a dropdown
-   next to a text field is as wide as it. */
+/* Enquiry forms, fields side by side: the labels start on the same line, the
+   fields sit on the same line (even when one label wraps onto two lines), and
+   a dropdown next to a text field is as wide as it. */
 .inquiryForm .formPair {
-  align-items: end;
+  align-items: stretch;
+}
+.inquiryForm .formPair label {
+  align-content: space-between;
 }
 .inquiryForm .formPair select {
   width: 100%;
   justify-self: stretch;
+  align-self: end;
 }
 
 /* Location menu: show which page you're on. */
