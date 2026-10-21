@@ -1336,6 +1336,9 @@ button.dropdownHead,
 }
 /* All 7 socials on one row at every width: the icons shrink a little in narrow
    columns instead of wrapping and leaving one alone on a second line. */
+.siteFooter .footerTagline span {
+  color: var(--red);
+}
 .footerSocials {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 42px));
@@ -2817,16 +2820,18 @@ a:hover > .navArrow.down {
   overflow: hidden;
   border-right: 1px solid #313134;
   background: #0a0a0b;
+  /* Hover lift uses `translate`, not `transform`: the scroll-in animation sets
+     transform, and a CSS transition on it left cards stuck at different heights. */
   transition:
     background 0.35s ease,
-    transform 0.35s ease;
+    translate 0.35s ease;
 }
 .journeyCard:last-child {
   border-right: 0;
 }
 .journeyCard:hover {
   background: #151517;
-  transform: translateY(-8px);
+  translate: 0 -8px;
 }
 .journeyCardMedia {
   position: absolute;
@@ -3328,6 +3333,10 @@ a:hover > .navArrow.down {
 }
 .podcastChoices a {
   width: fit-content;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
   margin-top: auto;
   padding-top: 18px;
   border-top: 1px solid currentColor;
