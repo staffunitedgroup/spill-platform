@@ -491,6 +491,10 @@ enum RequestKind {
   LIVESTREAM
   PODCAST
   CONFESSIONAL
+  PRIVATE_EVENT
+  FRANCHISE
+  INVESTOR
+  CONTACT
 }
 
 enum RequestStatus {

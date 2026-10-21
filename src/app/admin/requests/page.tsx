@@ -127,7 +127,7 @@ export default function RequestsAdminPage() {
         <div>
           <span className="eyebrow">SPILL Admin</span>
           <h1>Requests</h1>
-          <p>Work with SPILL — livestream appearances, podcast productions and Confessional sessions.</p>
+          <p>Every website form — livestream, podcast, Confessional, private events, partnerships, investors and contact messages.</p>
         </div>
         <nav className="adminLinks">
           <Link href="/admin">← Active tables</Link>

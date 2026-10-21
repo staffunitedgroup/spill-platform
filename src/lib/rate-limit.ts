@@ -1,5 +1,5 @@
 /**
- * Light per-instance rate limit for public forms (same idea as /api/inquiries).
+ * Light per-instance rate limit for public forms.
  * Not a hard guarantee on serverless — it just stops casual spam bursts.
  */
 const buckets = new Map<string, number[]>();

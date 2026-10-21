@@ -1,6 +1,14 @@
 // Shared by the booking forms, the API and Admin (safe to use on the client).
 
-export const REQUEST_KINDS = ["LIVESTREAM", "PODCAST", "CONFESSIONAL"] as const;
+export const REQUEST_KINDS = [
+  "LIVESTREAM",
+  "PODCAST",
+  "CONFESSIONAL",
+  "PRIVATE_EVENT",
+  "FRANCHISE",
+  "INVESTOR",
+  "CONTACT",
+] as const;
 export type RequestKindKey = (typeof REQUEST_KINDS)[number];
 
 export const REQUEST_STATUSES = ["NEW", "CONTACTED", "CONFIRMED", "CLOSED"] as const;
@@ -10,6 +18,10 @@ export const KIND_META: Record<RequestKindKey, { label: string; page: string }> 
   LIVESTREAM: { label: "Livestream appearance", page: "/livestream" },
   PODCAST: { label: "Podcast production", page: "/podcast" },
   CONFESSIONAL: { label: "Confessional session", page: "/confessional" },
+  PRIVATE_EVENT: { label: "Private event", page: "/saigon/private-events" },
+  FRANCHISE: { label: "Partnership", page: "/partner/bring-spill-to-your-city" },
+  INVESTOR: { label: "Investor", page: "/partner/investors" },
+  CONTACT: { label: "Contact", page: "/" },
 };
 
 export const STATUS_LABEL: Record<RequestStatusKey, string> = {
