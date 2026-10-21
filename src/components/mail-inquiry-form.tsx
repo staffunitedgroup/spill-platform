@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import type { RequestKindKey } from "@/lib/booking-meta";
 import { submitInquiry } from "@/lib/submit-inquiry";
 
-export function MailInquiryForm({ formTitle, interests, subject = "SPILL website enquiry", investor = false }: { formTitle: string; interests: string[]; subject?: string; investor?: boolean }) {
+export function MailInquiryForm({ formTitle, interests, kind, investor = false }: { formTitle: string; interests: string[]; kind: RequestKindKey; investor?: boolean }) {
   const [status, setStatus] = useState("");
   const [sending, setSending] = useState(false);
 
@@ -14,13 +15,20 @@ export function MailInquiryForm({ formTitle, interests, subject = "SPILL website
     const labels: Record<string, string> = {
       interest: "Interested in", name: "Name", company: "Company", email: "Email", phone: "Phone", city: "City", country: "Country", experience: "Relevant experience", investment: "Estimated investment range", property: "Property available", message: "Message",
     };
-    const fields = Object.fromEntries(Array.from(data.entries()).filter(([key, value]) => key !== "website" && String(value).trim()).map(([key, value]) => [labels[key] ?? key, String(value).trim()]));
+    const text = (key: string) => String(data.get(key) ?? "").trim();
+    // Name and email have their own columns; everything else goes in order.
+    const fields = Array.from(data.keys())
+      .filter((key) => !["website", "name", "email"].includes(key))
+      .map((key) => ({ label: labels[key] ?? key, value: text(key) }))
+      .filter((field) => field.value);
+    const place = [text("city"), text("country")].filter(Boolean).join(", ");
+    const summary = [text("interest"), text("company"), place].filter(Boolean).join(" · ").slice(0, 200);
     setSending(true);
     setStatus("Sending your enquiry…");
     try {
-      await submitInquiry({ subject, fields, website: String(data.get("website") ?? "") });
+      const result = await submitInquiry({ kind, name: text("name"), email: text("email"), summary, fields, website: text("website") });
       form.reset();
-      setStatus("Thank you. Your enquiry has been sent to the SPILL team.");
+      setStatus(result.emailed === false ? "Thank you. Your enquiry is with the SPILL team — we'll be in touch soon." : "Thank you. Your enquiry is with the SPILL team — check your inbox for a confirmation.");
     } catch (error) {
       setStatus(error instanceof Error ? error.message : "Your enquiry could not be sent. Please try again.");
     } finally {

@@ -16,9 +16,10 @@ export function FloatingContact({ phone }: { phone?: string }) {
     setSending(true);
     setStatus("Sending…");
     try {
-      await submitInquiry({ subject: "SPILL quick contact", fields: { Name: String(data.get("name") ?? ""), Email: String(data.get("email") ?? ""), Message: String(data.get("message") ?? "") }, website: String(data.get("website") ?? "") });
+      const message = String(data.get("message") ?? "").trim();
+      const result = await submitInquiry({ kind: "CONTACT", name: String(data.get("name") ?? "").trim(), email: String(data.get("email") ?? "").trim(), fields: [{ label: "Message", value: message }], website: String(data.get("website") ?? "") });
       form.reset();
-      setStatus("Sent. The SPILL team will be in touch.");
+      setStatus(result.emailed === false ? "Sent. The SPILL team will be in touch." : "Sent. Check your inbox — the SPILL team will be in touch.");
     } catch (error) {
       setStatus(error instanceof Error ? error.message : "Unable to send. Please try again.");
     } finally {

@@ -97,6 +97,29 @@ export default function AdminPage() {
     return () => clearInterval(interval);
   }, [password, loadSessions]);
 
+  // New website requests (forms) waiting for the team — shown on the Requests button.
+  const [newRequests, setNewRequests] = useState(0);
+  useEffect(() => {
+    if (!password) return;
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const res = await fetch("/api/admin/requests?status=NEW", { headers: { "x-admin-password": password } });
+        if (!res.ok) return;
+        const json = await res.json();
+        if (!cancelled) setNewRequests(json.newCount ?? 0);
+      } catch {
+        // not critical — the button still works
+      }
+    };
+    load();
+    const interval = setInterval(load, 30000);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, [password]);
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (isPending || !passwordInput.trim()) return;
@@ -304,6 +327,37 @@ export default function AdminPage() {
             </p>
           </div>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+          <Link
+            href="/admin/requests"
+            style={{
+              border: `1px solid ${newRequests > 0 ? "var(--red)" : "#444"}`,
+              color: "var(--white)",
+              padding: "10px 18px",
+              fontSize: 13,
+              letterSpacing: ".08em",
+              textTransform: "uppercase",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+            }}
+          >
+            Requests
+            {newRequests > 0 && (
+              <span
+                style={{
+                  background: "var(--red)",
+                  color: "#fff",
+                  borderRadius: 999,
+                  padding: "2px 8px",
+                  fontSize: 11,
+                  letterSpacing: 0,
+                  textTransform: "none",
+                }}
+              >
+                {newRequests} new
+              </span>
+            )}
+          </Link>
           <Link
             href="/admin/waitlist"
             style={{
