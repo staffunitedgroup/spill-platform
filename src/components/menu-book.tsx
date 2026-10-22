@@ -80,7 +80,7 @@ export function MenuBook() {
   };
 
   return <section className="menuBook" aria-label="Full SPILL Saigon menu">
-    <div className="menuBookTop"><div className="menuBookConcept"><strong>7 Collections × 6 Selections = 42</strong><p>Each collection follows the SPILL 4 + 2 formula: 4 familiar favorites + 2 SPILL selections.</p><p><b>42 selections. Countless conversations.</b></p><span className="statusPill">Pre-launch menu · Items and pricing may evolve</span></div></div>
+    <div className="menuBookTop"><div className="menuBookConcept"><strong>7 Collections × 6 Selections =&nbsp;42</strong><p>Each collection follows the SPILL 4 + 2 formula: 4 familiar favorites + 2 SPILL selections.</p><p><b>42 selections. Countless conversations.</b></p><span className="statusPill">Pre-launch menu · Items and pricing may evolve</span></div></div>
     <nav className="menuBookTabs" ref={tabs} aria-label="Choose a menu page">{menuPages.map((page, index) => <button type="button" className={active === index ? "active" : ""} onClick={() => goTo(index)} onMouseMove={() => { if (active !== index && canHover()) goTo(index); }} aria-current={active === index ? "page" : undefined} key={page.slug}><span>{String(index + 1).padStart(2, "0")}</span>{page.label}</button>)}</nav>
     <div className="menuBookStage">
       <div className="menuBookTrack" ref={track} onScroll={onScroll}>
