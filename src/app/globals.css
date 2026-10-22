@@ -3366,11 +3366,24 @@ a:hover > .navArrow.down {
   white-space: nowrap;
   margin-top: auto;
   padding-top: 18px;
-  border-top: 1px solid currentColor;
   font-size: 15px;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+  transition:
+    gap 0.25s ease,
+    color 0.25s ease;
+}
+/* Hover/tap: the arrow slides out and the link turns black on the red panel. */
+.podcastChoices a:hover,
+.podcastChoices a:focus-visible,
+.podcastChoices a:active {
+  gap: 18px;
+  color: #111;
+}
+/* The straight arrow just slides right (the default nudge is diagonal). */
+.podcastChoices a:hover > .navArrow.straight {
+  transform: none;
 }
 
 .originalsSection {
