@@ -4,7 +4,11 @@ import { useState, useTransition, useRef, useEffect } from "react";
 import Image from "next/image";
 import { unlockSite } from "@/app/actions/lockscreen";
 
-export function SiteLockscreen() {
+/**
+ * The private-access screen. `teamOnly` is the SPILL 42 version shown to guests
+ * (e.g. the marina team): the app needs the team password, with a way back to the site.
+ */
+export function SiteLockscreen({ teamOnly = false }: { teamOnly?: boolean }) {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -21,7 +25,7 @@ export function SiteLockscreen() {
     if (isPending) return;
     setError(null);
     startTransition(async () => {
-      const res = await unlockSite(password);
+      const res = await unlockSite(password, teamOnly);
       if (res.success) {
         window.location.reload();
       } else {
@@ -68,9 +72,11 @@ export function SiteLockscreen() {
 
         {/* Header */}
         <div className="lockscreenText">
-          <h1 className="lockscreenTitle">PRIVATE ACCESS</h1>
+          <h1 className="lockscreenTitle">{teamOnly ? <>SPILL 42<br />TEAM ACCESS</> : "PRIVATE ACCESS"}</h1>
           <p className="lockscreenSubtitle">
-            This platform is currently private. Please enter your access password to continue.
+            {teamOnly
+              ? "The SPILL 42 app is open to the SPILL team only for now. Enter the team password to continue."
+              : "This platform is currently private. Please enter your access password to continue."}
           </p>
         </div>
 
@@ -140,6 +146,14 @@ export function SiteLockscreen() {
             )}
           </button>
         </form>
+        {teamOnly && (
+          // A full page load on purpose: the access check runs in the root layout,
+          // which a client-side <Link> navigation would not re-run.
+          // eslint-disable-next-line @next/next/no-html-link-for-pages
+          <a className="lockscreenBack" href="/">
+            ← Back to the SPILL website
+          </a>
+        )}
       </div>
     </div>
   );

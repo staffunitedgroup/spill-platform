@@ -12586,6 +12586,20 @@ body:has(.s42App) .siteFooter {
   margin: 0;
 }
 
+/* SPILL 42 team-only screen: a way back to the site for guests. */
+.lockscreenBack {
+  display: inline-block;
+  margin-top: 20px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.lockscreenBack:hover {
+  color: #fff;
+}
+
 /* Form */
 .lockscreenForm {
   display: flex;
@@ -14585,5 +14599,209 @@ li {
   }
   .tagCloud span:last-child:nth-child(odd) {
     grid-column: 1 / -1;
+  }
+}
+
+/* ── Live chat (floating red button) ───────────────────────────── */
+.spillChat {
+  height: min(580px, calc(100svh - 170px));
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.spillChatHead {
+  padding: 20px 22px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid #2a2b30;
+}
+.spillChatHead .eyebrow {
+  margin: 0;
+}
+.spillChatHead small {
+  margin-top: 6px;
+  display: block;
+  color: #8a8a8f;
+  font-size: 15px;
+}
+.spillChat .floatingContactClose {
+  position: static;
+  line-height: 1;
+}
+.spillChatLog {
+  min-height: 0;
+  padding: 18px 22px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.spillChatLine {
+  max-width: 86%;
+  display: grid;
+  gap: 6px;
+  animation: spill-chat-in 0.28s ease both;
+}
+.spillChatLine p {
+  margin: 0;
+  padding: 11px 14px;
+  border-radius: 16px 16px 16px 4px;
+  background: #1c1d22;
+  color: #ececec;
+  font-size: 15px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.spillChatLine.you {
+  align-self: flex-end;
+}
+.spillChatLine.you p {
+  border-radius: 16px 16px 4px 16px;
+  background: var(--red);
+  color: #fff;
+}
+.spillChatLine a {
+  width: fit-content;
+  padding-left: 4px;
+  color: var(--red);
+  font-size: 15px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.spillChatLine.typing p {
+  display: flex;
+  gap: 5px;
+}
+.spillChatLine.typing i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #8a8a8f;
+  animation: spill-chat-dot 1s infinite ease-in-out;
+}
+.spillChatLine.typing i:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.spillChatLine.typing i:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.spillChatChoices {
+  margin-top: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.spillChatChoices button {
+  padding: 9px 13px;
+  border: 1px solid #4a4b50;
+  border-radius: 99px;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-size: 15px;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+.spillChatChoices button:hover,
+.spillChatChoices button:focus-visible {
+  border-color: var(--red);
+  background: rgba(232, 71, 47, 0.14);
+}
+.spillChatInput {
+  margin: 0;
+  padding: 12px 14px 12px 22px;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  border-top: 1px solid #2a2b30;
+}
+.spillChatInput input,
+.spillChatInput textarea {
+  min-width: 0;
+  padding: 10px 0;
+  flex: 1;
+  border: 0;
+  border-bottom: 1px solid #45464b;
+  outline: 0;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-size: 16px;
+  resize: none;
+}
+.spillChatInput input:focus,
+.spillChatInput textarea:focus {
+  border-color: var(--red);
+}
+.spillChatInput button {
+  width: 42px;
+  height: 42px;
+  flex: none;
+  border: 0;
+  border-radius: 50%;
+  background: var(--red);
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+}
+.spillChatInput button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.spillChatError {
+  margin: 0;
+  padding: 0 22px 10px;
+  color: #ff8a7a;
+  font-size: 15px;
+}
+.spillChatFoot {
+  padding: 12px 22px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 16px;
+  border-top: 1px solid #2a2b30;
+}
+.spillChatFoot a,
+.spillChatFoot button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #9a9a9f;
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+.spillChatFoot a:hover,
+.spillChatFoot button:hover {
+  color: #fff;
+}
+@keyframes spill-chat-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+@keyframes spill-chat-dot {
+  0%,
+  80%,
+  100% {
+    opacity: 0.3;
+  }
+  40% {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spillChatLine,
+  .spillChatLine.typing i {
+    animation: none;
   }
 }
