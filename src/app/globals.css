@@ -2813,6 +2813,10 @@ a:hover > .navArrow.down {
 .journeySection {
   background: #0a0a0b;
 }
+/* Same dark background as the ecosystem block above: one gap between them, not two. */
+.ecosystemSection + .journeySection {
+  padding-top: 0;
+}
 .sectionTopline {
   display: flex;
   align-items: center;
@@ -14254,6 +14258,14 @@ main > .liveNowBanner {
 .communityStrip {
   min-height: 0;
   border-top: 1px solid #1d1e22;
+}
+/* "Choose your SPILL" and "Join" share the same background: split one gap
+   around the dividing line instead of stacking both sections' padding. */
+.chooseSection:has(+ .communityStrip) {
+  padding-bottom: clamp(40px, 5vw, 72px);
+}
+.chooseSection + .communityStrip {
+  padding-top: clamp(40px, 5vw, 72px);
 }
 .communityStrip .sectionNumber {
   margin-bottom: 22px;
