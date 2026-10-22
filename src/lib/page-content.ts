@@ -50,7 +50,7 @@ export const globalPageContent: Record<
         title: "SPILL 42",
         text: "The signature social experience that turns a room full of people into a room full of conversation.",
         href: SPILL42_PLAY_HREF,
-        cta: "Play SPILL 42",
+        cta: "Play SPILL\u00a042",
         featured: true,
       },
       {

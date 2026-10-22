@@ -336,7 +336,7 @@ export default async function HomePage() {
           </p>
           <p>
             SPILL Connections brings analog and digital experiences together
-            through SPILL or Drink and SPILL 42. Both are designed to break the
+            through SPILL or Drink and SPILL&nbsp;42. Both are designed to break the
             ice, spark curiosity and turn everyday encounters into meaningful
             connections.
           </p>

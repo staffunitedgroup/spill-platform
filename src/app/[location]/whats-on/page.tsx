@@ -84,11 +84,11 @@ export default async function LocationWhatsOn({ params, searchParams }: Props) {
       <section className="whatsOnSpill42">
         <div>
           <p className="eyebrow">At your table</p>
-          <h2>Playing SPILL 42 tonight?</h2>
+          <h2>Playing SPILL&nbsp;42 tonight?</h2>
           <p>Scan the QR on your table — or enter its code — to start.</p>
         </div>
         <Link className="button primary" href={SPILL42_PLAY_HREF}>
-          Play SPILL 42 <span>→</span>
+          Play SPILL&nbsp;42 <span>→</span>
         </Link>
       </section>
     </main>

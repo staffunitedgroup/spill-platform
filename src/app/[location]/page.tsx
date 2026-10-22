@@ -11,7 +11,7 @@ import { getLocation, locations } from "@/lib/site-data";
 
 const homeSections = [
   { eyebrow: "Tonight at SPILL", title: "What’s happening tonight?", text: "The quickest view of tonight’s events, live moments, and reasons to come by.", href: "/saigon/whats-on#tonight", image: "/assets/spill/home/venue-night.jpg" },
-  { eyebrow: "Coming up", title: "Plan the next night.", text: "See the week ahead across events, SPILL 42, performances, and creator formats.", href: "/saigon/whats-on#upcoming", image: "/assets/spill/home/common-area-poster.jpg" },
+  { eyebrow: "Coming up", title: "Plan the next night.", text: "See the week ahead across events, SPILL\u00a042, performances, and creator formats.", href: "/saigon/whats-on#upcoming", image: "/assets/spill/home/common-area-poster.jpg" },
   { eyebrow: "Eat + Drink", title: "Coffee through cocktails.", text: "An all-day menu made for quick stops, long conversations, and everything between.", href: "/saigon/menu", image: "/assets/spill/menu/hero-poster.jpg" },
   { eyebrow: "SPILL 42", title: "Put the phones down.", text: "Forty-two prompts and four ways to connect in the room.", href: "/spill-42", image: "/assets/spill/home/spill-42-poster.jpg" },
   { eyebrow: "Create at SPILL", title: "Make something real.", text: "Podcast, livestream, confessional, perform, host, and collaborate.", href: "/saigon/create", image: "/assets/spill/home/podcast-poster.jpg" },
