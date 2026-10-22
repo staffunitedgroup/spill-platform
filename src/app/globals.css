@@ -1587,6 +1587,19 @@ button.dropdownHead,
   color: var(--red);
   font-weight: 500;
 }
+/* The status label wraps on phones: keep it one box instead of a broken pill. */
+.menuBookConcept .statusPill {
+  max-width: 100%;
+  display: inline-block;
+  line-height: 1.45;
+}
+@media (max-width: 600px) {
+  .menuBookConcept .statusPill {
+    padding: 9px 14px;
+    border-radius: 16px;
+    letter-spacing: 0.06em;
+  }
+}
 .menuBookTabs {
   max-width: 1120px;
   margin: 0 auto;
@@ -1689,9 +1702,12 @@ button.dropdownHead,
     transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1),
     filter 0.5s ease;
 }
-.menuBookPage:hover img {
-  transform: rotateY(-1.5deg) translateX(3px);
-  filter: brightness(1.03);
+/* Mouse only: on touch screens :hover sticks after a tap and leaves the page tilted. */
+@media (hover: hover) and (pointer: fine) {
+  .menuBookPage:hover img {
+    transform: rotateY(-1.5deg) translateX(3px);
+    filter: brightness(1.03);
+  }
 }
 .menuBookProgress {
   max-width: 1120px;
