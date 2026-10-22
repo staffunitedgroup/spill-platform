@@ -538,7 +538,12 @@ export default async function HomePage() {
               development and recording to editing and ongoing creative support,
               we help bring your vision to life.
             </p>
-            <Link href="/podcast#inquiry">Produce with SPILL →</Link>
+            <Link href="/podcast#inquiry">
+              Produce with SPILL{" "}
+              <svg className="navArrow straight" viewBox="0 0 20 20" aria-hidden="true">
+                <path d="M3 10h14M11 4l6 6-6 6" />
+              </svg>
+            </Link>
           </article>
           <article data-reveal>
             <span>02</span>

@@ -1,0 +1,48 @@
+diff --git a/src/app/globals.css b/src/app/globals.css
+index 63fe614..377d4aa 100644
+--- a/src/app/globals.css
++++ b/src/app/globals.css
+@@ -3366,11 +3366,24 @@ a:hover > .navArrow.down {
+   white-space: nowrap;
+   margin-top: auto;
+   padding-top: 18px;
+-  border-top: 1px solid currentColor;
+   font-size: 15px;
+   font-weight: 700;
+   letter-spacing: 0.1em;
+   text-transform: uppercase;
++  transition:
++    gap 0.25s ease,
++    color 0.25s ease;
++}
++/* Hover/tap: the arrow slides out and the link turns black on the red panel. */
++.podcastChoices a:hover,
++.podcastChoices a:focus-visible,
++.podcastChoices a:active {
++  gap: 18px;
++  color: #111;
++}
++/* The straight arrow just slides right (the default nudge is diagonal). */
++.podcastChoices a:hover > .navArrow.straight {
++  transform: none;
+ }
+ 
+ .originalsSection {
+diff --git a/src/app/page.tsx b/src/app/page.tsx
+index 2a5c2a0..6533b45 100644
+--- a/src/app/page.tsx
++++ b/src/app/page.tsx
+@@ -538,7 +538,12 @@ export default async function HomePage() {
+               development and recording to editing and ongoing creative support,
+               we help bring your vision to life.
+             </p>
+-            <Link href="/podcast#inquiry">Produce with SPILL →</Link>
++            <Link href="/podcast#inquiry">
++              Produce with SPILL{" "}
++              <svg className="navArrow straight" viewBox="0 0 20 20" aria-hidden="true">
++                <path d="M3 10h14M11 4l6 6-6 6" />
++              </svg>
++            </Link>
+           </article>
+           <article data-reveal>
+             <span>02</span>
