@@ -1,0 +1,107 @@
+diff --git a/src/app/globals.css b/src/app/globals.css
+index 377d4aa..f293091 100644
+--- a/src/app/globals.css
++++ b/src/app/globals.css
+@@ -2612,6 +2612,10 @@ a:hover > .navArrow.down {
+   color: #55565a;
+   font-size: 17px;
+ }
++.statementGrid p strong {
++  color: #111;
++  font-weight: 700;
++}
+ .statementGrid .bodyLead {
+   color: #111;
+   font-size: clamp(19px, 2vw, 27px);
+@@ -2780,17 +2784,26 @@ a:hover > .navArrow.down {
+   line-height: 1.55;
+ }
+ .ecosystemStatement {
+-  max-width: 1050px;
++  max-width: 1280px;
+   margin: clamp(56px, 8vw, 100px) clamp(22px, 6vw, 96px) 0;
+   font-family: var(--font-display);
+   font-size: clamp(20px, 2.8vw, 40px);
+   line-height: 1.42 !important;
+   text-transform: uppercase;
+ }
++/* One sentence per line on every screen; the last one in red. */
+ .ecosystemStatement span {
+-  display: inline-block;
++  display: block;
++}
++.ecosystemStatement .ecosystemStatementAccent {
+   color: var(--red);
+-  white-space: nowrap;
++}
++/* Phones: a long sentence still wraps, so space the sentences apart to keep
++   each one reading as its own line. */
++@media (max-width: 760px) {
++  .ecosystemStatement span + span {
++    margin-top: 0.6em;
++  }
+ }
+ @keyframes ecosystem-scroll {
+   to {
+@@ -2839,16 +2852,18 @@ a:hover > .navArrow.down {
+   background: #0a0a0b;
+   /* Hover lift uses `translate`, not `transform`: the scroll-in animation sets
+      transform, and a CSS transition on it left cards stuck at different heights. */
+-  transition:
+-    background 0.35s ease,
+-    translate 0.35s ease;
++  transition: background 0.45s ease;
+ }
+ .journeyCard:last-child {
+   border-right: 0;
+ }
++/* Hover stays inside the card: the photo zooms and the copy glides up a little.
++   (Lifting the whole card showed a strip of background under it.) */
+ .journeyCard:hover {
+   background: #151517;
+-  translate: 0 -8px;
++}
++.journeyCard:hover .journeyCardContent {
++  translate: 0 -6px;
+ }
+ .journeyCardMedia {
+   position: absolute;
+@@ -2885,6 +2900,7 @@ a:hover > .navArrow.down {
+       );
+ }
+ .journeyCardContent {
++  transition: translate 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
+   min-height: 610px;
+   padding: 25px 20px 44px;
+   position: relative;
+diff --git a/src/app/page.tsx b/src/app/page.tsx
+index 6533b45..6c41df3 100644
+--- a/src/app/page.tsx
++++ b/src/app/page.tsx
+@@ -198,7 +198,9 @@ export default async function HomePage() {
+               Strike up a conversation. Share a story. Make a connection.
+             </p>
+             <p>
+-              Some moments stay between us. Others deserve a bigger audience.
++              <strong>
++                Some moments stay between us. Others deserve a bigger audience.
++              </strong>
+             </p>
+             <p>
+               Through livestreams, podcasts, original shows and interactive
+@@ -243,9 +245,12 @@ export default async function HomePage() {
+         </div>
+         <EcosystemCarousel />
+         <p className="ecosystemStatement" data-reveal>
+-          Real-world experiences create digital stories. Digital stories build
+-          audiences. Audiences discover SPILL.{" "}
+-          <span>And the cycle begins again.</span>
++          <span>Real-world experiences create digital stories.</span>
++          <span>Digital stories build audiences.</span>
++          <span>Audiences discover SPILL.</span>
++          <span className="ecosystemStatementAccent">
++            And the cycle begins again.
++          </span>
+         </p>
+       </section>
+ 

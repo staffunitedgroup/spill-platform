@@ -198,7 +198,9 @@ export default async function HomePage() {
               Strike up a conversation. Share a story. Make a connection.
             </p>
             <p>
-              Some moments stay between us. Others deserve a bigger audience.
+              <strong>
+                Some moments stay between us. Others deserve a bigger audience.
+              </strong>
             </p>
             <p>
               Through livestreams, podcasts, original shows and interactive
@@ -243,9 +245,12 @@ export default async function HomePage() {
         </div>
         <EcosystemCarousel />
         <p className="ecosystemStatement" data-reveal>
-          Real-world experiences create digital stories. Digital stories build
-          audiences. Audiences discover SPILL.{" "}
-          <span>And the cycle begins again.</span>
+          <span>Real-world experiences create digital stories.</span>
+          <span>Digital stories build audiences.</span>
+          <span>Audiences discover SPILL.</span>
+          <span className="ecosystemStatementAccent">
+            And the cycle begins again.
+          </span>
         </p>
       </section>
 
