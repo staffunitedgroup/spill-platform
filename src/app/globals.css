@@ -3598,6 +3598,20 @@ a:hover > .navArrow.down {
   text-transform: uppercase;
   letter-spacing: 0.12em;
 }
+/* When the seven labels can't fit on one line, put them on an even grid
+   (4 + 3 on tablets, 2 columns on phones) instead of ragged wrapped rows. */
+@media (max-width: 960px) {
+  .peopleLabels {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px 20px;
+  }
+}
+@media (max-width: 560px) {
+  .peopleLabels {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
 
 .eventsSection {
   background: #e8e7e1;
