@@ -791,6 +791,24 @@ button.dropdownHead,
   font-size: 15px;
   letter-spacing: 0.1em;
 }
+/* Name and status each stay on one line ("FUTURE / LOCATION" must never break).
+   Higher priority than the general "balance short text" rule further down. */
+.dropdownPanel.dropdownPanel a,
+.dropdownPanel.dropdownPanel small {
+  text-wrap: nowrap;
+  white-space: nowrap;
+}
+.dropdownPanel a {
+  align-items: baseline;
+}
+/* Phones: the panel is narrow, so the status sits under the name instead. */
+@media (max-width: 600px) {
+  .dropdownPanel.dropdownPanel a:has(small) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
 .globalHero h1 {
   font-size: clamp(54px, 7.7vw, 108px);
 }
@@ -1743,9 +1761,13 @@ button.dropdownHead,
     margin-left: 0;
   }
   .locationSwitcher .dropdownPanel {
-    left: 50%;
+    /* Lined up with the pill's right edge: the pill sits right of centre, so
+       the panel opens leftwards and stays inside the screen. */
+    left: auto;
+    right: 0;
     min-width: 250px;
-    transform: translateX(-50%);
+    max-width: calc(100vw - 32px);
+    transform: none;
   }
   .menuBookTop {
     grid-template-columns: 1fr;
