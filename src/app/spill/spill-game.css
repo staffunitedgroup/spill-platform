@@ -1571,6 +1571,8 @@ body:has(.s42App) .floatingContact {
   width: min(520px, 100%);
   margin-top: 28px;
   display: grid;
+  /* minmax(0, …): the code row may not grow wider than the panel on small phones. */
+  grid-template-columns: minmax(0, 1fr);
   gap: 10px;
 }
 .stCode label {

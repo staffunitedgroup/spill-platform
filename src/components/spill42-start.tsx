@@ -148,6 +148,26 @@ export function Spill42Start() {
     setScan("idle");
   }
 
+  /**
+   * Back: while the camera is open it just closes the camera. Otherwise it
+   * returns to the page the player came from on the SPILL site, or to the
+   * home page when /spill-42 was opened directly (a shared link, a QR, a new tab).
+   */
+  function goBack() {
+    if (scan === "scanning" || scan === "starting") {
+      cancelScan();
+      return;
+    }
+    let cameFromSite = false;
+    try {
+      cameFromSite =
+        window.history.length > 1 &&
+        new URL(document.referrer).origin === window.location.origin;
+    } catch {}
+    if (cameFromSite) router.back();
+    else router.push("/");
+  }
+
   async function submitCode(event: FormEvent) {
     event.preventDefault();
     const found = tableCodeFrom(code);
@@ -162,6 +182,9 @@ export function Spill42Start() {
     <main className="s42App sgApp opApp">
       <section className="s42Setup">
         <div className="s42SetupPanel">
+          <button className="s42Back" type="button" onClick={goBack}>
+            <span aria-hidden="true">←</span> Back
+          </button>
           <div className="s42SetupHeading">
             <span>SPILL 42 · Real conversation. Real connection.</span>
             <h1>Want to SPILL?</h1>
