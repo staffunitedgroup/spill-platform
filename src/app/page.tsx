@@ -357,9 +357,13 @@ export default async function HomePage() {
         <div className="hospitalityCopy" data-reveal>
           <div className="sectionNumber">04 / Hospitality</div>
           <h2>
-            Coffee. Cocktails.
+            Coffee.
             <br />
-            Food. <em>Conversation.</em>
+            Cocktails.
+            <br />
+            Food.
+            <br />
+            <em>Conversation.</em>
           </h2>
           <p>
             From your first morning coffee to evening drinks, SPILL brings
