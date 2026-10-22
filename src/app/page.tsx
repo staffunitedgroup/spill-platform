@@ -19,7 +19,7 @@ const journey = [
     number: "01",
     name: "SPILL Connections",
     verb: "Connect",
-    copy: "Start better conversations with friends, dates, coworkers, new people, or someone you just met at SPILL.",
+    copy: "Break the ice, spark conversations and discover something new with our interactive conversation tools, designed to bring friends, dates, coworkers and new people closer together.",
     cta: "Explore Connections",
     href: "/spill-42",
     image: "/assets/spill/home/journey/connections.png",
@@ -28,7 +28,7 @@ const journey = [
     number: "02",
     name: "SPILL Confessional",
     verb: "Express",
-    copy: "Step inside. Tell your story. Keep it private, save it for yourself, or choose to let it travel further.",
+    copy: "Step inside and express yourself in your own private space. Share a story, reveal a secret or speak your mind. Keep it personal, save the moment or choose to share it with the world.",
     cta: "Explore Confessional",
     href: "/confessional",
     image: "/assets/spill/home/journey/confessional.png",
@@ -37,7 +37,7 @@ const journey = [
     number: "03",
     name: "SPILL Livestream",
     verb: "Be seen",
-    copy: "Share your story, talent, business, launch, performance, idea, opinion, or perspective with the SPILL audience.",
+    copy: "Step into the spotlight. Share your story, showcase your talent, launch a business or express your ideas through interactive livestreams that connect you with a wider audience.",
     cta: "Explore Livestream",
     href: "/livestream",
     image: "/assets/spill/home/journey/livestream.png",
@@ -46,16 +46,16 @@ const journey = [
     number: "04",
     name: "SPILL Podcast",
     verb: "Go deeper",
-    copy: "Build meaningful long-form conversations with professional production and room for the idea to grow.",
+    copy: "Go beyond the surface. Share ideas, explore perspectives and create meaningful conversations with professional podcast production that brings your stories and voices to life.",
     cta: "Explore Podcast",
     href: "/podcast",
     image: "/assets/spill/home/journey/podcast.png",
   },
   {
     number: "05",
-    name: "SPILL Original",
+    name: "SPILL Originals",
     verb: "Become original",
-    copy: "The strongest people, stories, ideas, and formats can grow into premium SPILL-developed media.",
+    copy: "Where standout people, stories and ideas become something bigger. SPILL Originals develops unique shows and formats, transforming real experiences into original entertainment.",
     cta: "Watch Originals",
     href: "#originals",
     image: "/assets/spill/home/journey/original.png",
@@ -135,21 +135,21 @@ export default async function HomePage() {
         <GlobalHeader />
         <div className="masterHeroContent">
           <p className="eyebrow heroEyebrow">
-            <span>A café bar.</span>
-            <span>A social experience.</span>
-            <span>A media platform.</span>
+            <span>A livestream &amp; podcast</span>
+            <span>café bar &amp; lounge.</span>
           </p>
           <h1>
-            <span>First we danced</span>
-            <span>Then we sang</span>
+            <span>First we danced.</span>
+            <span>Then we sang.</span>
             <em>
-              Now we <SpillWordmark />
+              Now we <SpillWordmark />.
             </em>
           </h1>
           <div className="masterHeroBottom">
             <p>
-              Come for coffee, drinks and connection. Stay for the experiences.
-              Become part of something that can travel far beyond the room.
+              Come for the coffee, cocktails and connection. Stay for the
+              experiences. Be part of the conversations, stories and moments
+              that go far beyond the room.
             </p>
           </div>
           <div className="actions">
@@ -190,20 +190,21 @@ export default async function HomePage() {
           </h2>
           <div>
             <p className="bodyLead">
-              SPILL Café Bar is not just a destination. It’s a gateway.
+              SPILL is more than a place to meet, socialize and unwind. It’s
+              where everyday moments can become extraordinary experiences.
             </p>
             <p>
-              The venue is the physical front door to a larger world of
-              connection, creation and entertainment.
+              Come for coffee. Stay for cocktails. Meet someone interesting.
+              Strike up a conversation. Share a story. Make a connection.
             </p>
             <p>
-              Come for coffee. Meet someone. Have a drink. Start a conversation.
-              Keep it private—or take it further.
+              Some moments stay between us. Others deserve a bigger audience.
             </p>
             <p>
-              Through SPILL experiences, conversations and personalities can
-              become content, reach new audiences, build communities and travel
-              far beyond the venue.
+              Through livestreams, podcasts, original shows and interactive
+              experiences, SPILL gives real people, real stories and real
+              conversations a platform to reach beyond the room—and connect
+              with the world.
             </p>
           </div>
         </div>
@@ -326,16 +327,20 @@ export default async function HomePage() {
             starts <em>offline.</em>
           </h2>
           <p>
-            SPILL Connections uses SPILL 42 to make starting a better
-            conversation easier. Sit down with someone you know—or someone you
-            have just met—and move beyond small talk.
+            Two ways to connect. Countless conversations waiting to happen.
+          </p>
+          <p>
+            SPILL Connections brings analog and digital experiences together
+            through SPILL or Drink and SPILL 42. Both are designed to break the
+            ice, spark curiosity and turn everyday encounters into meaningful
+            connections.
           </p>
           <div className="tagCloud">
             <span>Dates</span>
             <span>Friends</span>
             <span>Coworkers</span>
-            <span>New people</span>
-            <span>One table</span>
+            <span>New faces</span>
+            <span>Real connections</span>
           </div>
           <Link className="textLink" href="/spill-42">
             Discover SPILL 42 <span>→</span>
@@ -352,17 +357,19 @@ export default async function HomePage() {
             Food. <em>Conversation.</em>
           </h2>
           <p>
-            One continuous café-bar experience, moving naturally from daytime
-            coffee culture into a richer evening atmosphere.
+            From your first morning coffee to evening drinks, SPILL brings
+            together great flavors, good company and a sophisticated atmosphere
+            that evolves naturally throughout the day and into the night.
           </p>
           <div className="offeringList">
             {[
               "Coffee",
-              "Tea",
-              "Food",
-              "Cocktails",
-              "Beer + Wine",
-              "Signature SPILL Drinks",
+              "Matcha + Tea",
+              "Fruit + Yogurt",
+              "Bites + Sweets",
+              "Beer",
+              "Wine",
+              "SPILL Signature",
             ].map((item, index) => (
               <span key={item}>
                 <b>0{index + 1}</b>
@@ -399,7 +406,7 @@ export default async function HomePage() {
         <div className="dayNightTitle" data-reveal>
           <div className="sectionNumber">05 / Day to night</div>
           <h2 id="day-night-heading">
-            One <SpillWordmark tone="dark" />.<br />
+            Same <SpillWordmark tone="dark" />.<br />
             <em>Different energy.</em>
           </h2>
         </div>
@@ -414,10 +421,11 @@ export default async function HomePage() {
             <div>
               <span>07:00</span>
               <h3>Day</h3>
-              <p>Bright. Open. Social.</p>
+              <p>Bright. Relaxed. Inviting.</p>
               <small>
-                Coffee, food, meetings, creator work, introductions, and easy
-                conversation.
+                Natural daylight, an open atmosphere and a relaxed social
+                energy. A welcoming space to connect, unwind and enjoy
+                everything SPILL has to offer.
               </small>
             </div>
           </article>
@@ -431,10 +439,10 @@ export default async function HomePage() {
             <div>
               <span>19:00</span>
               <h3>Night</h3>
-              <p>Richer. Intimate. Alive.</p>
+              <p>Warm. Intimate. Electric.</p>
               <small>
-                Cocktails, livestreams, audience moments, performances, and
-                social discovery.
+                Red LED lighting transforms the space, creating a richer, more
+                immersive atmosphere with a sophisticated lounge energy.
               </small>
             </div>
           </article>
@@ -473,16 +481,17 @@ export default async function HomePage() {
             <em>to show?</em>
           </h2>
           <p>
-            SPILL Livestream gives everyday people, creators, founders,
-            businesses, performers, and emerging talent a professional public
-            platform.
+            SPILL Livestream gives individuals, creators, entrepreneurs,
+            businesses and performers a professionally produced platform to
+            reach and engage live audiences.
           </p>
           <p>
-            Launch something. Perform. Tell a story. Express an opinion. Show
-            your talent. Give people a reason to discover you.
+            Launch something. Showcase your talent. Share your story. Express
+            an opinion. Introduce an idea. Give the world something worth
+            watching.
           </p>
           <strong>
-            Professional production. Real audience. Instant visibility.
+            Professional production. Real audiences. Greater reach.
           </strong>
           <Link className="textLink" href="/livestream">
             Explore SPILL Livestream <span>→</span>
@@ -499,8 +508,9 @@ export default async function HomePage() {
             deserve <em>more time.</em>
           </h2>
           <p>
-            Bring your idea. SPILL helps turn it into a great production—and
-            gives it room to grow.
+            Great conversations deserve more than a moment. SPILL brings
+            together the space, expertise and professional production to turn
+            meaningful ideas and conversations into compelling video podcasts.
           </p>
         </div>
         <div className="podcastMedia" data-reveal>
@@ -514,9 +524,9 @@ export default async function HomePage() {
             <source src="/assets/spill/home/podcast.mp4" type="video/mp4" />
           </video>
           <span>
-            Long-form conversations,
+            Long-form conversations.
             <br />
-            professionally produced.
+            Professionally produced.
           </span>
         </div>
         <div className="podcastChoices">
@@ -524,8 +534,9 @@ export default async function HomePage() {
             <span>01</span>
             <h3>Create your podcast</h3>
             <p>
-              Bring your concept or existing show to SPILL for development,
-              recording, editing, content creation, and ongoing support.
+              Bring your idea or existing podcast to SPILL. From concept
+              development and recording to editing and ongoing creative support,
+              we help bring your vision to life.
             </p>
             <Link href="/podcast#inquiry">Produce with SPILL →</Link>
           </article>
@@ -535,8 +546,9 @@ export default async function HomePage() {
               Be part of <SpillWordmark tone="dark" /> Podcast
             </h3>
             <p>
-              Exceptional people and stories discovered through the wider SPILL
-              ecosystem can be invited back for deeper conversations.
+              Some stories deserve a deeper conversation. Through the SPILL
+              ecosystem, we discover compelling people, unique perspectives and
+              stories worth exploring further.
             </p>
             <a
               href="https://www.youtube.com/@NowWeSPILL"
