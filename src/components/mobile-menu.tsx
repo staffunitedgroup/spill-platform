@@ -22,6 +22,11 @@ export function MobileMenu({ className = "", label, children }: { className?: st
     onClick={(event) => {
       if ((event.target as HTMLElement).closest("nav a") && root.current) root.current.open = false;
     }}
+    onToggle={(event) => {
+      // Closing the menu folds its sections back, so it reopens tidy.
+      const menu = event.currentTarget;
+      if (!menu.open) menu.querySelectorAll<HTMLDetailsElement>("details.mobileGroup[open]").forEach((group) => { group.open = false; });
+    }}
   >
     <summary aria-label={label}><span /><span /></summary>
     {children}
@@ -32,16 +37,27 @@ type GroupItem = { label: string; href: string; note?: string; current?: boolean
 
 /**
  * A menu item with sub-pages: tapping it opens the list underneath
- * (it used to jump straight to the parent page).
+ * (it used to jump straight to the parent page). Only one is open at a time:
+ * opening one folds the others. `footnote` is a quiet line under the list.
  */
-export function MobileNavGroup({ label, href, overview, items }: { label: string; href?: string; overview?: string; items: GroupItem[] }) {
-  return <details className="mobileGroup">
+export function MobileNavGroup({ label, href, overview, items, footnote }: { label: string; href?: string; overview?: string; items: GroupItem[]; footnote?: string }) {
+  return <details
+    className="mobileGroup"
+    onToggle={(event) => {
+      const group = event.currentTarget;
+      if (!group.open) return;
+      group.closest("nav")?.querySelectorAll<HTMLDetailsElement>("details.mobileGroup[open]").forEach((other) => {
+        if (other !== group) other.open = false;
+      });
+    }}
+  >
     <summary>{label}<svg className="mobileChevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 8 5 5 5-5" /></svg></summary>
     <div className="mobileGroupItems">
       {href && <Link href={href} className="mobileGroupOverview">{overview ?? `All of ${label}`}</Link>}
       {items.map((item) => <Link key={`${item.label}-${item.href}`} href={item.href} className={item.className} aria-current={item.current ? "page" : undefined}>
         <span>{item.label}</span>{item.note && <small>{item.note}</small>}
       </Link>)}
+      {footnote && <span className="mobileGroupNote">{footnote}</span>}
     </div>
   </details>;
 }
