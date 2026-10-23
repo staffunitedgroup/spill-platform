@@ -22,7 +22,15 @@ export const metadata: Metadata = {
   title: { default: "SPILL — Café Bar, Social Experience & Media Platform", template: "%s | SPILL" },
   description: "A new kind of social venue. Coffee, cocktails, conversation, livestreams, podcasts, and original media—built to bring people together.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.nowwespill.com"),
-  icons: { icon: "/favicon.png" },
+  // Mic mark on a dark tile, sized for browser tabs (16-48px) and home screens.
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "16x16 32x32 48x48" },
+      { url: "/icon-32.png", type: "image/png", sizes: "32x32" },
+      { url: "/icon-192.png", type: "image/png", sizes: "192x192" },
+    ],
+    apple: { url: "/apple-touch-icon.png", sizes: "180x180" },
+  },
 };
 
 export const viewport: Viewport = {
