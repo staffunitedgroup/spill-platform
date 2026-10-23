@@ -2422,6 +2422,27 @@ button.dropdownHead,
   padding-left: 14px;
   border-left: 1px solid var(--red);
 }
+/* Name and status never break mid-phrase: if both don't fit on one line,
+   the status moves whole onto the next line. */
+.mobileMenu nav .mobileGroupItems a {
+  flex-wrap: wrap;
+  column-gap: 16px;
+  row-gap: 2px;
+}
+.mobileMenu nav .mobileGroupItems a > span,
+.mobileMenu nav .mobileGroupItems a > small {
+  text-wrap: nowrap;
+  white-space: nowrap;
+}
+/* Quiet last line under a list, like "More locations coming" on desktop. */
+.mobileGroupNote {
+  display: block;
+  padding: 11px 0;
+  color: #77787c;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
 .mobileMenu nav .mobileGroupItems a {
   align-items: baseline;
   padding: 11px 0;

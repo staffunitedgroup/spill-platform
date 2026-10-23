@@ -94,6 +94,7 @@ export async function GlobalHeader() {
             href="/#locations"
             overview="All locations"
             items={locations.map((location) => ({ label: location.name, href: `/${location.slug}`, note: locationStatus(location) }))}
+            footnote="More locations coming"
           />
           {navigation.map((item) => (
             <MobileNavGroup key={item.href} label={item.label} href={item.href} items={item.items} />
