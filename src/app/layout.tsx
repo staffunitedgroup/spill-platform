@@ -10,6 +10,7 @@ import { PageTransition } from "@/components/page-transition";
 import { cookies, headers } from "next/headers";
 import { SITE_ACCESS_COOKIE, isSpill42Path, siteAccessLevel, spill42Public } from "@/lib/site-access";
 import { SiteLockscreen } from "@/components/site-lockscreen";
+import { GuestGameLinks } from "@/components/guest-game-links";
 import "lenis/dist/lenis.css";
 import "./globals.css";
 
@@ -58,6 +59,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
                 <SiteFooter />
               </HideOnAdmin>
             </SmoothScroll>
+            {access === "guest" && !spill42Public() && <GuestGameLinks />}
             <HideOnAdmin>
               <SectionNavigator />
               <FloatingContact phone={process.env.NEXT_PUBLIC_CONTACT_PHONE} />
