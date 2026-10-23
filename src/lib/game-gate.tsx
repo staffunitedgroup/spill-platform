@@ -2,7 +2,7 @@ import "server-only";
 import type { ReactNode } from "react";
 import { cookies } from "next/headers";
 import { SITE_ACCESS_COOKIE, siteAccessLevel, spill42Public } from "@/lib/site-access";
-import { SiteLockscreen } from "@/components/site-lockscreen";
+import { FullReload } from "@/components/full-reload";
 
 /**
  * Guards the SPILL 42 app (/spill-42 and /spill/…) for every way in.
@@ -18,5 +18,7 @@ export async function GameGate({ children }: { children: ReactNode }) {
   if (spill42Public()) return children;
   const access = siteAccessLevel((await cookies()).get(SITE_ACCESS_COOKIE)?.value);
   if (access === "team") return children;
-  return <SiteLockscreen teamOnly={access === "guest"} />;
+  // Only reached by a click from inside the site (a full page load is already
+  // stopped by the root layout): reload so that screen shows, full size.
+  return <FullReload />;
 }
